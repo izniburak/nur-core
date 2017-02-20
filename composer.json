@@ -21,10 +21,7 @@
         "symfony/console": "^3.2",
         "symfony/yaml": "^3.2",
         "doctrine/dbal": "^2.5",
-        "pimple/pimple": "^3",
-        "davedevelopment/phpmig": "dev-master",
-        "izniburak/pdox": "dev-master",
-        "izniburak/router": "dev-master"
+        "pimple/pimple": "^3"
     },
     "autoload": {
         "psr-4": {
