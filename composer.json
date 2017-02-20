@@ -1,0 +1,37 @@
+{
+    "name": "izniburak/nur-core",
+    "type": "library",
+    "description": "Nur Framework Core Files. https://github.com/izniburak/nur",
+    "keywords": ["php","framework","nur","simple","basic"],
+    "homepage": "https://github.com/izniburak/nur-core",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "İzni Burak Demirtaş",
+            "email": "info@burakdemirtas.org",
+            "homepage": "http://burakdemirtas.org",
+            "role": "Creator"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4",
+        "illuminate/database": "5.3.x",
+        "illuminate/view": "5.3.x",
+        "illuminate/events": "5.3.x",
+        "symfony/console": "^3.2",
+        "symfony/yaml": "^3.2",
+        "doctrine/dbal": "^2.5",
+        "pimple/pimple": "^3",
+        "davedevelopment/phpmig": "dev-master",
+        "izniburak/pdox": "dev-master",
+        "izniburak/router": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Nur\\": "src/"
+        }
+    },
+    "support": {
+          "email": "info@burakdemirtas.org"
+    }
+}
