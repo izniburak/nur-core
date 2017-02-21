@@ -89,8 +89,8 @@ abstract class AbstractCommand extends Command
      */
     protected function findBootstrapFile($filename)
     {
-        if (null === $filename) 
-            $filename = 'bootstrap/Database/Migration/MigrationRegister.php';
+        if (null === $filename)
+            $filename = 'vendor/izniburak/nur-core/src/Database/Migration/MigrationRegister.php';
 
         $cwd = getcwd();
 
@@ -290,7 +290,7 @@ abstract class AbstractCommand extends Command
      * @var string
      * @return AbstractCommand
      */
-    public function setBootstrap($bootstrap) 
+    public function setBootstrap($bootstrap)
     {
         $this->bootstrap = $bootstrap;
         return $this;
@@ -299,7 +299,7 @@ abstract class AbstractCommand extends Command
     /**
      * Get bootstrap
      *
-     * @return string 
+     * @return string
      */
     public function getBootstrap()
     {
@@ -312,7 +312,7 @@ abstract class AbstractCommand extends Command
      * @param array $migrations
      * @return AbstractCommand
      */
-    public function setMigrations(array $migrations) 
+    public function setMigrations(array $migrations)
     {
         $this->migrations = $migrations;
         return $this;
@@ -334,7 +334,7 @@ abstract class AbstractCommand extends Command
      * @var \ArrayAccess
      * @return AbstractCommand
      */
-    public function setContainer(\ArrayAccess $container) 
+    public function setContainer(\ArrayAccess $container)
     {
         $this->container = $container;
         return $this;
@@ -371,7 +371,7 @@ abstract class AbstractCommand extends Command
     {
         return $this->adapter;
     }
-    
+
     /**
      * transform create_table_user to CreateTableUser
      * @param $migrationName
