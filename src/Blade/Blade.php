@@ -15,26 +15,26 @@ use Nur\Blade\BladeRegister as BladeTemplate;
 class Blade
 {
     public static $class;
-    private static $templateFolder = '/storage';
+    private static $templateFolder = 'storage';
 
     /**
-    * Class constructer and create Blade Template Engine. 
+    * Class constructer and create Blade Template Engine.
     *
     * @return null
     */
     public function __construct()
     {
-        $cache = __DIR__ . '/../..' . self::$templateFolder . '/blade';
+        $cache = ROOT . '/' . self::$templateFolder . '/blade';
 
         if(!is_dir( realpath($cache) ))
             mkdir($cache, 0755);
-        $views = realpath(__DIR__ . '/../../app/Views');
+        $views = realpath(ROOT . '/app/Views');
 
         self::$class = new BladeTemplate($views, $cache);
     }
 
     /**
-    * instance of Class. 
+    * instance of Class.
     *
     * @return instance
     */
@@ -49,7 +49,7 @@ class Blade
     }
 
     /**
-    * Get class method call by static reference. 
+    * Get class method call by static reference.
     *
     * @return string | null
     */
@@ -59,7 +59,7 @@ class Blade
     }
 
     /**
-    * Display view file. 
+    * Display view file.
     *
     * @return false | null
     */

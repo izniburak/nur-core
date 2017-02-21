@@ -22,7 +22,7 @@ catch (ParseException $e) {
 }
 
 if($config['db']['driver'] == "sqlite")
-    $config['db']['database'] = realpath(__DIR__ . '/../../../storage/database/'. $config['db']['database']);
+    $config['db']['database'] = realpath('storage/database/'. $config['db']['database']);
 
 $container = new Container();
 
@@ -45,7 +45,7 @@ $container['phpmig.adapter'] = function($c) {
     return new Adapter\Illuminate\Database($c['db'], 'nur_migrations');
 };
 
-$container['phpmig.migrations_path'] = realpath(__DIR__ . '/../../../app/Migrations');
+$container['phpmig.migrations_path'] = realpath('app/Migrations');
 
 $container['schema'] = function($c) {
     return $c['db']->schema();

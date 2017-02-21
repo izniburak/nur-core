@@ -28,7 +28,7 @@ global $config;
 
 try {
     $config = Yaml::parse(file_get_contents(ROOT . '/app/config.yml'));
-} 
+}
 catch (ParseException $e) {
     die(printf("<b>Unable to parse the Config YAML string:</b><br />Error Message: %s", $e->getMessage()));
 }
@@ -59,13 +59,13 @@ if(empty(session::get('_token')))
 
 define('_TOKEN', session::get('_token'));
 
-require_once realpath(__DIR__ . '/../bootstrap/helper.php');
-require_once realpath(__DIR__ . '/../bootstrap/Router/Route.php');
+require_once 'helper.php';
+require_once 'Router/Route.php';
 
 Uri::getInstance();
 AutoLoad::getInstance();
 
-require_once realpath(__DIR__ . '/../app/routes.php');
+require_once realpath(ROOT . '/app/routes.php');
 Route::run();
 
 ob_end_flush();

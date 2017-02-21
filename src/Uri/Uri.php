@@ -21,7 +21,7 @@ class Uri
     protected static $http = 'http://';
 
     /**
-    * Create URI class values. 
+    * Create URI class values.
     *
     * @return string | null
     */
@@ -31,7 +31,7 @@ class Uri
             return;
 
         self::$base = BASE_FOLDER;
-        
+
         self::$url = http::server('HTTP_HOST') . '/' . self::$base . '/';
         if((!empty(http::server('HTTPS')) && http::server('HTTPS') !== 'off') || http::server('SERVER_PORT') == 443)
             self::$http = 'https://';
@@ -45,7 +45,7 @@ class Uri
     }
 
     /**
-    * instance of Class. 
+    * instance of Class.
     *
     * @return string | null
     */
@@ -58,7 +58,7 @@ class Uri
     }
 
     /**
-    * Get base url for app. 
+    * Get base url for app.
     *
     * @return string
     */
@@ -69,7 +69,7 @@ class Uri
     }
 
     /**
-    * Get admin url for app. 
+    * Get admin url for app.
     *
     * @return string
     */
@@ -80,7 +80,7 @@ class Uri
     }
 
     /**
-    * Get route uri value with params. 
+    * Get route uri value with params.
     *
     * @return string
     */
@@ -125,7 +125,7 @@ class Uri
     }
 
     /**
-    * Get assets directory for app. 
+    * Get assets directory for app.
     *
     * @return string
     */
@@ -136,7 +136,7 @@ class Uri
     }
 
     /**
-    * Redirect to another URL. 
+    * Redirect to another URL.
     *
     * @return null
     */
@@ -154,7 +154,7 @@ class Uri
     }
 
     /**
-    * Get active URI. 
+    * Get active URI.
     *
     * @return string | null
     */
@@ -164,7 +164,7 @@ class Uri
     }
 
     /**
-    * Get segments of URI. 
+    * Get segments of URI.
     *
     * @return string | null
     */

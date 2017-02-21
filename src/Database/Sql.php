@@ -17,7 +17,7 @@ class Sql
     /**
     * Class instance variable
     */
-    private static $instance = null; 
+    private static $instance = null;
 
     /**
     * Call static function for Pdox Class
@@ -39,9 +39,9 @@ class Sql
         if (null === self::$instance)
         {
             $config = getConfig();
-            $config['db']['cachedir'] = realpath(__DIR__ . '/../../storage/cache/sql/');
+            $config['db']['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
             if($config['db']['driver'] == "sqlite")
-                $config['db']['database'] = realpath(__DIR__ . '/../../storage/database/'. $config['db']['database']);
+                $config['db']['database'] = realpath(ROOT . '/storage/database/'. $config['db']['database']);
 
             self::$instance = new QueryProvider($config['db']);
         }

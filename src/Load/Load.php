@@ -45,7 +45,7 @@ class Load
     public static function view($name, $data = null)
     {
         $name = ($name);
-        $file = realpath(__DIR__ . '/../../app/Views/' . $name . '.php');
+        $file = realpath(ROOT . '/app/Views/' . $name . '.php');
 
         if (file_exists($file))
         {
@@ -59,7 +59,7 @@ class Load
     }
 
     /**
-    * Load model controller file. 
+    * Load model controller file.
     *
     * @return model | throw ExceptionHandler
     */
@@ -67,7 +67,7 @@ class Load
     {
         $name = ($name);
         $class = ($autoLoad ? $name : 'App\Models\\' . $name);
-        $file = realpath(__DIR__ . '/../../app/Models/' . $name . '.php');
+        $file = realpath(ROOT . '/app/Models/' . $name . '.php');
 
         if (file_exists($file))
         {
@@ -84,7 +84,7 @@ class Load
     }
 
     /**
-    * Load library class file. 
+    * Load library class file.
     *
     * @return library | throw ExceptionHandler
     */
@@ -92,7 +92,7 @@ class Load
     {
         $name = ($name);
         $class = ($autoLoad ? $name : 'App\Libraries\\' . $name);
-        $file = realpath(__DIR__ . '/../../app/Libraries/' . $name . '.php');
+        $file = realpath(ROOT . '/app/Libraries/' . $name . '.php');
 
         if (file_exists($file))
         {
@@ -115,14 +115,14 @@ class Load
     }
 
     /**
-    * Load helper file. 
+    * Load helper file.
     *
     * @return null | throw ExceptionHandler
     */
     public static function helper($name)
     {
         $name = ($name);
-        $file = realpath(__DIR__ . '/../../app/Helpers/' . $name . '.php');
+        $file = realpath(ROOT . '/app/Helpers/' . $name . '.php');
 
         if (file_exists($file))
             require $file;
