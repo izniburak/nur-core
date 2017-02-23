@@ -35,7 +35,7 @@ catch (ParseException $e) {
 
 define('ADMIN_FOLDER', trim($config['admin'], '/'));
 define('APP_MODE', strtolower($config['mode']));
-define('IP_ADDRESS', http::getUserIP());
+define('IP_ADDRESS', http::getClientIP());
 define('APP_KEY', $config['key']);
 
 switch (APP_MODE)
