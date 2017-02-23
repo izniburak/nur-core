@@ -17,7 +17,7 @@ class Session
     public function __construct() { }
 
     /**
-    * Set session method. 
+    * Set session method.
     * @param 	string $key
     * @param 	string $value
     * @return   null
@@ -34,7 +34,7 @@ class Session
     }
 
     /**
-    * Get session method. 
+    * Get session method.
     * @param 	string $key
     * @return   null | mixed
     */
@@ -44,14 +44,14 @@ class Session
     }
 
     /**
-    * Session has key ? 
+    * Session has key ?
     * @param 	string $key
     * @return 	bool
     */
     public static function hasKey($key)
-	{
-		return isset($_SESSION[$key]);
-	}
+    {
+        return isset($_SESSION[$key]);
+    }
 
     /**
     * Setting Flash Message
@@ -60,22 +60,22 @@ class Session
     * @param 	string $redirect
     * @return 	bool
     */
-	public static function setFlash($key, $value, $redirect = null)
-	{
-		self::set('_nur_flash', [$key => $value]);
-		if (!is_null($redirect)) 
-			uri::redirect($redirect);
+    public static function setFlash($key, $value, $redirect = null)
+    {
+        self::set('_nur_flash', [$key => $value]);
+        if (!is_null($redirect))
+            uri::redirect($redirect);
 
-		return true;
-	}
+        return true;
+    }
 
     /**
     * Getting Flash Message
     * @param 	string $key
     * @return   null | string
     */
-	public static function getFlash($key = null)
-	{
+    public static function getFlash($key = null)
+    {
         if(!is_null($key))
         {
             $value = null;
@@ -84,25 +84,25 @@ class Session
                 $value = self::get('_nur_flash')[$key];
                 unset($_SESSION['_nur_flash'][$key]);
             }
-		    
+
             return $value;
         }
-        else 
+        else
             return $key;
-	}
+    }
 
     /**
-    * Session has flash key ? 
+    * Session has flash key ?
     * @param 	string $key
     * @return 	bool
     */
     public static function hasFlash($key)
-	{
-		return isset($_SESSION['_nur_flash'][$key]);
-	}
+    {
+        return isset($_SESSION['_nur_flash'][$key]);
+    }
 
     /**
-    * Delete session method. 
+    * Delete session method.
     * @param 	string $key
     * @return   null
     */
@@ -115,7 +115,7 @@ class Session
     }
 
     /**
-    * Delete all session method. 
+    * Delete all session method.
     *
     * @return null
     */
@@ -127,7 +127,7 @@ class Session
     }
 
     /**
-    * Get Session ID 
+    * Get Session ID
     *
     * @return string; session id
     */

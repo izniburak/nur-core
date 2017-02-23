@@ -18,7 +18,7 @@ Eloquent::getInstance()->getCapsule();
 class Builder extends Capsule
 {
     /**
-    * Set Eloquent Capsule for Builder. 
+    * Set Eloquent Capsule for Builder.
     *
     * @return null
     */

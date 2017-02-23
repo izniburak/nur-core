@@ -15,7 +15,7 @@ class Cookie
     public function __construct() { }
 
     /**
-    * Set cookie method. 
+    * Set cookie method.
     * @param 	string $key
     * @param 	string $value
     * @param 	integer $time
@@ -51,14 +51,14 @@ class Cookie
     }
 
     /**
-    * Cookie has key ? 
+    * Cookie has key ?
     * @param 	string $key
     * @return 	bool
     */
     public static function hasKey($key)
-	{
-		return isset($_COOKIE[$key]);
-	}
+    {
+        return isset($_COOKIE[$key]);
+    }
 
     /**
     * Delete cookie method.
@@ -77,7 +77,7 @@ class Cookie
     }
 
     /**
-    * Delete all cookie method. 
+    * Delete all cookie method.
     *
     * @return null
     */

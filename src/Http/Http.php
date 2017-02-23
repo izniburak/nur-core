@@ -20,7 +20,7 @@ class Http
     */
     public static function post($key = null, $filter = false)
     {
-        if(is_null($key)) 
+        if(is_null($key))
             return $_POST;
 
         $value = (isset($_POST[$key]) ? $_POST[$key] : null);
@@ -36,7 +36,7 @@ class Http
     */
     public static function get($key = null, $filter = false)
     {
-        if(is_null($key)) 
+        if(is_null($key))
             return $_GET;
 
         $value = (isset($_GET[$key]) ? $_GET[$key] : null);
@@ -50,15 +50,15 @@ class Http
     * @param 	bool 	$filter
     * @return 	string | null
     */
-	public function put($key = null, $filter = true)
-	{
-		parse_str(file_get_contents("php://input"), $_PUT);
+    public function put($key = null, $filter = true)
+    {
+      	parse_str(file_get_contents("php://input"), $_PUT);
 
-		if($key == null) 
-			return $_PUT;
-		else 
-			return self::filter($_PUT[$key], $filter);
-	}
+      	if($key == null)
+      		  return $_PUT;
+      	else
+      		  return self::filter($_PUT[$key], $filter);
+    }
 
     /**
     * HTTP DELETE Request
@@ -66,15 +66,15 @@ class Http
     * @param 	bool 	$filter
     * @return 	string | null
     */
-	public function delete($key = null, $filter = true)
-	{
-		parse_str(file_get_contents("php://input"), $_DELETE);
+    public function delete($key = null, $filter = true)
+    {
+      	parse_str(file_get_contents("php://input"), $_DELETE);
 
-		if($key == null) 
-			return $_DELETE;
-		else 
-			return self::filter($_DELETE[$key], $filter);
-	}
+      	if($key == null)
+      		  return $_DELETE;
+      	else
+      		  return self::filter($_DELETE[$key], $filter);
+    }
 
     /**
     * HTTP REQUEST method. (Post or Get Request)
@@ -84,7 +84,7 @@ class Http
     */
     public static function request($key = null, $filter = false)
     {
-        if(is_null($key)) 
+        if(is_null($key))
             return $_REQUEST;
 
         $value = (isset($_REQUEST[$key]) ? $_REQUEST[$key] : null);
@@ -100,7 +100,7 @@ class Http
     */
     public static function files($key = null, $name = null)
     {
-        if(is_null($key)) 
+        if(is_null($key))
             return $_FILES;
 
         if (isset($_FILES[$key]))
@@ -120,8 +120,8 @@ class Http
     * @return 	string | null
     */
     public static function server($key = null)
-    {   
-        if(is_null($key)) 
+    {
+        if(is_null($key))
             return $_SERVER;
 
         $key = strtoupper($key);
@@ -130,11 +130,11 @@ class Http
 
 
     /**
-    * Get User IP Address. 
+    * Get User IP Address.
     *
-    * @return string 
+    * @return string
     */
-    static function getUserIP()
+    static function getClientIP()
     {
         $client  = @$_SERVER['HTTP_CLIENT_IP'];
         $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -151,14 +151,14 @@ class Http
     }
 
     /**
-    * Filter method for HTTP Values. 
+    * Filter method for HTTP Values.
     * @param 	string 	$str
     * @param 	bool 	$filter
     * @return 	string | null
     */
     protected static function filter($str = null, $filter = false)
     {
-        if(is_null($str)) 
+        if(is_null($str))
             return null;
 
         return ( $filter == true ? self::xssClean($str) : trim($str) );

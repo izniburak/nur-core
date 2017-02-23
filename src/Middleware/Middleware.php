@@ -7,13 +7,18 @@
 * @url      <https://github.com/izniburak/nur>
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
- 
+
 namespace Nur\Middleware;
 
 class Middleware
 {
+    /**
+    * Create Base Middleware.
+    *
+    * @return null
+    */
     function __construct()
     {
-    
+
     }
 }

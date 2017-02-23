@@ -12,6 +12,11 @@ namespace Nur\Controller;
 
 class Controller
 {
+    /**
+    * Create Base Controller.
+    *
+    * @return null
+    */
     function __construct()
     {
 

@@ -90,29 +90,29 @@ if (!function_exists('resetToken'))
 }
 
 /**
- * CSRF Token Generate
- * @return string 
- */
-if (!function_exists('csrfToken')) 
+* CSRF Token Generate
+* @return string
+*/
+if (!function_exists('csrfToken'))
 {
     function csrfToken()
     {
-		$csrf = hash_hmac('sha256', getToken(), uniqid('', true));
+        $csrf = hash_hmac('sha256', getToken(), uniqid('', true));
         Sess::set('_nur_csrf_token', $csrf);
         return $csrf;
     }
 }
 
 /**
- * CSRF Token Check
- * @param $token
- * @return boolean
- */
-if (!function_exists('csrfCheck')) 
+* CSRF Token Check
+* @param $token
+* @return boolean
+*/
+if (!function_exists('csrfCheck'))
 {
     function csrfCheck($token)
     {
-        if (Sess::hasKey('_nur_csrf_token') && $token === Sess::get('_nur_csrf_token')) 
+        if (Sess::hasKey('_nur_csrf_token') && $token === Sess::get('_nur_csrf_token'))
         {
             Sess::delete('_nur_csrf_token');
             return true;
@@ -131,22 +131,22 @@ if (!function_exists('getConfig'))
     }
 }
 
-if (!class_exists('Uri')) 
+if (!class_exists('Uri'))
 {
     class Uri extends Nur\Uri\Uri { }
 }
 
-if (!class_exists('Http')) 
+if (!class_exists('Http'))
 {
     class Http extends Nur\Http\Http { }
 }
 
-if (!class_exists('Session')) 
+if (!class_exists('Session'))
 {
     class Session extends Nur\Http\Session { }
 }
 
-if (!class_exists('Cookie')) 
+if (!class_exists('Cookie'))
 {
     class Cookie extends Nur\Http\Cookie { }
 }
