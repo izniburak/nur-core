@@ -40,10 +40,10 @@ define('APP_KEY', $config['key']);
 
 switch (APP_MODE)
 {
-    case 'development':
+    case 'dev':
         ini_set('display_errors', 1); break;
     case 'test':
-    case 'production':
+    case 'prod':
         ini_set('display_errors', 0);
         error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
         break;
@@ -68,4 +68,5 @@ AutoLoad::getInstance();
 require_once realpath(ROOT . '/app/routes.php');
 Route::run();
 
-ob_end_flush();
+if(ob_get_contents())
+    ob_end_flush();

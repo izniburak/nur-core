@@ -53,6 +53,7 @@ class Load
                 extract($data);
 
             require $file;
+            return ob_get_clean();
         }
         else
             return new ExceptionHandler('Oppss! File not found.', '<b>View::' . $name . '</b> not found.');

@@ -67,7 +67,7 @@ class Blade
     {
         self::getInstance();
         if(($view))
-            echo self::$class->view()->make($view, $data, $mergeData)->render();
+            return self::$class->view()->make($view, $data, $mergeData)->render();
         else
             return false;
     }
