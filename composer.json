@@ -15,6 +15,7 @@
     ],
     "require": {
         "php": ">=5.6.4",
+		"izniburak/nur-migration": "^1",
         "izniburak/pdox": "^1",
         "izniburak/router": "^1",
         "illuminate/database": "5.3.x",
