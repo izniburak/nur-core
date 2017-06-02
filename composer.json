@@ -19,6 +19,7 @@
         "izniburak/pdox": "^1",
         "izniburak/router": "^1",
         "illuminate/database": "5.4.x",
+        "illuminate/pagination": "5.4.x",
         "illuminate/view": "5.4.x",
         "illuminate/events": "5.4.x",
         "symfony/console": "^3.2",

@@ -140,14 +140,14 @@ class Uri
     *
     * @return null
     */
-    public static function redirect($data = null)
+    public static function redirect($data = null, $statusCode = 301)
     {
         if(substr($data, 0, 4) == 'http' || substr($data, 0, 5) == 'https')
-            header('Location: ' . $data, true, 302);
+            header('Location: ' . $data, true, $statusCode);
         else
         {
             $data = (!is_null($data)) ? self::$url . '/' . $data : self::$url;
-            header('Location: ' . self::$http . self::replace($data), true, 302);
+            header('Location: ' . self::$http . self::replace($data), true, $statusCode);
         }
 
         die();
@@ -184,7 +184,7 @@ class Uri
     }
 
     /**
-    * Replace. 
+    * Replace.
     *
     * @return string | null
     */

@@ -16,7 +16,7 @@ class Route
     /**
     * Class instance variable
     */
-    private static $instance = null; 
+    private static $instance = null;
 
     /**
     * Call static function for Route Class

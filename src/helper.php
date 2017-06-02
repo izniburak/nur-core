@@ -95,10 +95,10 @@ if (!function_exists('resetToken'))
 */
 if (!function_exists('csrfToken'))
 {
-    function csrfToken()
+    function csrfToken($name = null)
     {
         $csrf = hash_hmac('sha256', getToken(), uniqid('', true));
-        Sess::set('_nur_csrf_token', $csrf);
+        Sess::set('_nur_csrf_token' . (!is_null($name) ? '_' . $name : ''), $csrf);
         return $csrf;
     }
 }
@@ -110,11 +110,12 @@ if (!function_exists('csrfToken'))
 */
 if (!function_exists('csrfCheck'))
 {
-    function csrfCheck($token)
+    function csrfCheck($token, $name = null)
     {
-        if (Sess::hasKey('_nur_csrf_token') && $token === Sess::get('_nur_csrf_token'))
+        $name = (!is_null($name) ? '_' . $name : '');
+        if (Sess::hasKey('_nur_csrf_token' . $name) && $token === Sess::get('_nur_csrf_token' . $name))
         {
-            Sess::delete('_nur_csrf_token');
+            Sess::delete('_nur_csrf_token' . $name);
             return true;
         }
         return false;

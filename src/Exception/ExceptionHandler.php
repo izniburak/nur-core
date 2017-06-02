@@ -13,16 +13,16 @@ namespace Nur\Exception;
 use Exception;
 use Nur\Error\Error;
 
-class ExceptionHandler 
+class ExceptionHandler
 {
     /**
-    * Create Exception Class. 
+    * Create Exception Class.
     *
     * @return string | null
     */
     public function __construct($title, $message)
     {
-        $debug = (APP_MODE == 'production' ? false : true);
+        $debug = (APP_MODE == 'dev' ? true : false);
 
         if($debug)
             throw new Exception(strip_tags($title . ' - ' . $message), 1);

@@ -38,10 +38,13 @@ class Sql
     {
         if (null === self::$instance)
         {
+            $debug = (APP_MODE == 'dev' ? true : false);
+
             $config = getConfig();
             $config['db']['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
             if($config['db']['driver'] == "sqlite")
                 $config['db']['database'] = realpath(ROOT . '/storage/database/'. $config['db']['database']);
+            $config['db']['debug'] = $debug;
 
             self::$instance = new QueryProvider($config['db']);
         }

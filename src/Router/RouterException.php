@@ -7,7 +7,7 @@
 * @url      <https://github.com/izniburak/nur>
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
- 
+
 namespace Nur\Router;
 
 use Nur\Exception\ExceptionHandler;

@@ -9,6 +9,8 @@
 */
 
 use Nur\Http\Http;
+use Nur\Http\Request;
+use Nur\Http\Response;
 use Nur\Http\Session;
 use Nur\Load\AutoLoad;
 use Nur\Uri\Uri;
@@ -19,7 +21,7 @@ use Symfony\Component\Yaml\Exception\ParseException;
 ob_start();
 session_start();
 
-define('NUR_VERSION', '1.0.0');
+define('NUR_VERSION', '1.1.0');
 define('ROOT', realpath(getcwd()));
 define('DOC_ROOT', realpath(http::server('DOCUMENT_ROOT')));
 define('BASE_FOLDER', trim(str_replace('\\', '/', str_replace(DOC_ROOT, '', ROOT) . '/'), '/'));
@@ -54,15 +56,17 @@ switch (APP_MODE)
 
 date_default_timezone_set($config['timezone']);
 
-if(empty(session::get('_token')))
-    session::set('_token', sha1((uniqid(mt_rand(), true))));
+if(empty(Session::get('_token')))
+    Session::set('_token', sha1((uniqid(mt_rand(), true))));
 
-define('_TOKEN', session::get('_token'));
+define('_TOKEN', Session::get('_token'));
 
 require_once 'helper.php';
 require_once 'Router/Route.php';
 
 Uri::getInstance();
+Response::getInstance();
+Request::getInstance();
 AutoLoad::getInstance();
 
 require_once realpath(ROOT . '/app/routes.php');
