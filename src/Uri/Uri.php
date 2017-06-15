@@ -131,7 +131,7 @@ class Uri
     */
     public static function assets($data = null)
     {
-        $data = (!is_null($data)) ? self::$url . '/assets/' . $data : self::$url . '/assets/';
+        $data = (!is_null($data)) ? self::$url . '/' . ASSETS_FOLDER . '/' . $data : self::$url . '/' . ASSETS_FOLDER . '/';
         return self::$http . self::replace($data);
     }
 
