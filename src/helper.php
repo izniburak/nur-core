@@ -132,6 +132,15 @@ if (!function_exists('getConfig'))
     }
 }
 
+### dd function
+if (!function_exists('dd'))
+{
+    function dd($str)
+    {
+        die(var_dump($str));
+    }
+}
+
 if (!class_exists('Uri'))
 {
     class Uri extends Nur\Uri\Uri { }

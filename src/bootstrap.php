@@ -21,7 +21,7 @@ use Symfony\Component\Yaml\Exception\ParseException;
 ob_start();
 session_start();
 
-define('NUR_VERSION', '1.1.0');
+define('NUR_VERSION', '1.1.2');
 define('ROOT', realpath(getcwd()));
 define('DOC_ROOT', realpath(http::server('DOCUMENT_ROOT')));
 define('BASE_FOLDER', trim(str_replace('\\', '/', str_replace(DOC_ROOT, '', ROOT) . '/'), '/'));
@@ -36,6 +36,7 @@ catch (ParseException $e) {
 }
 
 define('ADMIN_FOLDER', trim($config['admin'], '/'));
+define('ASSETS_FOLDER', trim($config['assets'], '/'));
 define('APP_MODE', strtolower($config['mode']));
 define('IP_ADDRESS', http::getClientIP());
 define('APP_KEY', $config['key']);
