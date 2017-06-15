@@ -21,7 +21,7 @@ class Eloquent
     private static $schema = null;
 
     /**
-    * Create Eloquent Capsule. 
+    * Create Eloquent Capsule.
     *
     * @return null
     */
@@ -30,6 +30,8 @@ class Eloquent
         $capsule = new Capsule;
 
         $config = getConfig();
+        if($config['db']['driver'] == "sqlite")
+            $config['db']['database'] = realpath(ROOT . '/storage/database/'. $config['db']['database']);
         $capsule->addConnection($config['db']);
 
         // Set the event dispatcher used by Eloquent models... (optional)
@@ -59,7 +61,7 @@ class Eloquent
     }
 
     /**
-    * Get Eloquent Capsule. 
+    * Get Eloquent Capsule.
     *
     * @return object
     */
@@ -69,7 +71,7 @@ class Eloquent
     }
 
     /**
-    * Get Eloquent Schema. 
+    * Get Eloquent Schema.
     *
     * @return object
     */
