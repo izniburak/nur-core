@@ -16,7 +16,7 @@ class Http
     * HTTP POST Request
     * @param 	string 	$key
     * @param 	bool 	$filter
-    * @return 	string | null
+    * @return string | null
     */
     public static function post($key = null, $filter = false)
     {
@@ -32,7 +32,7 @@ class Http
     * HTTP GET Request
     * @param 	string 	$key
     * @param 	bool 	$filter
-    * @return 	string | null
+    * @return string | null
     */
     public static function get($key = null, $filter = false)
     {
@@ -48,7 +48,7 @@ class Http
     * HTTP PUT Request
     * @param 	string 	$key
     * @param 	bool 	$filter
-    * @return 	string | null
+    * @return string | null
     */
     public function put($key = null, $filter = true)
     {
@@ -64,7 +64,7 @@ class Http
     * HTTP DELETE Request
     * @param 	string 	$key
     * @param 	bool 	$filter
-    * @return 	string | null
+    * @return string | null
     */
     public function delete($key = null, $filter = true)
     {
@@ -80,7 +80,7 @@ class Http
     * HTTP REQUEST method. (Post or Get Request)
     * @param 	string 	$key
     * @param 	bool 	$filter
-    * @return 	string | null
+    * @return string | null
     */
     public static function request($key = null, $filter = false)
     {
@@ -96,7 +96,7 @@ class Http
     * HTTP FILES Request
     * @param 	string 	$key
     * @param 	string 	$name
-    * @return 	string | null
+    * @return string | null
     */
     public static function files($key = null, $name = null)
     {
@@ -117,7 +117,7 @@ class Http
     /**
     * HTTP SERVER Request
     * @param 	string 	$key
-    * @return 	string | null
+    * @return string | null
     */
     public static function server($key = null)
     {
@@ -134,7 +134,7 @@ class Http
     *
     * @return string
     */
-    static function getClientIP()
+    public static function getClientIP()
     {
         $client  = @$_SERVER['HTTP_CLIENT_IP'];
         $forward = @$_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -154,9 +154,9 @@ class Http
     * Filter method for HTTP Values.
     * @param 	string 	$str
     * @param 	bool 	$filter
-    * @return 	string | null
+    * @return string | null
     */
-    protected static function filter($str = null, $filter = false)
+    public static function filter($str = null, $filter = false)
     {
         if(is_null($str))
             return null;
@@ -167,7 +167,7 @@ class Http
     /**
     * Clear XSS
     * @param 	string $data
-    * @return 	string
+    * @return string
     */
     public static function xssClean($data)
     {
