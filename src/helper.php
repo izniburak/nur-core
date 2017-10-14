@@ -81,11 +81,8 @@ if (!function_exists('resetToken'))
 {
     function resetToken()
     {
-        if(isset($_SESSION['_token']))
-        {
-            $_SESSION['_token'] = '';
-            unset($_SESSION['_token']);
-        }
+        if(Sess::hasKey('_token'))
+            Sess::delete('_token');
     }
 }
 
@@ -141,6 +138,15 @@ if (!function_exists('dd'))
     }
 }
 
+### dump function
+if (!function_exists('dump'))
+{
+    function dump($str)
+    {
+        var_dump($str);
+    }
+}
+
 if (!class_exists('Uri'))
 {
     class Uri extends Nur\Uri\Uri { }
@@ -151,6 +157,16 @@ if (!class_exists('Http'))
     class Http extends Nur\Http\Http { }
 }
 
+if (!class_exists('Request'))
+{
+    class Request extends Nur\Http\Request { }
+}
+
+if (!class_exists('Response'))
+{
+    class Response extends Nur\Http\Response { }
+}
+
 if (!class_exists('Session'))
 {
     class Session extends Nur\Http\Session { }
@@ -159,4 +175,14 @@ if (!class_exists('Session'))
 if (!class_exists('Cookie'))
 {
     class Cookie extends Nur\Http\Cookie { }
+}
+
+if (!class_exists('Form'))
+{
+    class Form extends Nur\Components\Builder\Form { }
+}
+
+if (!class_exists('Html'))
+{
+    class Html extends Nur\Components\Builder\Html { }
 }

@@ -152,16 +152,23 @@ class Http
 
     /**
     * Filter method for HTTP Values.
-    * @param 	string 	$str
+    * @param 	string 	$data
     * @param 	bool 	$filter
     * @return string | null
     */
-    public static function filter($str = null, $filter = false)
+    public static function filter($data = null, $filter = false)
     {
-        if(is_null($str))
+        if(is_null($data))
             return null;
 
-        return ( $filter == true ? self::xssClean($str) : trim($str) );
+        if(is_array($data))
+        {
+            return array_map(function($value) use ($filter) { 
+                return self::filter($value, $filter);
+            }, $data);
+        }
+
+        return ( $filter == true ? self::xssClean($data) : trim($data) );
     }
 
     /**
