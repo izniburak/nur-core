@@ -29,10 +29,10 @@ class Eloquent
     {
         $capsule = new Capsule;
 
-        $config = getConfig();
-        if($config['db']['driver'] == "sqlite")
-            $config['db']['database'] = realpath(ROOT . '/storage/database/'. $config['db']['database']);
-        $capsule->addConnection($config['db']);
+        $config = config('db');
+        if($config['driver'] == "sqlite")
+            $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
+        $capsule->addConnection($config);
 
         // Set the event dispatcher used by Eloquent models... (optional)
         $capsule->setEventDispatcher(new Dispatcher(new Container));

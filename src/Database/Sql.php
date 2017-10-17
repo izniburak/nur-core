@@ -40,13 +40,13 @@ class Sql
         {
             $debug = (APP_MODE == 'dev' ? true : false);
 
-            $config = getConfig();
-            $config['db']['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
-            if($config['db']['driver'] == "sqlite")
-                $config['db']['database'] = realpath(ROOT . '/storage/database/'. $config['db']['database']);
-            $config['db']['debug'] = $debug;
+            $config = config('db');
+            $config['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
+            if($config['driver'] == "sqlite")
+                $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
+            $config['debug'] = $debug;
 
-            self::$instance = new QueryProvider($config['db']);
+            self::$instance = new QueryProvider($config);
         }
 
         return self::$instance;

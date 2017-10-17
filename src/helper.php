@@ -120,12 +120,23 @@ if (!function_exists('csrfCheck'))
 }
 
 ### get config values function
-if (!function_exists('getConfig'))
+if (!function_exists('config'))
 {
-    function getConfig()
+    function config($param = null)
     {
         global $config;
-        return $config;
+
+        if(is_null($param))
+            return $config;
+
+        $value = $config;
+        foreach (explode('.', $param) as $index) 
+            if (key_exists($index, $value)) 
+                $value = $value[$index];
+            else 
+                return null;
+
+        return $value;
     }
 }
 
