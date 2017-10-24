@@ -26,8 +26,11 @@ class Blade
     {
         $cache = ROOT . '/' . self::$templateFolder . '/blade';
 
-        if(!is_dir( realpath($cache) ))
+        if(!is_dir(realpath($cache)))
+        {
             mkdir($cache, 0755);
+            touch($cache . "/index.html");
+        }
         $views = realpath(ROOT . '/app/Views');
 
         self::$class = new BladeTemplate($views, $cache);

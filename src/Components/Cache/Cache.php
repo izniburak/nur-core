@@ -18,21 +18,21 @@ class Cache
 
     public function __construct()
     {
-        $date = date('dmY-His');
-        $fileName = md5('%%-' . http::server('REQUEST_URI') . time()) . '_' . $date . '.cache';
+        $fileName = md5('%nurfw%-' . Http::server('REQUEST_URI')) . '.cache';
         $path = realpath(ROOT . '/storage/cache/html/');
 
         if (!file_exists($path))
             $creatPath = mkdir($path, 0777);
         self::$file = $path . $fileName;
+        if(!file_exists(self::$file))
+            touch(self::$file);
     }
 
     public static function start($time = 1)
     {
-        $cacheTime = $time * 60;
         if (file_exists(self::$file))
         {
-            if (time() - $cacheTime < filemtime(self::$file))
+            if (time() - $time < filemtime(self::$file))
             {
                 readfile(self::$file);
                 die();
@@ -43,15 +43,15 @@ class Cache
         return;
     }
 
-    public static function finish()
+    public static function finish($output = null)
     {
-        $fp = fopen(self::$file, 'w+');
-        fwrite($fp, ob_get_contents());
-        fclose($fp);
+        $file = fopen(self::$file, 'w+');
+        fwrite($file, (is_null($output) ? ob_get_contents() : $output));
+        fclose($file);
         return;
     }
 
-    private static function delete()
+    protected static function delete()
     {
         unlink(self::$file);
         return;
