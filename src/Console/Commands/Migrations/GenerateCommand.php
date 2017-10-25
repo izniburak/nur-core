@@ -13,6 +13,7 @@ namespace Nur\Console\Commands\Migrations;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Config\FileLocator;
 use Nur\Console\Commands\Migrations\AbstractCommand;
 
@@ -27,12 +28,12 @@ class GenerateCommand extends AbstractCommand
 
         $this->setName('generate')
              ->addArgument('name', InputArgument::REQUIRED, 'The name for the migration')
-             ->addArgument('path', InputArgument::OPTIONAL, 'The directory in which to put the migration ( optional if phpmig.migrations_path is setted )')
+             ->addOption('--table', '-t', InputOption::VALUE_OPTIONAL, 'Migration Table name (Default: null)')
              ->setDescription('Generate a new migration')
              ->setHelp(<<<EOT
 The <info>generate</info> command creates a new migration with the name and path specified
 
-<info>migration:generate Dave Test</info>
+<info>migration:generate TestMigration</info>
 
 EOT
         );
@@ -45,16 +46,10 @@ EOT
     {
         $this->bootstrap($input, $output);
 
-        $path = $input->getArgument('path');
-        $set = $input->getOption('set');
-        if( null === $path ){
-            if (isset($this->container['phpmig.migrations_path'])) {
-                $path = $this->container['phpmig.migrations_path'];
-            }
-            if (isset($this->container['phpmig.sets']) && isset($this->container['phpmig.sets'][$set]['migrations_path'])) {
-                $path = $this->container['phpmig.sets'][$set]['migrations_path'];
-            }
-        }
+        $tableName = $input->hasParameterOption('--table');
+        $tableName = ($tableName !== false ? $input->getOption('table') : '');
+
+        $path = $this->container['phpmig.migrations_path'];
         $locator = new FileLocator(array());
         $path    = $locator->locate($path, getcwd(), $first = true);
 
@@ -114,7 +109,7 @@ class $className extends Migration
     /* Do the migration */
     public function up()
     {
-        {$schema}->schema->create("", function(Blueprint $blueprint)
+        {$schema}->schema->create("{$tableName}", function(Blueprint $blueprint)
         {
             {$blueprint}->increments("id");
             
@@ -126,7 +121,7 @@ class $className extends Migration
     /* Undo the migration */
     public function down()
     {
-        {$schema}->schema->drop("");
+        {$schema}->schema->dropIfExists("{$tableName}");
     }
 }
 
