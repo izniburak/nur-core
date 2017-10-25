@@ -21,7 +21,7 @@ use Symfony\Component\Yaml\Exception\ParseException;
 ob_start();
 session_start();
 
-define('NUR_VERSION', '1.2.1');
+define('NUR_VERSION', '1.3.0');
 define('ROOT', realpath(getcwd()));
 define('DOC_ROOT', realpath(http::server('DOCUMENT_ROOT')));
 define('BASE_FOLDER', trim(str_replace('\\', '/', str_replace(DOC_ROOT, '', ROOT) . '/'), '/'));

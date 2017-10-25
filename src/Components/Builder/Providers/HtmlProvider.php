@@ -15,20 +15,20 @@ namespace Nur\Components\Builder\Providers;
 class HtmlProvider
 {
     /**
-     * The URL generator instance.
+     * The URI generator instance.
      *
      * @var \Nur\Uri\Uri;
      */
-    protected $url;
+    protected $uri;
 
     /**
      * Create a new HTML builder instance.
      *
-     * @param $url
+     * @param $uri
      */
-    public function __construct($url = null)
+    public function __construct($uri = null)
     {
-        $this->url = $url;
+        $this->uri = $uri;
     }
 
     /**
@@ -66,7 +66,7 @@ class HtmlProvider
      */
     public function script($url, $attributes = [], $secure = null)
     {
-        $attributes['src'] = $this->url->assets($url, $secure);
+        $attributes['src'] = $this->uri->assets($url, $secure);
 
         return $this->toHtmlString('<script' . $this->attributes($attributes) . '></script>' . PHP_EOL);
     }
@@ -86,7 +86,7 @@ class HtmlProvider
 
         $attributes = $attributes + $defaults;
 
-        $attributes['href'] = $this->url->assets($url, $secure);
+        $attributes['href'] = $this->uri->assets($url, $secure);
 
         return $this->toHtmlString('<link' . $this->attributes($attributes) . '>' . PHP_EOL);
     }
@@ -105,7 +105,7 @@ class HtmlProvider
     {
         $attributes['alt'] = $alt;
 
-        return $this->toHtmlString('<img src="' . $this->url->assets($url,
+        return $this->toHtmlString('<img src="' . $this->uri->assets($url,
             $secure) . '"' . $this->attributes($attributes) . '>');
     }
 
@@ -124,7 +124,7 @@ class HtmlProvider
 
         $attributes = $attributes + $defaults;
 
-        $attributes['href'] = $this->url->assets($url, $secure);
+        $attributes['href'] = $this->uri->assets($url, $secure);
 
         return $this->toHtmlString('<link' . $this->attributes($attributes) . '>' . PHP_EOL);
     }
@@ -142,7 +142,7 @@ class HtmlProvider
      */
     public function link($url, $title = null, $attributes = [], $secure = null, $escape = true)
     {
-        $url = $this->url->base($url, $secure);
+        $url = $this->uri->base($url, $secure);
 
         if (is_null($title) || $title === false) {
             $title = $url;
@@ -181,7 +181,7 @@ class HtmlProvider
      */
     public function linkAsset($url, $title = null, $attributes = [], $secure = null)
     {
-        $url = $this->url->assets($url, $secure);
+        $url = $this->uri->assets($url, $secure);
 
         return $this->link($url, $title ?: $url, $attributes, $secure);
     }
@@ -212,7 +212,7 @@ class HtmlProvider
      */
     public function linkRoute($name, $title = null, $parameters = [], $attributes = [])
     {
-        return $this->link($this->url->route($name, $parameters), $title, $attributes);
+        return $this->link($this->uri->route($name, $parameters), $title, $attributes);
     }
 
     /**

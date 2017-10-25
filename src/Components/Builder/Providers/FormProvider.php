@@ -19,6 +19,13 @@ use DateTime;
 class FormProvider
 {
     /**
+     * The URI generator instance.
+     *
+     * @var \Nur\Uri\Uri;
+     */
+    protected $uri;
+
+    /**
      * The HTML builder instance.
      *
      * @var \Nur\Components\HtmlBuilder
@@ -72,6 +79,7 @@ class FormProvider
      */
     public function __construct($uri, $csrfToken)
     {
+        $this->uri = $uri;
         $this->html = Html::getInstance();
         $this->csrfToken = csrfToken();
     }
@@ -818,15 +826,16 @@ class FormProvider
     /**
      * Create a HTML image input element.
      *
-     * @param  string $url
      * @param  string $name
+     * @param  string $file
      * @param  array  $attributes
+     * @param  bool  $secure
      *
      * @return string
      */
-    public function image($url, $name = null, $attributes = [])
+    public function image($name, $file, $attributes = [], $secure = null)
     {
-        $attributes['src'] = $url;
+        $attributes['src'] = $this->uri->assets($file, $secure);
 
         return $this->input('image', $name, null, $attributes);
     }
