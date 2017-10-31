@@ -84,7 +84,7 @@ class HtmlProvider
     {
         $defaults = ['media' => 'all', 'type' => 'text/css', 'rel' => 'stylesheet'];
 
-        $attributes = $attributes + $defaults;
+        $attributes = array_merge($attributes, $defaults);
 
         $attributes['href'] = $this->uri->assets($url, $secure);
 
@@ -122,7 +122,7 @@ class HtmlProvider
     {
         $defaults = ['rel' => 'shortcut icon', 'type' => 'image/x-icon'];
 
-        $attributes = $attributes + $defaults;
+        $attributes = array_merge($attributes, $defaults);
 
         $attributes['href'] = $this->uri->assets($url, $secure);
 

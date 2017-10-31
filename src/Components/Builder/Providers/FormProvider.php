@@ -651,7 +651,7 @@ class FormProvider
     {
         $selected = $this->getSelectedValue($value, $selected);
 
-        $options = ['value' => $value, 'selected' => $selected] + $attributes;
+        $options = array_merge(['value' => $value, 'selected' => $selected], $attributes);
 
         return $this->toHtmlString('<option' . $this->html->attributes($options) . '>' . e($display) . '</option>');
     }
