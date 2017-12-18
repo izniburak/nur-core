@@ -12,6 +12,8 @@
 
 namespace Nur\Components\Builder\Providers;
 
+use Nur\Uri\Uri;
+
 class HtmlProvider
 {
     /**
@@ -26,7 +28,7 @@ class HtmlProvider
      *
      * @param $uri
      */
-    public function __construct($uri = null)
+    public function __construct(Uri $uri)
     {
         $this->uri = $uri;
     }

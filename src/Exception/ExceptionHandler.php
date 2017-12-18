@@ -11,22 +11,25 @@
 namespace Nur\Exception;
 
 use Exception;
-use Nur\Error\Error;
+use Nur\Facades\Load;
 
 class ExceptionHandler
 {
     /**
-    * Create Exception Class.
-    *
-    * @return string | null
-    */
+     * Create Exception Class.
+     *
+     * @param string $title 
+     * @param string $message
+     * @return void
+     */
     public function __construct($title, $message)
     {
-        $debug = (APP_MODE == 'dev' ? true : false);
-
-        if($debug)
+        $debug = (APP_ENV == 'dev' ? true : false);
+        if($debug){
             throw new Exception(strip_tags($title . ' - ' . $message), 1);
-        else
-            Error::message($title, $message);
+        }
+        else {
+            Load::error($title, $message);
+        }
     }
 }

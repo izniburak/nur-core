@@ -15,16 +15,19 @@ use Nur\Database\Eloquent;
 
 class Model extends EloquentModel
 {
+    /**
+     * @var bool
+     */
     public $timestamps = false;
 
     /**
-    * Create Eloquent Model.
-    *
-    * @return null
-    */
+     * Create Eloquent Model.
+     *
+     * @return void
+     */
     function __construct()
     {
-        $capsule = Eloquent::getInstance()->getCapsule();
-        $schema = Eloquent::getInstance()->getSchema();
+        Eloquent::getInstance()->getCapsule();
+        Eloquent::getInstance()->getSchema();
     }
 }

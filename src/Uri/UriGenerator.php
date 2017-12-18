@@ -10,8 +10,8 @@
 
 namespace Nur\Uri;
 
-use Nur\Http\Http;
-use Route;
+use Nur\Facades\Http;
+use Nur\Facades\Route;
 
 class UriGenerator
 {
@@ -29,9 +29,9 @@ class UriGenerator
     {
         $this->base = BASE_FOLDER;
 
-        $this->url = http::server('HTTP_HOST') . '/' . $this->base . '/';
-        if( (!empty(http::server('HTTPS')) && http::server('HTTPS') !== 'off') ||
-            http::server('SERVER_PORT') == 443 || config('https') === true)
+        $this->url = Http::server('HTTP_HOST') . '/' . $this->base . '/';
+        if( (!empty(Http::server('HTTPS')) && Http::server('HTTPS') !== 'off') ||
+            Http::server('SERVER_PORT') == 443 || config('https') === true)
             $this->cachedHttps = true;
     }
 
@@ -138,7 +138,7 @@ class UriGenerator
     */
     public function current()
     {
-        return $this->scheme() . http::server('HTTP_HOST') . http::server('REQUEST_URI');
+        return $this->scheme() . Http::server('HTTP_HOST') . Http::server('REQUEST_URI');
     }
 
     /**
@@ -148,12 +148,12 @@ class UriGenerator
     */
     public function segment($num = null)
     {
-        if ( is_null(http::server('REQUEST_URI')) || is_null(http::server('SCRIPT_NAME')) )
+        if ( is_null(Http::server('REQUEST_URI')) || is_null(Http::server('SCRIPT_NAME')) )
             return null;
 
         if (!is_null($num))
         {
-            $uri = $this->replace( str_replace($this->base, '', http::server('REQUEST_URI')) );
+            $uri = $this->replace( str_replace($this->base, '', Http::server('REQUEST_URI')) );
             $uriA = explode('/', $uri);
             return (isset($uriA[$num]) ? $uriA[$num] : null);
         }

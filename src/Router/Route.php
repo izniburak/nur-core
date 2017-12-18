@@ -8,40 +8,34 @@
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
 
-use Nur\Router\Router as RouterProvider;
+namespace Nur\Router;
+
+use Nur\Router\Router;
 use Nur\Exception\ExceptionHandler;
 
 class Route
 {
     /**
-    * Class instance variable
-    */
+     * Class instance variable
+     * 
+     * @var Nur\Router\Router
+     */
     private static $instance = null;
 
     /**
-    * Call static function for Route Class
-    *
-    * @return mixed
-    */
-    public static function __callStatic($method, $parameters)
+     * Get class instance
+     *
+     * @return Nur\Router\Router
+     */
+    public function __construct()
     {
-        return call_user_func_array([self::getInstance(), $method], $parameters);
-    }
-
-    /**
-    * Get class instance
-    *
-    * @return RouterObject
-    */
-    public static function getInstance()
-    {
-        if(file_exists(ROOT . "/app.down"))
-            throw new ExceptionHandler("The system is under maintenance.", "We will be back very soon.");
+        if(file_exists(ROOT . '/app.down')) {
+            throw new ExceptionHandler('The system is under maintenance.', 'We will be back very soon.');
+        }
 
         if (null === self::$instance)
         {
-            self::$instance = new RouterProvider(
-            [
+            self::$instance = new Router([
                 'paths' => [
                     'controllers' => 'app/Controllers/',
                     'middlewares' => 'app/Middlewares/'
@@ -54,5 +48,29 @@ class Route
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Call function for Class
+     *
+     * @param string $method 
+     * @param array $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        return self::__callStatic($method, $parameters);
+    }
+
+    /**
+     * Call static function for Class
+     *
+     * @param string $method 
+     * @param array $parameters
+     * @return mixed
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        return call_user_func_array([self::$instance, $method], $parameters);
     }
 }

@@ -26,19 +26,19 @@ class DownCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = getcwd() . '/app.down';
+        $file = ROOT . '/app.down';
 
-        if(!file_exists($file))
-        {
+        if(!file_exists($file)) {
             touch($file);
             $output->writeln(
                 "\n" . ' <info>+Success!</info> Nur Application was stopped.'
             );
         }
-        else 
+        else  {
             $output->writeln(
                 "\n" . " <error>+Error!</error> Nur Application's already stopped."
             );
+        }
 
         return;
     }

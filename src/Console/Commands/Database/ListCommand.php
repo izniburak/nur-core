@@ -26,26 +26,22 @@ class ListCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dir = $mask = getcwd() . "/storage/database/";
-        $mask = $dir . "*.sqlite*";
+        $dir = $mask = ROOT . '/storage/database/';
+        $mask = $dir . '*.sqlite*';
         $dbList = glob($mask);
 
-        if(count($dbList) > 0)
-        {
-            $output->writeln("");
-            $output->writeln("        Database Name         Size           Time");
-            $output->writeln(" -----------------------------------------------------");
+        if(count($dbList) > 0) {
+            $output->writeln('');
+            $output->writeln('        Database Name         Size           Time');
+            $output->writeln(' -----------------------------------------------------');
 
-            foreach ($dbList as $file) 
-            {
+            foreach ($dbList as $file)  {
                 $mb = false;
                 $filesize = (filesize($file) / 1024);
-                if($filesize > 1024)
-                {
+                if($filesize > 1024) {
                     $filesize = ($filesize / 1024);
                     $mb = true;
                 }
-
                 $output->writeln(
                     sprintf(
                         " %20s  %11.3f".($mb ? 'MB' : 'KB')."  %17s",
@@ -56,11 +52,11 @@ class ListCommand extends Command
                 );
             }
         }
-        else 
+        else {
             $output->writeln(
                 "\n" . ' No SQLite databases yet. '
             );
-
+        }
 
         return;
     }

@@ -12,11 +12,11 @@ namespace Nur\Http;
 
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class Response
+class Response extends SymfonyResponse
 {
     /**
-    * Class const variables for HTTP Status Codes
-    */
+     * Class const variables for HTTP Status Codes
+     */
     const HTTP_CONTINUE = 100;
     const HTTP_SWITCHING_PROTOCOLS = 101;
     const HTTP_PROCESSING = 102;            // RFC2518
@@ -81,35 +81,22 @@ class Response
     const HTTP_NETWORK_AUTHENTICATION_REQUIRED = 511;                             // RFC6585
 
     /**
-    * Class instance variable
-    */
-    private static $instance = null;
-
-    public static $headers = null;
-
-    /**
-    * Call static function for Response Class
-    *
-    * @return mixed
-    */
-    public static function __callStatic($method, $parameters)
+     * Class constructer
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        return call_user_func_array([self::getInstance(), $method], $parameters);
+        parent::__construct('', static::HTTP_OK, ['Content-Type' => 'text/html']);
     }
 
     /**
-    * Get class instance
-    *
-    * @return SymfonyResponseObject
-    */
-    public static function getInstance()
+     * Get Response headers
+     * 
+     * @return ResponseHeaderBag
+     */
+    public function header()
     {
-        if (null === self::$instance)
-        {
-            self::$instance = new SymfonyResponse();
-            self::$headers = self::$instance->headers;
-        }
-
-        return self::$instance;
+        return $this->headers;
     }
 }

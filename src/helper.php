@@ -8,68 +8,56 @@
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
 
-use Nur\Load\Load;
-use Nur\Error\Error;
-use Nur\Blade\Blade;
-use Nur\Http\Session as Sess;
-
-### Load::view function
-if (!function_exists('view'))
-{
-    function view($name, $data = null)
+### Blade::make function
+if (!function_exists('blade')) {
+    function blade($view = null, $data = [], $mergeData = [])
     {
-        return Load::getInstance()->view($name, $data);
+        return Blade::make($view, $data, $mergeData);
     }
 }
 
-### Blade::make function
-if (!function_exists('blade'))
-{
-    function blade($view = null, $data = [], $mergeData = [])
+### Load::view function
+if (!function_exists('view')) {
+    function view($name, $data = null)
     {
-        return blade::make($view, $data, $mergeData);
+        return Load::view($name, $data);
     }
 }
 
 ### Load::library function
-if (!function_exists('library'))
-{
+if (!function_exists('library')) {
     function library($name, $params = null)
     {
-        return Load::getInstance()->library($name, $params);
+        return Load::library($name, $params);
     }
 }
 
 ### Load::model function
-if (!function_exists('model'))
-{
+if (!function_exists('model')) {
     function model($file)
     {
-        return Load::getInstance()->model($file);
+        return Load::model($file);
     }
 }
 
 ### Load::helper function
-if (!function_exists('helper'))
-{
+if (!function_exists('helper')) {
     function helper($name)
     {
-        return Load::getInstance()->helper($name);
+        return Load::helper($name);
     }
 }
 
 ### Error::message function
-if (!function_exists('error'))
-{
+if (!function_exists('error')) {
     function error($title = null, $msg = null, $page = null)
     {
-        return Error::message($title, $msg, $page);
+        return Load::error($title, $msg, $page);
     }
 }
 
 ### token generator function
-if (!function_exists('getToken'))
-{
+if (!function_exists('getToken')) {
     function getToken()
     {
         return _TOKEN;
@@ -77,42 +65,39 @@ if (!function_exists('getToken'))
 }
 
 ### token reset function
-if (!function_exists('resetToken'))
-{
+if (!function_exists('resetToken')) {
     function resetToken()
     {
-        if(Sess::hasKey('_token'))
-            Sess::delete('_token');
+        if(Sess::hasKey('_nur_token')) {
+            Sess::delete('_nur_token');
+        }
     }
 }
 
 /**
-* CSRF Token Generate
-* @return string
-*/
-if (!function_exists('csrfToken'))
-{
+ * CSRF Token Generate
+ * @return string
+ */
+if (!function_exists('csrfToken')) {
     function csrfToken($name = null)
     {
         $csrf = hash_hmac('sha256', getToken(), uniqid('', true));
-        Sess::set('_nur_csrf_token' . (!is_null($name) ? '_' . $name : ''), $csrf);
+        Session::set('_nur_csrf_token' . (!is_null($name) ? '_' . $name : ''), $csrf);
         return $csrf;
     }
 }
 
 /**
-* CSRF Token Check
-* @param $token
-* @return boolean
-*/
-if (!function_exists('csrfCheck'))
-{
+ * CSRF Token Check
+ * @param $token
+ * @return boolean
+ */
+if (!function_exists('csrfCheck')) {
     function csrfCheck($token, $name = null)
     {
         $name = (!is_null($name) ? '_' . $name : '');
-        if (Sess::hasKey('_nur_csrf_token' . $name) && $token === Sess::get('_nur_csrf_token' . $name))
-        {
-            Sess::delete('_nur_csrf_token' . $name);
+        if (Session::hasKey('_nur_csrf_token' . $name) && $token === Session::get('_nur_csrf_token' . $name)) {
+            Session::delete('_nur_csrf_token' . $name);
             return true;
         }
         return false;
@@ -120,29 +105,30 @@ if (!function_exists('csrfCheck'))
 }
 
 ### get config values function
-if (!function_exists('config'))
-{
+if (!function_exists('config')) {
     function config($param = null)
-    {
-        global $config;
-
+    {   
+        global $app;
+        $config = $app->config();
+        
         if(is_null($param))
             return $config;
 
         $value = $config;
-        foreach (explode('.', $param) as $index) 
-            if (key_exists($index, $value)) 
+        foreach (explode('.', $param) as $index) {
+            if (key_exists($index, $value)) {
                 $value = $value[$index];
-            else 
+            } else {
                 return null;
+            }
+        }
 
         return $value;
     }
 }
 
 ### dd function
-if (!function_exists('dd'))
-{
+if (!function_exists('dd')) {
     function dd($str)
     {
         die(var_dump($str));
@@ -150,50 +136,9 @@ if (!function_exists('dd'))
 }
 
 ### dump function
-if (!function_exists('dump'))
-{
+if (!function_exists('dump')) {
     function dump($str)
     {
         var_dump($str);
     }
-}
-
-if (!class_exists('Uri'))
-{
-    class Uri extends Nur\Uri\Uri { }
-}
-
-if (!class_exists('Http'))
-{
-    class Http extends Nur\Http\Http { }
-}
-
-if (!class_exists('Request'))
-{
-    class Request extends Nur\Http\Request { }
-}
-
-if (!class_exists('Response'))
-{
-    class Response extends Nur\Http\Response { }
-}
-
-if (!class_exists('Session'))
-{
-    class Session extends Nur\Http\Session { }
-}
-
-if (!class_exists('Cookie'))
-{
-    class Cookie extends Nur\Http\Cookie { }
-}
-
-if (!class_exists('Form'))
-{
-    class Form extends Nur\Components\Builder\Form { }
-}
-
-if (!class_exists('Html'))
-{
-    class Html extends Nur\Components\Builder\Html { }
 }

@@ -11,32 +11,18 @@
 namespace Nur\Components\Builder;
 
 use Nur\Uri\Uri;
+use Nur\Components\Builder\Html;
 use Nur\Components\Builder\Providers\FormProvider;
 
-class Form
+class Form extends FormProvider
 {
-    protected static $instance = null;
-
     /**
-    * Call static function for Form Class
-    *
-    * @return mixed
-    */
-    public static function __callStatic($method, $parameters)
+     * Class constructer
+     * 
+     * @return void
+     */
+    public function __construct()
     {
-        return call_user_func_array([self::getInstance(), $method], $parameters);
-    }
-
-    /**
-    * instance of Class.
-    *
-    * @return string | null
-    */
-    public static function getInstance()
-    {
-        if (null === self::$instance)
-            self::$instance = new FormProvider( Uri::getInstance(), csrfToken() );
-
-        return self::$instance;
+        return parent::__construct(new Uri, new Html, csrfToken());
     }
 }

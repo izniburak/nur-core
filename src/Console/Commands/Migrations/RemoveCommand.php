@@ -56,8 +56,8 @@ EOT
             return;
         }
 
-        $mask = getcwd() . '/app/Migrations/' . $version . "_*.php";
-        array_map("unlink", glob($mask));
+        $mask = ROOT . '/app/Migrations/' . $version . '_*.php';
+        array_map('unlink', glob($mask));
         $output->writeLn("\n" . ' <info>+Success!</info> "' . ($version) . '" migration removed.');
 
         /*

@@ -13,30 +13,15 @@ namespace Nur\Components\Builder;
 use Nur\Uri\Uri;
 use Nur\Components\Builder\Providers\HtmlProvider;
 
-class Html
+class Html extends HtmlProvider
 {
-    protected static $instance = null;
-
     /**
-    * Call static function for Html Class
-    *
-    * @return mixed
-    */
-    public static function __callStatic($method, $parameters)
+     * Class constructer
+     * 
+     * @return void
+     */
+    public function __construct()
     {
-        return call_user_func_array([self::getInstance(), $method], $parameters);
-    }
-
-    /**
-    * instance of Class.
-    *
-    * @return string | null
-    */
-    public static function getInstance()
-    {
-        if (null === self::$instance)
-            self::$instance = new HtmlProvider( Uri::getInstance() );
-
-        return self::$instance;
+        return parent::__construct(new Uri);
     }
 }

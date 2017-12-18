@@ -33,32 +33,27 @@ class MiddlewareCommand extends Command
     {
         $name = $input->getArgument('name');
         $force = $input->hasParameterOption('--force');
+        $file = ROOT . '/app/Middlewares/' . $name . '.php';
 
-        $file = getcwd() . '/app/Middlewares/' . $name . '.php';
-
-        if(!file_exists($file))
-        {
+        if(!file_exists($file)) {
             $this->createNewFile($file, $name);
-
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware created.'
             );
         }
-        else
-        {
-            if($force !== false)
-            {
+        else {
+            if($force !== false) {
                 unlink($file);
                 $this->createNewFile($file, $name);
-
                 $output->writeln(
                     "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware re-created.'
                 );
             }
-            else 
+            else {
                 $output->writeln(
                     "\n" . ' <error>-Error!</error> Middleware already exists! ('.$name.')'
                 );
+            } 
         }
 
         return;
@@ -84,8 +79,9 @@ class $middleware extends Middleware
 
 PHP;
 
-        if (false === file_put_contents($file, $contents)) 
+        if (false === file_put_contents($file, $contents)) {
             throw new \RuntimeException( sprintf('The file "%s" could not be written to', $file) );
+        }
 
         return;
     }

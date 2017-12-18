@@ -10,116 +10,124 @@
 
 namespace Nur\Http;
 
-use Nur\Uri\Uri;
+use Nur\Facades\Uri;
 
 class Session
 {
-    public function __construct() { }
-
     /**
-    * Set session method.
-    * @param 	string $key
-    * @param 	string $value
-    * @return   null
-    */
-    public static function set($key, $value)
+     * Set session method.
+     * 
+     * @param string $key
+     * @param string $value
+     * @return void
+     */
+    public function set($key, $value)
     {
-        if(is_array($key))
-            foreach ($key as $k => $v)
+        if(is_array($key)) {
+            foreach ($key as $k => $v) {
                 $_SESSION[$k] = $v;
-        else
+            }
+        }
+        else {
             $_SESSION[$key] = $value;
+        }
 
         return;
     }
 
     /**
-    * Get session method.
-    * @param 	string $key
-    * @return   null | mixed
-    */
-    public static function get($key = null)
+     * Get session method.
+     * 
+     * @param string $key
+     * @return null|mixed
+     */
+    public function get($key = null)
     {
-        return (is_null($key) ? $_SESSION : ( self::hasKey($key) ? $_SESSION[$key] : null) );
+        return (is_null($key) ? $_SESSION : ($this->hasKey($key) ? $_SESSION[$key] : null));
     }
 
     /**
-    * Session has key ?
-    * @param 	string $key
-    * @return 	bool
-    */
-    public static function hasKey($key)
+     * Session has key ?
+     * 
+     * @param string $key
+     * @return bool
+     */
+    public function hasKey($key)
     {
         return isset($_SESSION[$key]);
     }
 
     /**
-    * Setting Flash Message
-    * @param 	string $key
-    * @param 	string $value
-    * @param 	string $redirect
-    * @return 	bool
-    */
-    public static function setFlash($key, $value, $redirect = null)
+     * Setting Flash Message
+     * 
+     * @param string $key
+     * @param string $value
+     * @param string $redirect
+     * @return bool
+     */
+    public function setFlash($key, $value, $redirect = null)
     {
-        self::set('_nur_flash', [$key => $value]);
-        if (!is_null($redirect))
-            uri::redirect($redirect);
+        $this->set('_nur_flash', [$key => $value]);
+        if (!is_null($redirect)) {
+            Uri::redirect($redirect);
+        }
 
-        return true;
+        return false;
     }
 
     /**
-    * Getting Flash Message
-    * @param 	string $key
-    * @return   null | string
-    */
-    public static function getFlash($key = null)
+     * Getting Flash Message
+     * 
+     * @param string $key
+     * @return null|string
+     */
+    public function getFlash($key = null)
     {
-        if(!is_null($key))
-        {
+        if(!is_null($key)) {
             $value = null;
-            if(self::hasFlash($key))
-            {
-                $value = self::get('_nur_flash')[$key];
+            if($this->hasFlash($key)) {
+                $value = $this->get('_nur_flash')[$key];
                 unset($_SESSION['_nur_flash'][$key]);
             }
 
             return $value;
         }
-        else
-            return $key;
+
+        return $key;
     }
 
     /**
-    * Session has flash key ?
-    * @param 	string $key
-    * @return 	bool
-    */
-    public static function hasFlash($key)
+     * Session has flash key ?
+     * 
+     * @param string $key
+     * @return bool
+     */
+    public function hasFlash($key)
     {
         return isset($_SESSION['_nur_flash'][$key]);
     }
 
     /**
-    * Delete session method.
-    * @param 	string $key
-    * @return   null
-    */
-    public static function delete($key)
+     * Delete session method.
+     * 
+     * @param string $key
+     * @return void
+     */
+    public function delete($key)
     {
-        if( self::hasKey($key) )
+        if($this->hasKey($key)) {
             unset($_SESSION[$key]);
+        }
 
         return;
     }
 
     /**
-    * Delete all session method.
-    *
-    * @return null
-    */
-    public static function destroy()
+     * Delete all session method.
+     *
+     * @return void
+     */
+    public function destroy()
     {
         $_SESSION = [];
         session_destroy();
@@ -127,11 +135,11 @@ class Session
     }
 
     /**
-    * Get Session ID
-    *
-    * @return string; session id
-    */
-    public static function id()
+     * Get Session ID
+     *
+     * @return string
+     */
+    public function id()
     {
         return session_id();
     }

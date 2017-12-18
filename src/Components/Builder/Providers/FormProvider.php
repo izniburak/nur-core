@@ -12,9 +12,10 @@
 
 namespace Nur\Components\Builder\Providers;
 
-use Nur\Components\Builder\Html;
 use BadMethodCallException;
 use DateTime;
+use Nur\Uri\Uri;
+use Nur\Components\Builder\Html;
 
 class FormProvider
 {
@@ -77,11 +78,11 @@ class FormProvider
     /**
      * Create a new form builder instance.
      */
-    public function __construct($uri, $csrfToken)
+    public function __construct(Uri $uri, Html $html, $csrfToken)
     {
         $this->uri = $uri;
-        $this->html = Html::getInstance();
-        $this->csrfToken = csrfToken();
+        $this->html = $html;
+        $this->csrfToken = $csrfToken;
     }
 
     /**

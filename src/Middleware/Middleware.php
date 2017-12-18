@@ -13,10 +13,10 @@ namespace Nur\Middleware;
 class Middleware
 {
     /**
-    * Create Base Middleware.
-    *
-    * @return null
-    */
+     * Create Base Middleware.
+     *
+     * @return void
+     */
     function __construct()
     {
 

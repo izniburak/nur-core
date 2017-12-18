@@ -12,36 +12,29 @@ namespace Nur\Router;
 
 use Nur\Router\RouterCommand;
 use Nur\Router\RouterException;
+use Buki\Router as RouterProvider;
 
-class Router extends \Buki\Router
+class Router extends RouterProvider
 {
     /**
-    * Router constructer method.
-    *
-    * @return
-    */
-    function __construct($params = [])
-    {
-        parent::__construct($params);
-    }
-
-    /**
-	* Throw new Exception for Router Error
-	*
-	* @return RouterException
-	*/
+	 * Throw new Exception for Router Error
+	 *
+     * @param string $message
+	 * @return RouterException
+	 */
 	public function exception($message = '')
 	{
 		return new RouterException($message);
 	}
 
     /**
-	* RouterCommand class
-	*
-	* @return RouterCommand
-	*/
+	 * RouterCommand class
+	 *
+     * @param string $message
+	 * @return RouterCommand
+	 */
 	public function routerCommand($message = '')
 	{
-		return RouterCommand::getInstance();
+		return new RouterCommand($message);
 	}
 }

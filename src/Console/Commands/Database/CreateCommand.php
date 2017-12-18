@@ -38,31 +38,27 @@ class CreateCommand extends Command
 
         $databaseType = ($type) ? $input->getOption('type') : 'sqlite';
 
-        $file = getcwd() . '/storage/database/' . $name . '.' . $databaseType;
+        $file = ROOT . '/storage/database/' . $name . '.' . $databaseType;
 
-        if(!file_exists($file))
-        {
+        if(!file_exists($file)) {
             touch($file);
-
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" '.$databaseType.' database created.'
             );
         }
-        else
-        {
-            if($force !== false)
-            {
+        else {
+            if($force !== false) {
                 unlink($file);
                 touch($file);
-
                 $output->writeln(
                     "\n" . ' <info>+Success!</info> "' . ($name) . '" '.$databaseType.' database re-created.'
                 );
             }
-            else 
+            else {
                 $output->writeln(
                     "\n" . ' <error>-Error!</error> Database already exists! ('.$name.'.'.$databaseType.')'
                 );
+            }
         }
 
         return;

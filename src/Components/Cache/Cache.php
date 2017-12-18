@@ -10,50 +10,99 @@
 
 namespace Nur\Components\Cache;
 
-use Nur\Http\Http;
+use Nur\Facades\Http;
 
 class Cache
 {
-    private static $file;
+    /**
+     * Cache file target
+     * 
+     * @var string
+     */
+    protected $file;
 
-    public function __construct()
+    /**
+     * Cache save path 
+     * 
+     * @var string
+     */
+    protected $path = '/storage/cache/html';
+
+    /**
+     * Cache file prefix
+     * 
+     * @var string
+     */
+    protected $prefix = '%nurfw%';
+
+    /**
+     * Cache file extension 
+     * 
+     * @var string
+     */
+    protected $extension = '.cache';
+
+    /**
+     * Save cache file
+     * 
+     * @param string $content
+     * $param int $time 
+     * @return string|bool
+     */
+    public function save($content = null, $time = 1)
     {
-        $fileName = md5('%nurfw%-' . Http::server('REQUEST_URI')) . '.cache';
-        $path = realpath(ROOT . '/storage/cache/html/');
+        $fileName = '/' . md5($this->prefix . Http::server('REQUEST_URI')) . $this->extension;
+        $this->file = ROOT . $this->path . $fileName;
 
-        if (!file_exists($path))
-            $creatPath = mkdir($path, 0777);
-        self::$file = $path . $fileName;
-        if(!file_exists(self::$file))
-            touch(self::$file);
+        $this->start($time);
+        return $this->finish($content);
     }
-
-    public static function start($time = 1)
+    /**
+     * Cache start 
+     * 
+     * @param int $time 
+     * @return void 
+     */
+    protected function start($time = 1)
     {
-        if (file_exists(self::$file))
-        {
-            if (time() - $time < filemtime(self::$file))
-            {
-                readfile(self::$file);
-                die();
+        if (file_exists($this->file)) {
+            if (time() - $time < filemtime($this->file)) {
+                die(readfile($this->file));
             }
-            else
-                self::delete();
+            else {
+                return $this->delete();
+            }
         }
-        return;
+        else {
+            touch($this->file);
+        }
     }
 
-    public static function finish($output = null)
+    /**
+     * Finish cache and save file 
+     * 
+     * @param string $output 
+     * @return void
+     */
+    protected function finish($output = null)
     {
-        $file = fopen(self::$file, 'w+');
-        fwrite($file, (is_null($output) ? ob_get_contents() : $output));
-        fclose($file);
-        return;
+        if(!is_null($output)) {
+            $file = fopen($this->file, 'w+');
+            fwrite($file, $output);
+            fclose($file);
+            return $output;
+        }
+        else 
+            return false;
     }
 
-    protected static function delete()
+    /**
+     * Delete cache file
+     * 
+     * @return bool
+     */
+    protected function delete()
     {
-        unlink(self::$file);
-        return;
+        return unlink($this->file);
     }
 }

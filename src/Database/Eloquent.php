@@ -16,21 +16,35 @@ use Illuminate\Container\Container;
 
 class Eloquent
 {
-    private static $instance = null;
-    private static $capsule = null;
-    private static $schema = null;
+    /**
+     * Class instance 
+     * @var void
+     */
+    protected static $instance = null;
 
     /**
-    * Create Eloquent Capsule.
-    *
-    * @return null
-    */
+     * Capsule 
+     * @var Capsule
+     */
+    protected static $capsule = null;
+
+    /**
+     * Schema
+     * @var Schema
+     */
+    protected static $schema = null;
+
+    /**
+     * Create Eloquent Capsule.
+     *
+     * @return void
+     */
     function __construct()
     {
         $capsule = new Capsule;
 
         $config = config('db');
-        if($config['driver'] == "sqlite")
+        if($config['driver'] == 'sqlite')
             $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
         $capsule->addConnection($config);
 
@@ -48,10 +62,10 @@ class Eloquent
     }
 
     /**
-    * instance of Class.
-    *
-    * @return instance
-    */
+     * instance of Class.
+     *
+     * @return instance
+     */
     public static function getInstance()
     {
         if (null === self::$instance)
@@ -61,20 +75,20 @@ class Eloquent
     }
 
     /**
-    * Get Eloquent Capsule.
-    *
-    * @return object
-    */
+     * Get Eloquent Capsule.
+     *
+     * @return object
+     */
     public static function getCapsule()
     {
         return self::$capsule;
     }
 
     /**
-    * Get Eloquent Schema.
-    *
-    * @return object
-    */
+     * Get Eloquent Schema.
+     *
+     * @return object
+     */
     public static function getSchema()
     {
         return self::$schema;

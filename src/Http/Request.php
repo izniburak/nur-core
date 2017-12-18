@@ -10,53 +10,214 @@
 
 namespace Nur\Http;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-class Request
+class Request extends SymfonyRequest 
 {
     /**
-    * Class instance variable
-    */
-    private static $instance = null;
-
-    public static $request = null;
-    public static $query = null;
-    public static $cookies = null;
-    public static $attributes = null;
-    public static $files = null;
-    public static $server = null;
-    public static $headers = null;
-
-    /**
-    * Call static function for Request Class
-    *
-    * @return mixed
-    */
-    public static function __callStatic($method, $parameters)
+     * Class constructer.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        return call_user_func_array([self::getInstance(), $method], $parameters);
+        parent::__construct($_GET, $_POST, array(), $_COOKIE, $_FILES, $_SERVER);
     }
 
     /**
-    * Get class instance
-    *
-    * @return SymfonyRequestObject
-    */
-    public static function getInstance()
+     * Get the header values.
+     *
+     * @return HeaderBag
+     */
+    public function headers() 
     {
-        if (null === self::$instance)
-        {
-            self::$instance = SymfonyRequest::createFromGlobals();
+        return $this->headers;
+    }
 
-            self::$request = self::$instance->request;
-            self::$query = self::$instance->query;
-            self::$cookies = self::$instance->cookies;
-            self::$attributes = self::$instance->attributes;
-            self::$files = self::$instance->files;
-            self::$server = self::$instance->server;
-            self::$headers = self::$instance->headers;
-        }
+    /**
+     * Get the $_POST values.
+     *
+     * @return ParameterBag
+     */
+    public function input() 
+    {
+        return $this->request;
+    }
 
-        return self::$instance;
+    /**
+     * Get the $_GET values.
+     *
+     * @return ParameterBag
+     */
+    public function query() 
+    {
+        return $this->query;
+    }
+    
+    /**
+     * Get the $_FILES values.
+     *
+     * @return FileBag
+     */
+    public function files() 
+    {
+        return $this->files;
+    }
+
+    /**
+     * Get the $_SERVER values.
+     *
+     * @return ServerBag
+     */
+    public function server() 
+    {
+        return $this->server;
+    }
+
+    /**
+     * Get the attribute values.
+     *
+     * @return ParameterBag
+     */
+    public function attributes() 
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * Get the $_COOKIE values.
+     *
+     * @return ParameterBag
+     */
+    public function cookies() 
+    {
+        return $this->cookies;
+    }
+
+    /**
+     * Get the request method.
+     *
+     * @return string
+     */
+    public function method()
+    {
+        return $this->getMethod();
+    }
+
+    /**
+     * Get the root URL for the application.
+     *
+     * @return string
+     */
+    public function root()
+    {
+        return rtrim($this->getSchemeAndHttpHost().$this->getBaseUrl(), '/');
+    }
+
+    /**
+     * Get the URL (no query string) for the request.
+     *
+     * @return string
+     */
+    public function url()
+    {
+        return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/');
+    }
+
+    /**
+     * Get the full URL for the request.
+     *
+     * @return string
+     */
+    public function fullUrl()
+    {
+        $query = $this->getQueryString();
+        $question = $this->getBaseUrl().$this->getPathInfo() == '/' ? '/?' : '?';
+        return $query ? $this->url().$question.$query : $this->url();
+    }
+
+    /**
+     * Get the full URL for the request with the added query string parameters.
+     *
+     * @param  array  $query
+     * @return string
+     */
+    public function fullUrlWithQuery(array $query)
+    {
+        $question = $this->getBaseUrl().$this->getPathInfo() == '/' ? '/?' : '?';
+        return count($this->query()) > 0
+            ? $this->url().$question.http_build_query(array_merge($this->query(), $query))
+            : $this->fullUrl().$question.http_build_query($query);
+    }
+
+    /**
+     * Get the current path info for the request.
+     *
+     * @return string
+     */
+    public function path()
+    {
+        $pattern = trim($this->getPathInfo(), '/');
+        return $pattern == '' ? '/' : $pattern;
+    }
+
+    /**
+     * Determine if the request is the result of an AJAX call.
+     *
+     * @return bool
+     */
+    public function ajax()
+    {
+        return $this->isXmlHttpRequest();
+    }
+    /**
+     * Determine if the request is the result of an PJAX call.
+     *
+     * @return bool
+     */
+    public function pjax()
+    {
+        return $this->headers->get('X-PJAX') == true;
+    }
+
+    /**
+     * Determine if the request is over HTTPS.
+     *
+     * @return bool
+     */
+    public function secure()
+    {
+        return $this->isSecure();
+    }
+
+    /**
+     * Get the client IP address.
+     *
+     * @return string
+     */
+    public function ip()
+    {
+        return $this->getClientIp();
+    }
+
+    /**
+     * Get the client IP addresses.
+     *
+     * @return array
+     */
+    public function ips()
+    {
+        return $this->getClientIps();
+    }
+
+    /**
+     * Get the client user agent.
+     *
+     * @return string
+     */
+    public function userAgent()
+    {
+        return $this->headers->get('User-Agent');
     }
 }

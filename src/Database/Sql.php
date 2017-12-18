@@ -10,45 +10,38 @@
 
 namespace Nur\Database;
 
-use Buki\Pdox as QueryProvider;
+use Buki\Pdox as PdoxProvider;
 
-class Sql
+class Sql extends PdoxProvider
 {
     /**
-    * Class instance variable
-    */
-    private static $instance = null;
-
-    /**
-    * Call static function for Pdox Class
-    *
-    * @return mixed
-    */
-    public static function __callStatic($method, $parameters)
+     * Class constructer
+     * 
+     * @return Buki\Pdox
+     */
+    public function __construct()
     {
-        return call_user_func_array([self::getInstance(), $method], $parameters);
+        $debug = (APP_ENV == 'dev' ? true : false);
+        
+        $config = config('db');
+        $config['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
+        if($config['driver'] == "sqlite") {
+            $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
+        }
+        $config['debug'] = $debug;
+
+        return parent::__construct($config);
     }
 
     /**
-    * Get class instance
-    *
-    * @return PdoxObject
-    */
-    public static function getInstance()
+     * Call function for Class
+     *
+     * @param string $method
+     * @param array $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
     {
-        if (null === self::$instance)
-        {
-            $debug = (APP_MODE == 'dev' ? true : false);
-
-            $config = config('db');
-            $config['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
-            if($config['driver'] == "sqlite")
-                $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
-            $config['debug'] = $debug;
-
-            self::$instance = new QueryProvider($config);
-        }
-
-        return self::$instance;
+        return call_user_func_array([$this, $method], $parameters);
     }
 }

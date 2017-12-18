@@ -56,7 +56,7 @@ class BladeRegister
      * @param string $cachePath
      * @param Illuminate\Events\Dispatcher $events
      */
-    function __construct($viewPaths = array(), $cachePath, Dispatcher $events = null) {
+    function __construct($viewPaths = [], $cachePath, Dispatcher $events = null) {
 
         $this->container = new Container;
 
@@ -88,6 +88,7 @@ class BladeRegister
             return new Filesystem;
         });
     }
+
     public function registerEvents(Dispatcher $events)
     {
         $this->container->singleton('events', function() use ($events)
@@ -95,6 +96,7 @@ class BladeRegister
             return $events;
         });
     }
+    
     /**
      * Register the engine resolver instance.
      *

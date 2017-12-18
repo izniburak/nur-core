@@ -14,82 +14,88 @@ use Nur\Load\Load;
 
 class AutoLoad
 {
-    private static $instance = null;
-    private $config = [];
-    private $load;
+    /**
+     * Autoload library from config
+     * 
+     * @var array  
+     */
+    protected $autoload = [];
 
-    public function __construct()
+    /**
+     * Load class
+     * 
+     * @var Nur\Load\Load  
+     */
+    protected $load;
+
+    public function __construct(Load $load)
     {
-        global $config;
-
-        $this->config = $config;
-        $this->load = Load::getInstance();
-        $this->helper(); $this->library(); $this->model();
+        $this->autoload = config('autoload');
+        $this->load = $load;
+        $this->helper(); 
+        $this->library(); 
+        $this->model();
     }
 
     /**
-    * instance of Class 
-    *
-    * @return instance
-    */
-    public static function getInstance()
-    {
-        if (null === self::$instance)
-            self::$instance = new static();
-
-        return self::$instance;
-    }
-
-    /**
-    * Auto load helper files.
-    *
-    * @return null
-    */
+     * Auto load helper files.
+     *
+     * @return void
+     */
     private function helper()
     {
-        if (isset($this->config['autoload']['helper']))
-            foreach ($this->config['autoload']['helper'] as $helper)
+        if (isset($this->autoload['helper'])) {
+            foreach ($this->autoload['helper'] as $helper) {
                 $this->load->helper($helper);
+            }
+        } 
     }
 
     /**
-    * Auto load library class.
-    *
-    * @return null
-    */
+     * Auto load library class.
+     *
+     * @return void
+     */
     private function library()
     {
-        if (isset($this->config['autoload']['library']))
-        {
-            foreach ($this->config['autoload']['library'] as $key => $library)
-            {
-                if(is_array($library))
+        if (isset($this->autoload['library'])) {
+            foreach ($this->autoload['library'] as $key => $library) {
+                if(is_array($library)) {
                     $this->load->library[$key] = $this->load->library($key, $library, true);
-
-                else
-                    if(!is_int($key))
+                }
+                else {
+                    if(!is_int($key)) {
                         $this->load->library[$key] = $this->load->library($key, $library, true);
-                    else
+                    }
+                    else {
                         $this->load->library[$library] = $this->load->library($library, null, true);
+                    }
+                }
             }
         }
     }
 
     /**
-    * Auto load model class. 
-    *
-    * @return null
-    */
+     * Auto load model class. 
+     *
+     * @return void
+     */
     private function model()
     {
-        if (isset($this->config['autoload']['model']))
-            foreach ($this->config['autoload']['model'] as $model)
+        if (isset($this->autoload['model'])) {
+            foreach ($this->autoload['model'] as $model) {
                 $this->load->model[$model] = $this->load->model($model, true);
+            }
+        }
     }
 
+    /**
+     * Class destructer
+     *
+     * @return void
+     */
     function __destruct()
     {
-        self::$instance = null;
-        $this->config = $this->load = null;
+        $this->autoload = $this->load = null;
     }
 }

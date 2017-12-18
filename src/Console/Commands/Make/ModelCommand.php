@@ -37,34 +37,30 @@ class ModelCommand extends Command
         $tableName = $input->hasParameterOption('--table');
         $table = '';
 
-        if ($tableName) 
+        if ($tableName) {
             $table = $input->getOption('table');
+        }
+        $file = ROOT . '/app/Models/' . $name . '.php';
 
-        $file = getcwd() . '/app/Models/' . $name . '.php';
-
-        if(!file_exists($file))
-        {
+        if(!file_exists($file)) {
             $this->createNewFile($file, $name, $table);
-
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" model created.'
             );
         }
-        else
-        {
-            if($force !== false)
-            {
+        else {
+            if($force !== false) {
                 unlink($file);
                 $this->createNewFile($file, $name, $table);
-
                 $output->writeln(
                     "\n" . ' <info>+Success!</info> "' . ($name) . '" model re-created.'
                 );
             }
-            else 
+            else {
                 $output->writeln(
                     "\n" . ' <error>-Error!</error> Model already exists! ('.$name.')'
                 );
+            }
         }
 
         return;
@@ -93,8 +89,9 @@ class $model extends Model
 
 PHP;
 
-        if (false === file_put_contents($file, $contents)) 
+        if (false === file_put_contents($file, $contents)) {
             throw new \RuntimeException( sprintf('The file "%s" could not be written to', $file) );
+        }
 
         return;
     }

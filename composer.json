@@ -14,19 +14,20 @@
         }
     ],
     "require": {
-        "php": ">=5.6.4",
+        "php": ">=7.1",
         "izniburak/nur-migration": "^1",
         "izniburak/pdox": "^1",
         "izniburak/router": "^1",
-        "illuminate/database": "5.4.x",
-        "illuminate/pagination": "5.4.x",
-        "illuminate/view": "5.4.x",
-        "illuminate/events": "5.4.x",
-        "symfony/console": "^3.2",
-        "symfony/yaml": "^3.2",
-        "symfony/http-foundation": "^3.2",
+        "illuminate/database": "5.5.x",
+        "illuminate/pagination": "5.5.x",
+        "illuminate/view": "5.5.x",
+        "illuminate/events": "5.5.x",
+        "symfony/console": "^3.4",
+        "symfony/yaml": "^3.4",
+        "symfony/http-foundation": "^3.4",
         "doctrine/dbal": "^2.5",
-        "pimple/pimple": "^3"
+        "pimple/pimple": "^3",
+        "filp/whoops": "^2.1"
     },
     "autoload": {
         "psr-4": {

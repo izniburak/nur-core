@@ -90,13 +90,10 @@ abstract class AbstractCommand extends Command
     protected function findBootstrapFile($filename)
     {
         if (null === $filename)
-            $filename = 'vendor/izniburak/nur-core/src/Database/Migration/MigrationRegister.php';
-
-        $cwd = getcwd();
+            $filename = ROOT . '/vendor/izniburak/nur-core/src/Database/Migration/MigrationRegister.php';
 
         $locator = new FileLocator(array(
-            $cwd . DIRECTORY_SEPARATOR . 'config',
-            $cwd
+            ROOT . DIRECTORY_SEPARATOR . 'config', ROOT
         ));
 
         return $locator->locate($filename);

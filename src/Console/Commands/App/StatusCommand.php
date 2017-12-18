@@ -26,16 +26,18 @@ class StatusCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = getcwd() . '/app.down';
+        $file = ROOT . '/app.down';
 
-        if(!file_exists($file))
+        if(!file_exists($file)) {
             $output->writeln(
                 "\n" . " Nur Application's running."
             );
-        else 
+        }
+        else {
             $output->writeln(
                 "\n" . " Nur Application has been stopped."
             );
+        }
 
         return;
     }

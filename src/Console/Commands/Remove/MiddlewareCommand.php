@@ -31,19 +31,15 @@ class MiddlewareCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
+        $file = ROOT . '/app/Middlewares/' . $name . '.php';
 
-        $file = getcwd() . '/app/Middlewares/' . $name . '.php';
-
-        if(file_exists($file))
-        {
+        if(file_exists($file)) {
             unlink($file);
-
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware removed.'
             );
         }
-        else
-        {
+        else {
             $output->writeln(
                 "\n" . ' <error>-Error!</error> Middleware not found! ('.$name.')'
             );

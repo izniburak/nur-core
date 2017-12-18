@@ -14,69 +14,57 @@ use Nur\Blade\BladeRegister as BladeTemplate;
 
 class Blade
 {
-    public static $class;
-    private static $templateFolder = 'storage';
+    /**
+     * @var Nur\Blade\BladeRegister
+     */
+    protected $class;
 
     /**
-    * Class constructer and create Blade Template Engine.
-    *
-    * @return null
-    */
+     * @var string
+     */
+    protected $templateFolder = '/storage/blade';
+
+    /**
+     * Class constructer and create Blade Template Engine.
+     *
+     * @return void
+     */
     public function __construct()
     {
-        $cache = ROOT . '/' . self::$templateFolder . '/blade';
+        $cache = ROOT . $this->templateFolder;
 
-        if(!is_dir(realpath($cache)))
-        {
+        if(!is_dir(realpath($cache))) {
             mkdir($cache, 0755);
             touch($cache . "/index.html");
         }
         $views = realpath(ROOT . '/app/Views');
-
-        self::$class = new BladeTemplate($views, $cache);
+        $this->class = new BladeTemplate($views, $cache);
     }
 
     /**
-    * instance of Class.
-    *
-    * @return instance
-    */
-    public static function getInstance()
+     * Display view file.
+     *
+     * @param string $view
+     * @param array $data 
+     * @param array $mergeData
+     * @return string|false
+     */
+    public function make($view, $data = [], $mergeData = [])
     {
-        static $instance = null;
+        if(is_string($view)) {
+            return $this->class->view()->make($view, $data, $mergeData)->render();
+        }
 
-        if (null === $instance)
-            $instance = new static();
-
-        return $instance;
+        return false;
     }
 
     /**
-    * Get class method call by static reference.
-    *
-    * @return string | null
-    */
-    public static function __callstatic($name, $params)
-    {
-        self::$class->$name($params);
-    }
-
-    /**
-    * Display view file.
-    *
-    * @return false | null
-    */
-    public static function make($view = null, $data = [], $mergeData = [])
-    {
-        self::getInstance();
-        if(($view))
-            return self::$class->view()->make($view, $data, $mergeData)->render();
-        else
-            return false;
-    }
-
+     * Class destructer
+     *
+     * @return void
+     */
     public function __destruct()
     {
-        self::$class = null;
+        $this->class = null;
     }
 }

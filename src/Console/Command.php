@@ -66,13 +66,11 @@ class Command
     */
     public function generate()
     {
-        foreach ($this->commandList as $key => $value)
-        {
+        foreach ($this->commandList as $key => $value) {
             $this->app->add( new $value );
         }
 
-        foreach($this->migrationCommands as $command)
-        {
+        foreach($this->migrationCommands as $command) {
             $newCommand = new $command;
             $newCommand->setName("migration:" . $newCommand->getName());
             $this->app->add( $newCommand );

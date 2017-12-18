@@ -31,19 +31,15 @@ class ModelCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
+        $file = ROOT . '/app/Models/' . $name . '.php';
 
-        $file = getcwd() . '/app/Models/' . $name . '.php';
-
-        if(file_exists($file))
-        {
+        if(file_exists($file)) {
             unlink($file);
-
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" model removed.'
             );
         }
-        else
-        {
+        else {
             $output->writeln(
                 "\n" . ' <error>-Error!</error> Model not found! ('.$name.')'
             );

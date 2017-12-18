@@ -10,40 +10,28 @@
 
 namespace Nur\Uri;
 
-class Uri
+use Nur\Uri\UriGenerator;
+
+class Uri extends UriGenerator
 {
-    protected static $instance = null;
-
     /**
-    * Call static function for Uri Class
-    *
-    * @return mixed
-    */
-    public static function __callStatic($method, $parameters)
+     * Call function for Class
+     *
+     * @return mixed
+     */
+    public function __call($method, $parameters)
     {
-        if(empty($parameters))
+        if(empty($parameters)) {
             array_push($parameters, '');
-
-        if(strpos($method, "secure") !== 0)
-            return call_user_func_array([self::getInstance(), $method], $parameters);
-        else
-        {
-            array_push($parameters, true);
-            $methodName = strtolower( str_replace("secure", "", $method) );
-            return call_user_func_array([self::getInstance(), $methodName], $parameters);
         }
-    }
 
-    /**
-    * instance of Class.
-    *
-    * @return string | null
-    */
-    public static function getInstance()
-    {
-        if (null === self::$instance)
-            self::$instance = new UriGenerator();
-
-        return self::$instance;
+        if(strpos($method, 'secure') !== 0) {
+            return call_user_func_array([$this, $method], $parameters);
+        }
+        else {
+            array_push($parameters, true);
+            $methodName = strtolower( str_replace('secure', '', $method) );
+            return call_user_func_array([$this, $methodName], $parameters);
+        }
     }
 }
