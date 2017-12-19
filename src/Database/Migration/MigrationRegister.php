@@ -21,11 +21,13 @@ catch (ParseException $e) {
     die(printf("Unable to parse the Config YAML string. Error Message: %s", $e->getMessage()));
 }
 
-if($config['db']['driver'] == "sqlite")
-    $config['db']['database'] = realpath('storage/database/'. $config['db']['database']);
+if($config['db']['driver'] == 'sqlite') {
+    if(strpos($config['db']['database'], ':') === false) {
+        $config['db']['database'] = realpath(ROOT . '/storage/database/'. $config['db']['database']);
+    }
+}
 
 $container = new Container();
-
 $container['config'] = $config['db'];
 
 $container['db'] = function ($c) {
