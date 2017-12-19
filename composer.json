@@ -25,7 +25,7 @@
         "symfony/console": "^3.4",
         "symfony/yaml": "^3.4",
         "symfony/http-foundation": "^3.4",
-        "doctrine/dbal": "^2.5",
+        "doctrine/dbal": "^2.6",
         "pimple/pimple": "^3",
         "filp/whoops": "^2.1"
     },

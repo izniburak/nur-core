@@ -16,16 +16,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class ControllerCommand extends Command
+class ResourceCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('make:controller')
-            ->addArgument('name', InputArgument::REQUIRED, 'The name for the controller.')
-            ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL, 'Force to re-create controller.')
-            ->setDescription('Create a new controller.')
-            ->setHelp("This command makes you to create controller...")
+            ->setName('make:resource')
+            ->addArgument('name', InputArgument::REQUIRED, 'The name for the resource controller.')
+            ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL, 'Force to re-create resource controller.')
+            ->setDescription('Create a new resource controller.')
+            ->setHelp("This command makes you to resource create controller...")
         ;
     }
 
@@ -38,7 +38,7 @@ class ControllerCommand extends Command
         if(!file_exists($file)) {
             $this->createNewFile($file, $name);
             $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" controller created.'
+                "\n" . ' <info>+Success!</info> "' . ($name) . '" resource controller created.'
             );
         }
         else {
@@ -46,12 +46,12 @@ class ControllerCommand extends Command
                 unlink($file);
                 $this->createNewFile($file, $name);
                 $output->writeln(
-                    "\n" . ' <info>+Success!</info> "' . ($name) . '" controller re-created.'
+                    "\n" . ' <info>+Success!</info> "' . ($name) . '" resource controller re-created.'
                 );
             }
             else {
                 $output->writeln(
-                    "\n" . ' <error>-Error!</error> Controller already exists! ('.$name.')'
+                    "\n" . ' <error>-Error!</error> Resource Controller already exists! ('.$name.')'
                 );
             }  
         }
@@ -77,6 +77,70 @@ class $controller extends Controller
      * @return \Nur\Http\Response|string
      */
     public function main()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Nur\Http\Response|string
+     */
+    public function getCreate()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return \Nur\Http\Response
+     */
+    public function postStore()
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int \$id
+     * @return \Nur\Http\Response|string
+     */
+    public function getShow(\$id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int \$id
+     * @return \Nur\Http\Response|string
+     */
+    public function getEdit(\$id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param int \$id
+     * @return \Nur\Http\Response
+     */
+    public function putUpdate(\$id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int \$id
+     * @return \Nur\Http\Response
+     */
+    public function deleteDestroy(\$id)
     {
         //
     }

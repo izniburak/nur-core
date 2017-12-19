@@ -25,6 +25,7 @@ class Command
         'Nur\Console\Commands\Make\ControllerCommand',
         'Nur\Console\Commands\Make\ModelCommand',
         'Nur\Console\Commands\Make\MiddlewareCommand',
+        'Nur\Console\Commands\Make\ResourceCommand',
 
         'Nur\Console\Commands\Database\CreateCommand',
         'Nur\Console\Commands\Database\RemoveCommand',

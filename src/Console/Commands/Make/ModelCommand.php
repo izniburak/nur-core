@@ -69,7 +69,7 @@ class ModelCommand extends Command
     private function createNewFile($file, $name, $tableName = '')
     {
         $model = ucfirst($name);
-        $table = 'protected $table = "'.$tableName.'";';
+        $table = 'protected $table = \''.$tableName.'\';';
         $contents = <<<PHP
 <?php
 

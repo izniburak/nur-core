@@ -15,6 +15,12 @@ use Nur\Exception\ExceptionHandler;
 class Log
 {
     /**
+     * Log file time format
+     * @var string
+     */
+    protected $timeFormat = 'Y-m-d H:i:s';
+
+    /**
      * Save log as emergency
      *
      * @param mixed $message
@@ -22,7 +28,7 @@ class Log
      */
     public function emergency($message)
     {
-        $this->write('emergency', $message);
+        $this->log('emergency', $message);
     }
 
     /**
@@ -33,7 +39,7 @@ class Log
      */
     public function alert($message)
     {
-        $this->write('alert', $message);
+        $this->log('alert', $message);
     }
 
     /**
@@ -44,7 +50,7 @@ class Log
      */
     public function critical($message)
     {
-        $this->write('critical', $message);
+        $this->log('critical', $message);
     }
 
     /**
@@ -55,7 +61,7 @@ class Log
      */
     public function error($message)
     {
-        $this->write('error', $message);
+        $this->log('error', $message);
     }
 
     /**
@@ -66,7 +72,7 @@ class Log
      */
     public function warning($message)
     {
-        $this->write('warning', $message);
+        $this->log('warning', $message);
     }
 
     /**
@@ -77,7 +83,7 @@ class Log
      */
     public function notice($message)
     {
-        $this->write('notice', $message);
+        $this->log('notice', $message);
     }
 
     /**
@@ -88,7 +94,7 @@ class Log
      */
     public function info($message)
     {
-        $this->write('info', $message);
+        $this->log('info', $message);
     }
 
     /**
@@ -99,23 +105,23 @@ class Log
      */
     public function debug($message)
     {
-        $this->write('debug', $message);
+        $this->log('debug', $message);
     }
 
     /**
-     * Write logs to file
+     * Create log text to file
      *
      * @param string $level
      * @param mixed $message
      * @return void
      */
-    protected function write($level, $message)
+    protected function log($level, $message)
     {
         if (is_array($message)) {
             $message = serialize($message);
         }
 
-        $text = '['.date('Y-m-d H:i:s').'] - ['.strtoupper($level).'] - ['.IP_ADDRESS.'] --> ' . $message;
+        $text = '['.date($this->timeFormat, time()).'] - ['.strtoupper($level).'] - ['.IP_ADDRESS.'] --> ' . $message;
         $this->save($text);
     }
 
@@ -130,9 +136,13 @@ class Log
         $fileName 	= 'log_' . date('Y-m-d') . '.log';
         $file 		= fopen(ROOT . '/storage/log/' . $fileName, 'a');
 
-        if(fwrite($file, $text . "\n") === false)
-            throw new ExceptionHandler("Hata", "Log dosyası oluşturulamadı. Yazma izinlerini kontrol ediniz.");
-
+        if(fwrite($file, $text . "\n") === false) {
+            return new ExceptionHandler(
+                'Oppss! Log file not created.',  
+                'Can you check chmod settings to save log file in log directory, please?'
+            );
+        }
+            
         fclose($file);
     }
 }
