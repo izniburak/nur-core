@@ -134,11 +134,3 @@ if (!function_exists('dd')) {
         die(var_dump($str));
     }
 }
-
-### dump function
-if (!function_exists('dump')) {
-    function dump($str)
-    {
-        var_dump($str);
-    }
-}
