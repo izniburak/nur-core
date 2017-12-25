@@ -49,7 +49,7 @@ class Cache
      * $param int $time 
      * @return string|bool
      */
-    public function save($content = null, $time = 1)
+    public function save($content = null, $time = 30)
     {
         $fileName = '/' . md5($this->prefix . Http::server('REQUEST_URI')) . $this->extension;
         $this->file = ROOT . $this->path . $fileName;

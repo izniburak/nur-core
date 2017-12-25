@@ -22,7 +22,7 @@ class Blade
     /**
      * @var string
      */
-    protected $templateFolder = '/storage/blade';
+    protected $templateFolder = '/storage/cache/blade';
 
     /**
      * Class constructer and create Blade Template Engine.
