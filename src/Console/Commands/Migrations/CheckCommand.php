@@ -10,6 +10,7 @@
  
 namespace Nur\Console\Commands\Migrations;
 
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Nur\Console\Commands\Migrations\AbstractCommand;
@@ -39,7 +40,7 @@ EOT
     {
         $this->bootstrap($input, $output);
         $versions = $this->getAdapter()->fetchAll();
-        $down = array();
+        $down = [];
         foreach($this->getMigrations() as $migration) {
             if (!in_array($migration->getVersion(), $versions)) {
                 $down[] = $migration;
@@ -47,23 +48,22 @@ EOT
         }
 
         if (!empty($down)) {
-            $output->writeln("");
-            $output->writeln(" Status   Migration ID    Migration Name ");
-            $output->writeln("-----------------------------------------");
-
-            foreach ($down as $migration) {
-                $output->writeln(
-                    sprintf(
-                        "   <error>down</error>  %14s  <comment>%s</comment>",
-                        $migration->getVersion(),
-                        $migration->getName()
-                    )
-                );
+            $rows = [];
+            foreach($down as $migration) {
+                $status = '<error> DOWN </error>';
+                $rows[] = [
+                    $status, 
+                    $migration->getVersion(), 
+                    $migration->getName(), 
+                    date('d M Y H:i:s', strtotime($migration->getVersion()))
+                ];
             }
 
-            $output->writeln("");
-
-            return 1;
+            $table = new Table($output);
+            $table->setHeaders(array('Status', 'Migration ID', 'Migration Name', 'Created at'))
+                ->setRows($rows)
+            ;
+            $table->render();
         }
 
         return 0;

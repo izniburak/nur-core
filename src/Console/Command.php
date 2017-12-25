@@ -22,6 +22,9 @@ class Command
         'Nur\Console\Commands\App\StatusCommand',
         'Nur\Console\Commands\App\ServeCommand',
 
+        'Nur\Console\Commands\Clear\CacheCommand',
+        'Nur\Console\Commands\Clear\LogCommand',
+
         'Nur\Console\Commands\Make\ControllerCommand',
         'Nur\Console\Commands\Make\ModelCommand',
         'Nur\Console\Commands\Make\MiddlewareCommand',

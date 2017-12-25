@@ -10,6 +10,7 @@
  
 namespace Nur\Console\Commands\Migrations;
 
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Nur\Console\Commands\Migrations\AbstractCommand;
@@ -38,37 +39,34 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->bootstrap($input, $output);
-        $output->writeln("");
-        $output->writeln(" Status   Migration ID    Migration Name ");
-        $output->writeln("-----------------------------------------");
 
+        $rows = [];
         $versions = $this->getAdapter()->fetchAll();
         foreach($this->getMigrations() as $migration) {
-
             if (in_array($migration->getVersion(), $versions)) {
-                $status = "     <info>up</info> ";
+                $status = '<info>  UP  </info>';
                 unset($versions[array_search($migration->getVersion(), $versions)]);
             } else {
-                $status = "   <error>down</error> ";
+                $status = '<error> DOWN </error>';
             }
-
-            $output->writeln(
-                $status .
-                sprintf(" %14s ", $migration->getVersion()) .
-                " <comment>" . $migration->getName() . "</comment>"
-            );
+            $rows[] = [
+                $status, 
+                $migration->getVersion(), 
+                $migration->getName(), 
+                date('d M Y H:i:s', strtotime($migration->getVersion()))
+            ];
         }
 
         foreach($versions as $missing) {
-            $output->writeln(
-                '    <error>up</error> ' .
-                sprintf("  %14s ", $missing) .
-                ' <error>** MISSING **</error> '
-            );
+            $rows[] = ['<info>  UP  </info>', $missing, '<error>** MISSING **</error>'];
         }
 
-        // print status
-        $output->writeln("");
+        $table = new Table($output);
+        $table->setHeaders(array('Status', 'Migration ID', 'Migration Name', 'Created at'))
+            ->setRows($rows)
+        ;
+        $table->render();
+
         return;
     }
 }
