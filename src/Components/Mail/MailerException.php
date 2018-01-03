@@ -10,7 +10,9 @@
 
 namespace Nur\Components\Mail;
 
-class Mail 
+use PHPMailer\PHPMailer\Exception;
+
+class MailerException extends Exception 
 {
   
 }
