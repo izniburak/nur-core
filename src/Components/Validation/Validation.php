@@ -14,35 +14,35 @@ use Nur\Facades\Http;
 
 class Validation
 {
-	/**
+    /**
      * Validation errors
      * 
      * @var array
      */
-	protected $errors 	= [];
+    protected $errors 	= [];
 
-	/**
+    /**
      * Label for fields
      * 
      * @var array
      */
-	protected $labels	= [];
+    protected $labels	= [];
 
-	/**
+    /**
      * Validation rules
      * 
      * @var array
      */
-	protected $rules 	= [];
+    protected $rules 	= [];
 
-	/**
+    /**
      * Data to validate
      * 
      * @var array
      */
     protected $data		= [];
 
-	/**
+    /**
      * Fields validation error messagses
      * 
      * @var array
@@ -57,66 +57,66 @@ class Validation
     protected $msg      = '%s field validation error.';
 
 
-	/**
-	 * Define Validation Rules
-	 *
-	 * @param array $rules
-	 * @return void
-	 */
-	public function rules(Array $rules)
-	{
-		foreach ($rules as $key => $value) {
-			$this->labels[$key] = $value['label'];
+    /**
+     * Define Validation Rules
+     *
+     * @param array $rules
+     * @return void
+     */
+    public function rules(Array $rules)
+    {
+        foreach ($rules as $key => $value) {
+            $this->labels[$key] = $value['label'];
             $this->rules[$key]  = $value['rules'];
             $this->texts[$key]  = (isset($value['text']) && $value['text']!=''
                                     ? $value['text'] : $key.' '.$this->msg);
-		}
-	}
+        }
+    }
 
-	/**
-	 * Define One Validation Rule
-	 *
-	 * @param string $field
-	 * @param string $label
-	 * @param string $rules
-	 * @return void 
-	 */
-	public function rule($field, $label, $rules, $text = '')
-	{
-		$this->labels[$field] = $label;
+    /**
+     * Define One Validation Rule
+     *
+     * @param string $field
+     * @param string $label
+     * @param string $rules
+     * @return void 
+     */
+    public function rule($field, $label, $rules, $text = '')
+    {
+        $this->labels[$field] = $label;
         $this->rules[$field]  = $rules;
         $this->texts[$field]  = ($text != '' ? $text : $field.' '.$this->msg);
-	}
+    }
 
-	/**
-	 * Validate
-	 *
+    /**
+     * Validate
+     *
      * @param array $data
-	 * @return boolean
-	 */
-	public function isValid(Array $data = [])
-	{
+     * @return boolean
+     */
+    public function isValid(Array $data = [])
+    {
         if(empty($data)) {
             $data = Http::method() == 'GET' ? Http::get() : Http::post();
         }
         $this->data = $data;
 
-		foreach ($this->rules as $key => $value) {
-			$rules = explode('|', $value);
-			foreach ($rules as $rule) {
-				if (strpos($rule, ',')) {
-					$group  = explode(',', $rule);
-					$filter = $group[0];
+        foreach ($this->rules as $key => $value) {
+            $rules = explode('|', $value);
+            foreach ($rules as $rule) {
+                if (strpos($rule, ',')) {
+                    $group  = explode(',', $rule);
+                    $filter = $group[0];
                     $params = $group[1];
                     $this->errorMessage($filter, $key, $params);
-				} else {
-					$this->errorMessage($rule, $key);
-				}
-			}
+                } else {
+                    $this->errorMessage($rule, $key);
+                }
+            }
         }
         
         $this->errors = array_values(array_unique($this->errors));
-		if (count($this->errors) > 0)
+        if (count($this->errors) > 0)
             return false;
         else
             return true;
@@ -152,7 +152,7 @@ class Validation
         }
     }
 
-	/**
+    /**
      * Sanitizing Data
      *
      * @param string $data
@@ -177,7 +177,7 @@ class Validation
      */
     public function errors()
     {
-    	return $this->errors;
+        return $this->errors;
     }
 
     /**
