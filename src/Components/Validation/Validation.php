@@ -54,7 +54,7 @@ class Validation
      * 
      * @var string
      */
-    protected $msg      = '%s field validation error.';
+    protected $msg      = '%s is not valid.';
 
 
     /**
@@ -66,10 +66,11 @@ class Validation
     public function rules(Array $rules)
     {
         foreach ($rules as $key => $value) {
-            $this->labels[$key] = $value['label'];
-            $this->rules[$key]  = $value['rules'];
-            $this->texts[$key]  = (isset($value['text']) && $value['text']!=''
-                                    ? $value['text'] : $key.' '.$this->msg);
+            $this->rule(
+                $key, $value['label'], 
+                $value['rules'], 
+                isset($value['text']) && !empty($value['text']) ? $value['text'] : []
+            );
         }
     }
 
@@ -81,11 +82,11 @@ class Validation
      * @param string $rules
      * @return void 
      */
-    public function rule($field, $label, $rules, $text = '')
+    public function rule($field, $label, $rules, Array $text = [])
     {
         $this->labels[$field] = $label;
         $this->rules[$field]  = $rules;
-        $this->texts[$field]  = ($text != '' ? $text : $field.' '.$this->msg);
+        $this->texts[$field]  = (!empty($text) ? $text : null);
     }
 
     /**
@@ -116,10 +117,11 @@ class Validation
         }
         
         $this->errors = array_values(array_unique($this->errors));
-        if (count($this->errors) > 0)
+        if (count($this->errors) > 0) {
             return false;
-        else
-            return true;
+        }
+        
+        return true;
     }
     
     /**
@@ -132,23 +134,26 @@ class Validation
      */
     protected function errorMessage($filter, $field, $params = null)
     {
-        $text = (isset($this->texts[$field][$filter]) && $this->texts[$field][$filter] != '' 
+        $text = (isset($this->texts[$field][$filter]) && !is_null($this->texts[$field][$filter]) 
                 ? $this->texts[$field][$filter] : $this->msg);
         $text = str_replace([':label:', ':value:'], '%s', $text);
 
-        if(!is_null($params)) {
+        if(!isset($this->data[$field])) {
+            $this->errors[] = sprintf($text, $this->labels[$field], $params);
+        } elseif(!is_null($params)) {
             if($filter == 'matches') {
-                if ($this->matches($this->data[$field], $this->data[$params]) === false)
+                if($this->matches($this->data[$field], $this->data[$params]) === false) {
                     $this->errors[] = sprintf($text, $this->labels[$field], $params);
-            }
-            else {
-                if ($this->$filter($this->data[$field], $params) === false)
+                }
+            } else {
+                if($this->$filter($this->data[$field], $params) === false) {
                     $this->errors[] = sprintf($text, $this->labels[$field], $params);
+                }
             }
-        }
-        else {
-            if ($this->$filter($this->data[$field]) === false)
+        } else {
+            if($this->$filter($this->data[$field]) === false) {
                 $this->errors[] = sprintf($text, $this->labels[$field], $params);
+            }
         }
     }
 
@@ -162,12 +167,12 @@ class Validation
     {
         if (!is_array($data)) {
             return filter_var(trim($data), FILTER_SANITIZE_STRING);
-        } else {
-            foreach ($data as $key => $value) {
-                $data[$key] = filter_var($value, FILTER_SANITIZE_STRING);
-            }
-            return $data;
+        } 
+        
+        foreach ($data as $key => $value) {
+            $data[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
+        return $data;
     }
 
     /**

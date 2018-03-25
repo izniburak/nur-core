@@ -28,7 +28,7 @@ class Kernel
 	 * 
 	 * @var string
 	 */
-	const VERSION		= '1.1.2';
+	const VERSION		= '1.2.1';
 
 	/**
 	 * Framework config 
@@ -83,7 +83,9 @@ class Kernel
     public function start(Route $route, $env)
     {
 		switch ($env) {
-            case 'dev':
+			case 'dev':
+				ini_set('display_errors', 1);
+				error_reporting(1);
 		        $this->initWhoops();
                 break;
             case 'test':
