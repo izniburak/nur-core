@@ -23,70 +23,70 @@ use Whoops\Handler\PrettyPageHandler as WhoopsPrettyPageHandler;
 
 class Kernel
 {
-	/**
-	 * Nur Framework Version
-	 * 
-	 * @var string
-	 */
-	const VERSION		= '1.2.1';
-
-	/**
-	 * Framework config 
-	 * 
-	 * @var array|null
-	 */
-	private $config		= null;
-
-	/**
-	 * Framework root folder 
-	 * 
-	 * @var string|null
-	 */
-	private $root		= null;
-
-	/**
-	 * Framework document root folder 
-	 * 
-	 * @var string|null
-	 */
-	private $docRoot	= null;
+    /**
+     * Nur Framework Version
+     * 
+     * @var string
+     */
+    const VERSION		= '1.3.0';
 
     /**
-	 * Class constructer
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{   
-		$this->root	= realpath(getcwd());
-		try {
+     * Framework config 
+     * 
+     * @var array|null
+     */
+    private $config		= null;
+
+    /**
+     * Framework root folder 
+     * 
+     * @var string|null
+     */
+    private $root		= null;
+
+    /**
+     * Framework document root folder 
+     * 
+     * @var string|null
+     */
+    private $docRoot	= null;
+
+    /**
+     * Class constructer
+     *
+     * @return void
+     */
+    public function __construct()
+    {   
+        $this->root	= realpath(getcwd());
+        try {
             $this->config = Yaml::parse(file_get_contents($this->root . '/app/config.yml'));
         }
         catch (ParseException $e) {
             die(printf("<b>Unable to parse the Config YAML string:</b><br />Error Message: %s", $e->getMessage()));
-		}
-		
-		$this->init();
-		$this->docRoot		= realpath(Http::server('DOCUMENT_ROOT'));
-		$this->baseFolder	= trim(
-			str_replace('\\', '/', str_replace($this->docRoot, '', $this->root	) . '/'), '/'
-		);
+        }
+        
+        $this->init();
+        $this->docRoot		= realpath(Http::server('DOCUMENT_ROOT'));
+        $this->baseFolder	= trim(
+            str_replace('\\', '/', str_replace($this->docRoot, '', $this->root	) . '/'), '/'
+        );
     }
     
     /**
-	 * Kernel start
-	 *
-	 * @param Nur\Router\Route $route 
-	 * @param string $env
-	 * @return void
-	 */
+     * Kernel start
+     *
+     * @param Nur\Router\Route $route 
+     * @param string $env
+     * @return void
+     */
     public function start(Route $route, $env)
     {
-		switch ($env) {
-			case 'dev':
-				ini_set('display_errors', 1);
-				error_reporting(1);
-		        $this->initWhoops();
+        switch ($env) {
+            case 'dev':
+                ini_set('display_errors', 1);
+                error_reporting(1);
+                $this->initWhoops();
                 break;
             case 'test':
             case 'prod':
@@ -96,129 +96,128 @@ class Kernel
             default:
                 header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
                 die('The application environment is not set correctly.');
-		}
-		
+        }
+        
         $this->autoLoader();
         if($routerFiltersFile = realpath($this->root . '/app/filters.php')) {
             require_once $routerFiltersFile;
         }
-		require_once realpath($this->root . '/app/routes.php');
+        require_once realpath($this->root . '/app/routes.php');
         $route->run();
-	}
-
-	/**
-	 * Application config 
-	 *
-	 * @return array
-	 */
-	public function config()
-	{
-		return $this->config;
-	}
-	
-	/**
-	 * Generate Application token
-	 *
-	 * @return string
-	 */
-	public function generateToken()
-	{
-		if(!Session::hasKey('_nur_token')) {
-			Session::set('_nur_token', sha1(uniqid(mt_rand() . config('salt'), true)) );
-		}
-
-		return Session::get('_nur_token');
-	}
-
-	/**
-	 * Nur Framework version
-	 *
-	 * @return string
-	 */
-	public function version()
-	{
-		return self::VERSION;
-	}
+    }
 
     /**
-	 * Application root path
-	 *
-	 * @return string
-	 */
-	public function root()
-	{
-		return $this->root;
-	}
+     * Application config 
+     *
+     * @return array
+     */
+    public function config()
+    {
+        return $this->config;
+    }
+    
+    /**
+     * Generate Application token
+     *
+     * @return string
+     */
+    public function generateToken()
+    {
+        if(!Session::hasKey('_nur_token')) {
+            Session::set('_nur_token', sha1(uniqid(mt_rand() . config('salt'), true)) );
+        }
+
+        return Session::get('_nur_token');
+    }
 
     /**
-	 * Application document root path
-	 *
-	 * @return string
-	 */
-	public function docRoot()
-	{
-		return $this->docRoot;
-	}
+     * Nur Framework version
+     *
+     * @return string
+     */
+    public function version()
+    {
+        return self::VERSION;
+    }
 
     /**
-	 * Application base folder path
-	 *
-	 * @return string
-	 */
-	public function baseFolder()
-	{
-		return $this->baseFolder;
-	}
+     * Application root path
+     *
+     * @return string
+     */
+    public function root()
+    {
+        return $this->root;
+    }
 
     /**
-	 * Autoload class
-	 *
-	 * @return Nur\Load\Autoload
-	 */
+     * Application document root path
+     *
+     * @return string
+     */
+    public function docRoot()
+    {
+        return $this->docRoot;
+    }
+
+    /**
+     * Application base folder path
+     *
+     * @return string
+     */
+    public function baseFolder()
+    {
+        return $this->baseFolder;
+    }
+
+    /**
+     * Autoload class
+     *
+     * @return Nur\Load\Autoload
+     */
     private function autoLoader()
     {
         return (new AutoLoad(new Load));
     }
 
-	/**
-	 * Whoops Initializer
-	 *
-	 * @return void
-	 */
-	private function initWhoops()
-	{
-		$whoops = new WhoopsRun;
-		$whoops->pushHandler(new WhoopsPrettyPageHandler);
-		$whoops->register();
-	}
+    /**
+     * Whoops Initializer
+     *
+     * @return void
+     */
+    private function initWhoops()
+    {
+        $whoops = new WhoopsRun;
+        $whoops->pushHandler(new WhoopsPrettyPageHandler);
+        $whoops->register();
+    }
 
-	/**
-	 * Application Initializer
-	 *
-	 * @return void
-	 */
-	private function init()
-	{
-		require_once realpath(__DIR__ . '/../helper.php');
-		$app = $this->config();
+    /**
+     * Application Initializer
+     *
+     * @return void
+     */
+    private function init()
+    {
+        $app = $this->config();
 
-		// Prepare Facades
-		Facade::clearResolvedInstances();
-		Facade::setApplication($app);
-		
-		// Create Aliases
-		foreach ($app['services'] as $key => $value) {
-			if(!class_exists($key)) {
+        // Prepare Facades
+        Facade::clearResolvedInstances();
+        Facade::setApplication($app);
+        
+        // Create Aliases
+        foreach ($app['services'] as $key => $value) {
+            if(!class_exists($key)) {
                 class_alias($value[1], $key);
             }
-		}
+        }
     }
     
     /**
-	 * Class destruct
-	 *
-	 * @return void
-	 */
+     * Class destruct
+     *
+     * @return void
+     */
     public function __destruct()
     {
         if(ob_get_contents()) {
