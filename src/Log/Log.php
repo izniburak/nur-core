@@ -117,8 +117,8 @@ class Log
      */
     protected function log($level, $message)
     {
-        if (is_array($message)) {
-            $message = serialize($message);
+        if (is_array($message) || is_object($message)) {
+            $message = json_encode($message);
         }
 
         $text = '['.date($this->timeFormat, time()).'] - ['.strtoupper($level).'] - ['.IP_ADDRESS.'] --> ' . $message;

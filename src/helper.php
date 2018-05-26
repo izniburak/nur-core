@@ -129,8 +129,21 @@ if (!function_exists('config')) {
 
 ### dd function
 if (!function_exists('dd')) {
-    function dd($str)
+    function dd(...$args)
     {
-        die(var_dump($str));
+        foreach ($args as $x) {
+            var_dump($x);
+        }
+
+        die(1);
+    }
+}
+
+
+### Escape HTML special characters in a string.
+if (!function_exists('e')) {
+    function e(string $value, $doubleEncode = true)
+    {
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
     }
 }
