@@ -123,7 +123,7 @@ if (!function_exists('uri')) {
 
 ### http
 if (!function_exists('http')) {
-    function uri($name = null)
+    function http($name = null)
     {
         if (is_null($name)) {
             return app('http');
