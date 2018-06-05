@@ -21,6 +21,6 @@ class Sql extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Sql';
+        return 'sql';
     }
 }

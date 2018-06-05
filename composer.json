@@ -27,7 +27,6 @@
         "symfony/http-foundation": "~4.0",
         "symfony/var-dumper": "~4.0",
         "doctrine/dbal": "^2.6",
-        "phpmailer/phpmailer": "^6.0",
         "pimple/pimple": "^3",
         "filp/whoops": "^2.1",
         "ramsey/uuid": "^3.7"

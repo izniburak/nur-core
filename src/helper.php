@@ -49,7 +49,7 @@ if (!function_exists('config')) {
     }
 }
 
-### Blade::make function
+### Logger function
 if (!function_exists('logger')) {
     function logger($message = null)
     {
@@ -85,7 +85,7 @@ if (!function_exists('error')) {
     }
 }
 
-### get the available container instance
+### session 
 if (!function_exists('session')) {
     function session($name = null)
     {
@@ -97,7 +97,7 @@ if (!function_exists('session')) {
     }
 }
 
-### get the available container instance
+### cookie
 if (!function_exists('cookie')) {
     function cookie($name = null)
     {
@@ -106,6 +106,30 @@ if (!function_exists('cookie')) {
         }
 
         return app('cookie')->get($name);
+    }
+}
+
+### application uri
+if (!function_exists('uri')) {
+    function uri($name = null)
+    {
+        if (is_null($name)) {
+            return app('uri');
+        }
+
+        return app('uri')->base($name);
+    }
+}
+
+### http
+if (!function_exists('http')) {
+    function uri($name = null)
+    {
+        if (is_null($name)) {
+            return app('http');
+        }
+
+        return app('http')->request($name);
     }
 }
 

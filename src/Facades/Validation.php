@@ -21,6 +21,6 @@ class Validation extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Validation';
+        return 'validation';
     }
 }

@@ -21,6 +21,6 @@ class Load extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Load';
+        return 'load';
     }
 }

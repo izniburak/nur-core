@@ -21,6 +21,6 @@ class Blade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Blade';
+        return 'blade';
     }
 }

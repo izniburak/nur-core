@@ -21,6 +21,6 @@ class Html extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Html';
+        return 'html';
     }
 }
