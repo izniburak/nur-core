@@ -8,11 +8,64 @@
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
 
+use Nur\Container\Container;
+
+### get the available container instance
+if (!function_exists('app')) {
+    function app($name = null)
+    {
+        if (is_null($name)) {
+            return Container::getInstance();
+        }
+
+        return Container::getInstance()->get($name);
+    }
+}
+
+### get config values function
+if (!function_exists('config')) {
+    function config($param = null)
+    {   
+        $config = app('config');
+        
+        if(is_null($param)) {
+            return $config;
+        }
+
+        if(!strstr($param, '.')) {
+            return $config[$param];
+        }
+
+        $value = $config;
+        foreach (explode('.', $param) as $index) {
+            if (key_exists($index, $value)) {
+                $value = $value[$index];
+            } else {
+                return null;
+            }
+        }
+
+        return $value;
+    }
+}
+
+### Blade::make function
+if (!function_exists('logger')) {
+    function logger($message = null)
+    {
+        if (is_null($message)) {
+            return app('log');
+        }
+
+        return app('log')->debug($message);
+    }
+}
+
 ### Blade::make function
 if (!function_exists('blade')) {
     function blade($view = null, $data = [], $mergeData = [])
     {
-        return Blade::make($view, $data, $mergeData);
+        return app('blade')->make($view, $data, $mergeData);
     }
 }
 
@@ -20,31 +73,7 @@ if (!function_exists('blade')) {
 if (!function_exists('view')) {
     function view($name, $data = null)
     {
-        return Load::view($name, $data);
-    }
-}
-
-### Load::library function
-if (!function_exists('library')) {
-    function library($name, $params = null)
-    {
-        return Load::library($name, $params);
-    }
-}
-
-### Load::model function
-if (!function_exists('model')) {
-    function model($file)
-    {
-        return Load::model($file);
-    }
-}
-
-### Load::helper function
-if (!function_exists('helper')) {
-    function helper($name)
-    {
-        return Load::helper($name);
+        return app('load')->view($name, $data);
     }
 }
 
@@ -52,7 +81,31 @@ if (!function_exists('helper')) {
 if (!function_exists('error')) {
     function error($title = null, $msg = null, $page = null)
     {
-        return Load::error($title, $msg, $page);
+        return app('load')->error($title, $msg, $page);
+    }
+}
+
+### get the available container instance
+if (!function_exists('session')) {
+    function session($name = null)
+    {
+        if (is_null($name)) {
+            return app('session');
+        }
+
+        return app('session')->get($name);
+    }
+}
+
+### get the available container instance
+if (!function_exists('cookie')) {
+    function cookie($name = null)
+    {
+        if (is_null($name)) {
+            return app('cookie');
+        }
+
+        return app('cookie')->get($name);
     }
 }
 
@@ -68,8 +121,8 @@ if (!function_exists('getToken')) {
 if (!function_exists('resetToken')) {
     function resetToken()
     {
-        if(Sess::hasKey('_nur_token')) {
-            Sess::delete('_nur_token');
+        if(app('session')->hasKey('_nur_token')) {
+            app('session')->delete('_nur_token');
         }
     }
 }
@@ -82,7 +135,8 @@ if (!function_exists('csrfToken')) {
     function csrfToken($name = null)
     {
         $csrf = hash_hmac('sha256', getToken(), uniqid('', true));
-        Session::set('_nur_csrf_token' . (!is_null($name) ? '_' . $name : ''), $csrf);
+        app('session')->set('_nur_csrf_token' . (!is_null($name) ? '_' . $name : ''), $csrf);
+
         return $csrf;
     }
 }
@@ -95,35 +149,14 @@ if (!function_exists('csrfToken')) {
 if (!function_exists('csrfCheck')) {
     function csrfCheck($token, $name = null)
     {
+        $session = app('session');
         $name = (!is_null($name) ? '_' . $name : '');
-        if (Session::hasKey('_nur_csrf_token' . $name) && $token === Session::get('_nur_csrf_token' . $name)) {
-            Session::delete('_nur_csrf_token' . $name);
+        if ($session->hasKey('_nur_csrf_token' . $name) && $token === $session->get('_nur_csrf_token' . $name)) {
+            $session->delete('_nur_csrf_token' . $name);
             return true;
         }
+
         return false;
-    }
-}
-
-### get config values function
-if (!function_exists('config')) {
-    function config($param = null)
-    {   
-        global $app;
-        $config = $app->config();
-        
-        if(is_null($param))
-            return $config;
-
-        $value = $config;
-        foreach (explode('.', $param) as $index) {
-            if (key_exists($index, $value)) {
-                $value = $value[$index];
-            } else {
-                return null;
-            }
-        }
-
-        return $value;
     }
 }
 

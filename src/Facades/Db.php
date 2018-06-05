@@ -12,7 +12,7 @@ namespace Nur\Facades;
 
 use Nur\Kernel\Facade;
 
-class Log extends Facade
+class Db extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -21,6 +21,6 @@ class Log extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'log';
+        return 'builder';
     }
 }

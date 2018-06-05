@@ -8,11 +8,11 @@
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
 
-namespace Nur\Components\Mail;
+namespace Nur\Components\Mailer;
 
-use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
-class MailerException extends Exception 
+class Mailer extends PHPMailer 
 {
   
 }

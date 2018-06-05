@@ -21,6 +21,6 @@ class Uri extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Uri';
+        return 'uri';
     }
 }

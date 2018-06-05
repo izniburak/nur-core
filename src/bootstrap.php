@@ -12,23 +12,19 @@ ob_start();
 session_start();
 
 use Nur\Kernel\Kernel;
-use Nur\Facades\Http;
-use Nur\Router\Route;
 
 $app = new Kernel();
-$config = $app->config();
 
 define('NUR_VERSION', Kernel::VERSION);
 define('DS', '/');
 define('ROOT', $app->root());
 define('DOC_ROOT', $app->docRoot());
 define('BASE_FOLDER', $app->baseFolder());
-define('ADMIN_FOLDER', trim($config['admin'], '/'));
-define('ASSETS_FOLDER', trim($config['assets'], '/'));
-define('APP_ENV', strtolower($config['env']));
-define('IP_ADDRESS', Http::getClientIP());
-define('APP_KEY', $config['key']);
+define('APP_ENV', strtolower(config('app.env')));
+define('ADMIN_FOLDER', trim(config('app.admin'), '/'));
+define('ASSETS_FOLDER', trim(config('app.assets'), '/'));
+define('APP_KEY', config('app.key'));
 define('_TOKEN', $app->generateToken());
-date_default_timezone_set($config['timezone']);
+date_default_timezone_set(config('app.timezone'));
 
-$app->start(new Route(), $env = APP_ENV);
+$app->start($env = APP_ENV);

@@ -1,4 +1,4 @@
-<?php
+<?php 
 /**
 * nur - a simple framework for PHP Developers
 *
@@ -8,19 +8,11 @@
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
 
-namespace Nur\Facades;
+namespace Nur\Components\Mailer;
 
-use Nur\Kernel\Facade;
+use PHPMailer\PHPMailer\Exception;
 
-class Builder extends Facade
+class MailerException extends Exception 
 {
-    /**
-     * Get the registered name of the component.
-     * 
-     * @param string
-     */
-    protected static function getFacadeAccessor()
-    {
-        return 'Builder';
-    }
+  
 }

@@ -31,7 +31,7 @@ class UriGenerator
 
         $this->url = Http::server('HTTP_HOST') . '/' . $this->base . '/';
         if( (!empty(Http::server('HTTPS')) && Http::server('HTTPS') !== 'off') ||
-            Http::server('SERVER_PORT') == 443 || config('https') === true)
+            Http::server('SERVER_PORT') == 443 || config('app.https') === true)
             $this->cachedHttps = true;
     }
 

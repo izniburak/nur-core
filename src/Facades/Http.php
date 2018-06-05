@@ -21,6 +21,6 @@ class Http extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'Http';
+        return 'http';
     }
 }

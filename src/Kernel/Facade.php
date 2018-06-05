@@ -10,27 +10,29 @@
 
 namespace Nur\Kernel;
 
+use Nur\Container\Container;
+
 abstract class Facade
 {
 	/**
-     * Application List in Service Provider
-     * 
-     * @var array
-     */
+	 * Application List in Service Provider
+	 * 
+	 * @var array
+	 */
 	protected static $applications;
 
 	/**
-     * Resolved instances of objects in Facade
-     * 
-     * @var array
-     */
-	protected static $reselovedInstance;
+	 * Resolved instances of objects in Facade
+	 * 
+	 * @var array
+	 */
+	protected static $resolvedInstance;
 
 	/**
-     * Created instances of objects in Facade
-     * 
-     * @var array
-     */
+	 * Created instances of objects in Facade
+	 * 
+	 * @var array
+	 */
 	protected static $createdInstances = [];
 
 	/**
@@ -45,15 +47,15 @@ abstract class Facade
 			return $facadeName;
 		}
 
-		if (isset(static::$reselovedInstance[$facadeName])) {
-			return static::$reselovedInstance[$facadeName];
+		if (isset(static::$resolvedInstance[$facadeName])) {
+			return static::$resolvedInstance[$facadeName];
 		}
 
-		return static::$reselovedInstance[$facadeName] = static::$applications['services'][$facadeName][0];
+		return static::$resolvedInstance[$facadeName] = static::$applications->get($facadeName);
 	}
 
 	/**
-	 * Set Facade Application
+	 * Set Facade Application (Container)
 	 *
 	 * @param string $app
 	 * @return void
@@ -71,7 +73,7 @@ abstract class Facade
 	 */
 	public static function clearResolvedInstance($facadeName)
 	{
-		unset(static::$reselovedInstance[$facadeName]);
+		unset(static::$resolvedInstance[$facadeName]);
 	}
 
 	/**
@@ -81,7 +83,7 @@ abstract class Facade
 	 */
 	public static function clearResolvedInstances()
 	{
-		static::$reselovedInstance = [];
+		static::$resolvedInstance = [];
 	}
 
 	/**
@@ -93,11 +95,11 @@ abstract class Facade
 	 */
 	public static function __callStatic($method, $parameters)
 	{
-		$accessor 	= static::getFacadeAccessor();
-		$provider 	= static::resolveInstance($accessor);
+		$accessor 	= strtolower(static::getFacadeAccessor());
+		$provider 	= static::resolveInstance(strtolower($accessor));
 
 		if (!array_key_exists($accessor, static::$createdInstances)) {
-			static::$createdInstances[$accessor] = new $provider;
+			static::$createdInstances[$accessor] = $provider;
 		}
         
 		return call_user_func_array([static::$createdInstances[$accessor], $method], $parameters);

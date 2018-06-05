@@ -9,48 +9,40 @@
 */
 
 use Phpmig\Adapter;
-use Pimple\Container;
+use Nur\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Exception\ParseException;
 
-try {
-    $config = Yaml::parse(file_get_contents('app/config.yml'));
-}
-catch (ParseException $e) {
-    die(printf("Unable to parse the Config YAML string. Error Message: %s", $e->getMessage()));
-}
+$container = Container::getInstance();
+$config = config('database');
 
-if($config['db']['driver'] == 'sqlite') {
-    if(strpos($config['db']['database'], ':') === false) {
-        $config['db']['database'] = realpath(ROOT . '/storage/database/'. $config['db']['database']);
+if($config['driver'] == 'sqlite') {
+    if(strpos($config['database'], ':') === false) {
+        $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
     }
 }
 
-$container = new Container();
-$container['config'] = $config['db'];
+$container->set('db.config', $config);
 
-$container['db'] = function ($c) {
+$container->set('db', function ($c) {
     $capsule = new Capsule();
     $capsule->getContainer()->singleton(
         \Illuminate\Contracts\Debug\ExceptionHandler::class
         /* \Your\ExceptionHandler\Implementation::class */
     );
-    $capsule->addConnection($c['config']);
+    $capsule->addConnection($c['db.config']);
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
     return $capsule;
-};
+});
 
-$container['phpmig.adapter'] = function($c) {
+$container->set('phpmig.adapter', function($c) {
     return new Adapter\Illuminate\Database($c['db'], 'nur_migrations');
-};
+});
 
-$container['phpmig.migrations_path'] = realpath('app/Migrations');
-
-$container['schema'] = function($c) {
+$container->set('phpmig.migrations_path', realpath('app/Migrations'));
+$container->set('schema', function($c) {
     return $c['db']->schema();
-};
+});
 
-return $container;
+return $container->getContainer();

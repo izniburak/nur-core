@@ -11,13 +11,10 @@
 namespace Nur\Kernel;
 
 use Nur\Kernel\Facade;
-use Nur\Router\Route;
+use Nur\Container\Container;
 use Nur\Facades\Http;
 use Nur\Facades\Session;
-use Nur\Load\AutoLoad;
-use Nur\Load\Load;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Exception\ParseException;
+use Nur\Facades\Route;
 use Whoops\Run as WhoopsRun;
 use Whoops\Handler\PrettyPageHandler as WhoopsPrettyPageHandler;
 
@@ -29,6 +26,13 @@ class Kernel
      * @var string
      */
     const VERSION		= '1.3.0';
+
+    /**
+     * Framework container 
+     * 
+     * @var Nur\Container\Container|null
+     */
+    private $app		= null;
 
     /**
      * Framework config 
@@ -58,12 +62,20 @@ class Kernel
      */
     public function __construct()
     {   
+        $this->app = Container::getInstance();
         $this->root	= realpath(getcwd());
         try {
-            $this->config = Yaml::parse(file_get_contents($this->root . '/app/config.yml'));
+            foreach(glob($this->root . '/config/*.php') as $file) {
+                $keyName = strtolower(str_replace(
+                    [$this->root . '/config/', '.php'],
+                    '', 
+                    $file
+                ));
+                $this->config[$keyName] = require($file);
+            }
         }
-        catch (ParseException $e) {
-            die(printf("<b>Unable to parse the Config YAML string:</b><br />Error Message: %s", $e->getMessage()));
+        catch (\Exception $e) {
+            die(printf("The configuration information could not be retrieved properly. \n Error Message: %s", $e->getMessage()));
         }
         
         $this->init();
@@ -80,7 +92,7 @@ class Kernel
      * @param string $env
      * @return void
      */
-    public function start(Route $route, $env)
+    public function start($env)
     {
         switch ($env) {
             case 'dev':
@@ -98,22 +110,11 @@ class Kernel
                 die('The application environment is not set correctly.');
         }
         
-        $this->autoLoader();
         if($routerFiltersFile = realpath($this->root . '/app/filters.php')) {
             require_once $routerFiltersFile;
         }
         require_once realpath($this->root . '/app/routes.php');
-        $route->run();
-    }
-
-    /**
-     * Application config 
-     *
-     * @return array
-     */
-    public function config()
-    {
-        return $this->config;
+        Route::run();
     }
     
     /**
@@ -124,7 +125,7 @@ class Kernel
     public function generateToken()
     {
         if(!Session::hasKey('_nur_token')) {
-            Session::set('_nur_token', sha1(uniqid(mt_rand() . config('salt'), true)) );
+            Session::set('_nur_token', sha1(uniqid(mt_rand(), true)) );
         }
 
         return Session::get('_nur_token');
@@ -171,16 +172,6 @@ class Kernel
     }
 
     /**
-     * Autoload class
-     *
-     * @return Nur\Load\Autoload
-     */
-    private function autoLoader()
-    {
-        return (new AutoLoad(new Load));
-    }
-
-    /**
      * Whoops Initializer
      *
      * @return void
@@ -199,16 +190,55 @@ class Kernel
      */
     private function init()
     {
-        $app = $this->config();
+        $this->app->set('config', $this->config);
 
+        $this->registerCoreProviders();
+        $this->registerCoreAliases();
+        $this->registerProviders(config('services.providers'));
+        $this->resolveFacades(config('services.aliases'));
+    }
+
+    private function registerCoreProviders()
+    {
+        foreach([
+            \Nur\Providers\Load::class,
+            \Nur\Providers\Uri::class,
+            \Nur\Providers\Http::class,
+            \Nur\Providers\Route::class,
+            \Nur\Providers\Log::class,
+        ] as $provider) {
+            (new $provider($this->app))->register();
+        }
+    }
+
+    private function registerProviders($providers)
+    {
+        foreach($providers as $provider) {
+            (new $provider($this->app))->register();
+        }
+    }
+
+    private function registerCoreAliases()
+    {
+        foreach([
+            'Route' => \Nur\Facades\Route::class,
+        ] as $key => $value) {
+            if(!class_exists($key)) {
+                class_alias($value, $key);
+            }
+        }
+    }
+
+    private function resolveFacades($aliases)
+    {
         // Prepare Facades
         Facade::clearResolvedInstances();
-        Facade::setApplication($app);
-        
+        Facade::setApplication($this->app);
+
         // Create Aliases
-        foreach ($app['services'] as $key => $value) {
+        foreach ($aliases as $key => $value) {
             if(!class_exists($key)) {
-                class_alias($value[1], $key);
+                class_alias($value, $key);
             }
         }
     }

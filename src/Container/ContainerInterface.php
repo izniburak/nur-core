@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
 * nur - a simple framework for PHP Developers
 *
@@ -8,11 +8,11 @@
 * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
 */
 
-namespace Nur\Components\Mail;
+namespace Nur\Container;
 
-use PHPMailer\PHPMailer\PHPMailer;
+use Psr\Container\ContainerInterface as PsrContainerInterface;
 
-class Mailer extends PHPMailer 
+interface ContainerInterface extends PsrContainerInterface
 {
-  
+    
 }

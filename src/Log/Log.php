@@ -10,6 +10,7 @@
 
 namespace Nur\Log;
 
+use Nur\Facades\Http;
 use Nur\Exception\ExceptionHandler;
 
 class Log
@@ -121,7 +122,7 @@ class Log
             $message = json_encode($message);
         }
 
-        $text = '['.date($this->timeFormat, time()).'] - ['.strtoupper($level).'] - ['.IP_ADDRESS.'] --> ' . $message;
+        $text = '['.date($this->timeFormat, time()).'] - ['.strtoupper($level).'] - ['.Http::getClientIP().'] --> ' . $message;
         $this->save($text);
     }
 

@@ -43,7 +43,7 @@ class Eloquent
     {
         $capsule = new Capsule;
 
-        $config = config('db');
+        $config = config('database');
         if($config['driver'] == 'sqlite') {
             if(strpos($config['database'], ':') === false) {
                 $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);

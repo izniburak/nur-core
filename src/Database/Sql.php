@@ -23,7 +23,7 @@ class Sql extends PdoxProvider
     {
         $debug = (APP_ENV == 'dev' ? true : false);
         
-        $config = config('db');
+        $config = config('database');
         $config['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
         if($config['driver'] == 'sqlite') {
             if(strpos($config['database'], ':') === false) {
