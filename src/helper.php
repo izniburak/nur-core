@@ -63,7 +63,7 @@ if (!function_exists('logger')) {
 
 ### Blade::make function
 if (!function_exists('blade')) {
-    function blade($view = null, $data = [], $mergeData = [])
+    function blade($view = null, Array $data = [], Array $mergeData = [])
     {
         return app('blade')->make($view, $data, $mergeData);
     }
@@ -71,7 +71,7 @@ if (!function_exists('blade')) {
 
 ### Load::view function
 if (!function_exists('view')) {
-    function view($name, $data = null)
+    function view($name, Array $data = [])
     {
         return app('load')->view($name, $data);
     }
@@ -133,6 +133,14 @@ if (!function_exists('http')) {
     }
 }
 
+### http
+if (!function_exists('event')) {
+    function event($event, Array $params = [], $method = 'handle')
+    {
+        return app('event')->trigger($event, $params, $method);
+    }
+}
+
 ### token generator function
 if (!function_exists('getToken')) {
     function getToken()
@@ -145,8 +153,8 @@ if (!function_exists('getToken')) {
 if (!function_exists('resetToken')) {
     function resetToken()
     {
-        if(app('session')->hasKey('_nur_token')) {
-            app('session')->delete('_nur_token');
+        if(session()->hasKey('_nur_token')) {
+            session()->delete('_nur_token');
         }
     }
 }
@@ -159,7 +167,7 @@ if (!function_exists('csrfToken')) {
     function csrfToken($name = null)
     {
         $csrf = hash_hmac('sha256', getToken(), uniqid('', true));
-        app('session')->set('_nur_csrf_token' . (!is_null($name) ? '_' . $name : ''), $csrf);
+        session()->set('_nur_csrf_token' . (!is_null($name) ? '_' . $name : ''), $csrf);
 
         return $csrf;
     }
@@ -173,7 +181,7 @@ if (!function_exists('csrfToken')) {
 if (!function_exists('csrfCheck')) {
     function csrfCheck($token, $name = null)
     {
-        $session = app('session');
+        $session = session();
         $name = (!is_null($name) ? '_' . $name : '');
         if ($session->hasKey('_nur_csrf_token' . $name) && $token === $session->get('_nur_csrf_token' . $name)) {
             $session->delete('_nur_csrf_token' . $name);
@@ -188,8 +196,8 @@ if (!function_exists('csrfCheck')) {
 if (!function_exists('dd')) {
     function dd(...$args)
     {
-        foreach ($args as $x) {
-            var_dump($x);
+        foreach ($args as $arg) {
+            var_dump($arg);
         }
 
         die(1);

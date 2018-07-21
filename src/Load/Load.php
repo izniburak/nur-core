@@ -15,15 +15,13 @@ class Load
      * 
      * @throw ExceptionHandler
      */
-    public function view($name, $data = null)
+    public function view($name, Array $data = [])
     {
         $name = ($name);
         $file = realpath(ROOT . '/app/Views/' . $name . '.php');
 
         if (file_exists($file)) {
-            if (is_array($data)) {
-                extract($data);
-            }
+            extract($data);
             require $file;
             return ob_get_clean();
         }
@@ -50,8 +48,7 @@ class Load
         if (file_exists($file)) {
             require $file;
             die();
-        }
-        else {
+        } else {
             die('<h2>' . $title . '</h2> ' . $message);
         }
     }
