@@ -10,7 +10,10 @@
 
 use Nur\Container\Container;
 
-### get the available container instance
+/**
+ * Get application container or a service.
+ * @return mixed|Nur\Container\Container
+ */
 if (!function_exists('app')) {
     function app($name = null)
     {
@@ -22,7 +25,10 @@ if (!function_exists('app')) {
     }
 }
 
-### get config values function
+/**
+ * Get config values
+ * @return mixed
+ */
 if (!function_exists('config')) {
     function config($param = null)
     {   
@@ -49,7 +55,10 @@ if (!function_exists('config')) {
     }
 }
 
-### Logger function
+/**
+ * Logger
+ * @return mixed|Nur\Log\Log
+ */
 if (!function_exists('logger')) {
     function logger($message = null)
     {
@@ -61,7 +70,10 @@ if (!function_exists('logger')) {
     }
 }
 
-### Blade::make function
+/**
+ * Blade template engine
+ * @return string
+ */
 if (!function_exists('blade')) {
     function blade($view = null, Array $data = [], Array $mergeData = [])
     {
@@ -69,7 +81,10 @@ if (!function_exists('blade')) {
     }
 }
 
-### Load::view function
+/**
+ * View template
+ * @return string
+ */
 if (!function_exists('view')) {
     function view($name, Array $data = [])
     {
@@ -77,7 +92,10 @@ if (!function_exists('view')) {
     }
 }
 
-### Error::message function
+/**
+ * Error messages as view
+ * @return string
+ */
 if (!function_exists('error')) {
     function error($title = null, $msg = null, $page = null)
     {
@@ -85,7 +103,10 @@ if (!function_exists('error')) {
     }
 }
 
-### session 
+/**
+ * Sessions
+ * @return mixed|Nur\Http\Session
+ */
 if (!function_exists('session')) {
     function session($name = null)
     {
@@ -97,7 +118,10 @@ if (!function_exists('session')) {
     }
 }
 
-### cookie
+/**
+ * Cookies 
+ * @return mixed|Nur\Http\Cookie
+ */
 if (!function_exists('cookie')) {
     function cookie($name = null)
     {
@@ -109,7 +133,10 @@ if (!function_exists('cookie')) {
     }
 }
 
-### application uri
+/**
+ * Uri class
+ * @return string|Nur\Uri\Uri
+ */
 if (!function_exists('uri')) {
     function uri($name = null)
     {
@@ -121,7 +148,10 @@ if (!function_exists('uri')) {
     }
 }
 
-### http
+/**
+ * Http methods
+ * @return mixed|Nur\Http\Http
+ */
 if (!function_exists('http')) {
     function http($name = null)
     {
@@ -133,7 +163,10 @@ if (!function_exists('http')) {
     }
 }
 
-### http
+/**
+ * Event trigger for Listeners.
+ * @return mixed
+ */
 if (!function_exists('event')) {
     function event($event, Array $params = [], $method = 'handle')
     {
@@ -141,7 +174,10 @@ if (!function_exists('event')) {
     }
 }
 
-### token generator function
+/**
+ * Get Application token
+ * @return string
+ */
 if (!function_exists('getToken')) {
     function getToken()
     {
@@ -149,7 +185,10 @@ if (!function_exists('getToken')) {
     }
 }
 
-### token reset function
+/**
+ * Application token reset
+ * @return void
+ */
 if (!function_exists('resetToken')) {
     function resetToken()
     {
@@ -192,7 +231,11 @@ if (!function_exists('csrfCheck')) {
     }
 }
 
-### dd function
+/**
+ * Dump and Die function 
+ * @param ...$args
+ * @return string
+ */
 if (!function_exists('dd')) {
     function dd(...$args)
     {
