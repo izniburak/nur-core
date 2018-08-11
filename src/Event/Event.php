@@ -14,15 +14,15 @@ class Event
      * @param string $method
      * @return mixed
      */
-    public function trigger($event, Array $params = [], $method = 'handle')
+    public function trigger($event, array $params = [], $method = 'handle')
     {
         $listeners = config('services.listeners');
         foreach ($listeners[$event] as $listener) {
-            if (!class_exists($listener)) {
+            if (! class_exists($listener)) {
                 throw new ExceptionHandler('Event class not found.', $listener);
             }
 
-            if (!method_exists($listener, $method)) {
+            if (! method_exists($listener, $method)) {
                 throw new ExceptionHandler('Method not found in Event class.', $listener . '::' . $method . '()');
             }
 

@@ -48,20 +48,15 @@ class BladeRegister
      * @param string $cachePath
      * @param Illuminate\Events\Dispatcher $events
      */
-    function __construct($viewPaths = [], $cachePath, Dispatcher $events = null) {
-
+    function __construct($viewPaths = [], $cachePath, Dispatcher $events = null)
+    {
         $this->container = new Container;
-
         $this->viewPaths = (array) $viewPaths;
-
         $this->cachePath = $cachePath;
 
         $this->registerFilesystem();
-
         $this->registerEvents($events ?: new Dispatcher);
-
         $this->registerEngineResolver();
-
         $this->registerViewFinder();
 
         $this->instance = $this->registerFactory();
@@ -76,15 +71,14 @@ class BladeRegister
 
     public function registerFilesystem()
     {
-        $this->container->singleton('files', function(){
+        $this->container->singleton('files', function() {
             return new Filesystem;
         });
     }
 
     public function registerEvents(Dispatcher $events)
     {
-        $this->container->singleton('events', function() use ($events)
-        {
+        $this->container->singleton('events', function() use ($events) {
             return $events;
         });
     }
@@ -98,15 +92,13 @@ class BladeRegister
     {
         $me = $this;
 
-        $this->container->singleton('view.engine.resolver', function($app) use ($me)
-        {
+        $this->container->singleton('view.engine.resolver', function($app) use ($me) {
             $resolver = new EngineResolver;
 
             // Next we will register the various engines with the resolver so that the
             // environment can resolve the engines it needs for various views based
             // on the extension of view files. We call a method for each engines.
-            foreach (array('php', 'blade') as $engine)
-            {
+            foreach (['file', 'php', 'blade'] as $engine) {
                 $me->{'register'.ucfirst($engine).'Engine'}($resolver);
             }
 
@@ -122,7 +114,9 @@ class BladeRegister
      */
     public function registerPhpEngine($resolver)
     {
-        $resolver->register('php', function() { return new PhpEngine; });
+        $resolver->register('php', function() {
+            return new PhpEngine;
+        });
     }
 
     /**
@@ -139,15 +133,13 @@ class BladeRegister
         // The Compiler engine requires an instance of the CompilerInterface, which in
         // this case will be the Blade compiler, so we'll first create the compiler
         // instance to pass into the engine so it can compile the views properly.
-        $this->container->singleton('blade.compiler', function($app) use ($me)
-        {
+        $this->container->singleton('blade.compiler', function($app) use ($me) {
             $cache = $me->cachePath;
 
             return new BladeCompiler($app['files'], $cache);
         });
 
-        $resolver->register('blade', function() use ($app)
-        {
+        $resolver->register('blade', function() use ($app) {
             return new CompilerEngine($app['blade.compiler'], $app['files']);
         });
     }
@@ -160,8 +152,8 @@ class BladeRegister
     public function registerViewFinder()
     {
         $me = $this;
-        $this->container->singleton('view.finder', function($app) use ($me)
-        {
+
+        $this->container->singleton('view.finder', function($app) use ($me) {
             $paths = $me->viewPaths;
 
             return new FileViewFinder($app['files'], $paths);
@@ -189,6 +181,8 @@ class BladeRegister
         // for great testable, flexible composers for the application developer.
         $env->setContainer($this->container);
 
+        $env->share('app', $this->container);
+
         return $env;
     }
 
@@ -211,12 +205,14 @@ class BladeRegister
             "namespace",
             "use",
         ];
+
         foreach ($keywords as $keyword) {
             $blade->directive($keyword, function ($parameter) use ($keyword) {
                 $parameter = trim($parameter, "()");
                 return "<?php {$keyword} {$parameter} ?>";
             });
         }
+
         $assetify = function ($file, $type) {
             $file = trim($file, "()");
             if (in_array(substr($file, 0, 1), ["'", '"'], true)) {
@@ -232,10 +228,12 @@ class BladeRegister
             }
             return $file;
         };
+
         $blade->directive("css", function ($parameter) use ($assetify) {
             $file = $assetify($parameter, "css");
             return '<link rel="stylesheet" type="text/css" href="'.$file.'"/>';
         });
+        
         $blade->directive("js", function ($parameter) use ($assetify) {
             $file = $assetify($parameter, "js");
             return '<script type="text/javascript" src="'.$file.'"></script>';

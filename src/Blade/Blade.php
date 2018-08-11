@@ -25,10 +25,11 @@ class Blade
     {
         $cache = ROOT . $this->templateFolder;
 
-        if(!is_dir(realpath($cache))) {
+        if (! is_dir(realpath($cache))) {
             mkdir($cache, 0755);
             touch($cache . "/index.html");
         }
+
         $views = realpath(ROOT . '/app/Views');
         $this->class = new BladeTemplate($views, $cache);
     }
@@ -43,7 +44,7 @@ class Blade
      */
     public function make($view, $data = [], $mergeData = [])
     {
-        if(is_string($view)) {
+        if (is_string($view)) {
             return $this->class->view()->make($view, $data, $mergeData)->render();
         }
 

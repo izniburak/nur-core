@@ -14,7 +14,7 @@ use Nur\Container\Container;
  * Get application container or a service.
  * @return mixed|Nur\Container\Container
  */
-if (!function_exists('app')) {
+if (! function_exists('app')) {
     function app($name = null)
     {
         if (is_null($name)) {
@@ -29,16 +29,16 @@ if (!function_exists('app')) {
  * Get config values
  * @return mixed
  */
-if (!function_exists('config')) {
+if (! function_exists('config')) {
     function config($param = null)
     {   
         $config = app('config');
         
-        if(is_null($param)) {
+        if (is_null($param)) {
             return $config;
         }
 
-        if(!strstr($param, '.')) {
+        if (! strstr($param, '.')) {
             return $config[$param];
         }
 
@@ -59,7 +59,7 @@ if (!function_exists('config')) {
  * Logger
  * @return mixed|Nur\Log\Log
  */
-if (!function_exists('logger')) {
+if (! function_exists('logger')) {
     function logger($message = null)
     {
         if (is_null($message)) {
@@ -74,7 +74,7 @@ if (!function_exists('logger')) {
  * Blade template engine
  * @return string
  */
-if (!function_exists('blade')) {
+if (! function_exists('blade')) {
     function blade($view = null, Array $data = [], Array $mergeData = [])
     {
         return app('blade')->make($view, $data, $mergeData);
@@ -85,7 +85,7 @@ if (!function_exists('blade')) {
  * View template
  * @return string
  */
-if (!function_exists('view')) {
+if (! function_exists('view')) {
     function view($name, Array $data = [])
     {
         return app('load')->view($name, $data);
@@ -96,7 +96,7 @@ if (!function_exists('view')) {
  * Error messages as view
  * @return string
  */
-if (!function_exists('error')) {
+if (! function_exists('error')) {
     function error($title = null, $msg = null, $page = null)
     {
         return app('load')->error($title, $msg, $page);
@@ -107,7 +107,7 @@ if (!function_exists('error')) {
  * Sessions
  * @return mixed|Nur\Http\Session
  */
-if (!function_exists('session')) {
+if (! function_exists('session')) {
     function session($name = null)
     {
         if (is_null($name)) {
@@ -122,7 +122,7 @@ if (!function_exists('session')) {
  * Cookies 
  * @return mixed|Nur\Http\Cookie
  */
-if (!function_exists('cookie')) {
+if (! function_exists('cookie')) {
     function cookie($name = null)
     {
         if (is_null($name)) {
@@ -137,7 +137,7 @@ if (!function_exists('cookie')) {
  * Uri class
  * @return string|Nur\Uri\Uri
  */
-if (!function_exists('uri')) {
+if (! function_exists('uri')) {
     function uri($name = null)
     {
         if (is_null($name)) {
@@ -152,7 +152,7 @@ if (!function_exists('uri')) {
  * Http methods
  * @return mixed|Nur\Http\Http
  */
-if (!function_exists('http')) {
+if (! function_exists('http')) {
     function http($name = null)
     {
         if (is_null($name)) {
@@ -167,7 +167,7 @@ if (!function_exists('http')) {
  * Event trigger for Listeners.
  * @return mixed
  */
-if (!function_exists('event')) {
+if (! function_exists('event')) {
     function event($event, Array $params = [], $method = 'handle')
     {
         return app('event')->trigger($event, $params, $method);
@@ -178,7 +178,7 @@ if (!function_exists('event')) {
  * Get Application token
  * @return string
  */
-if (!function_exists('getToken')) {
+if (! function_exists('getToken')) {
     function getToken()
     {
         return _TOKEN;
@@ -189,10 +189,10 @@ if (!function_exists('getToken')) {
  * Application token reset
  * @return void
  */
-if (!function_exists('resetToken')) {
+if (! function_exists('resetToken')) {
     function resetToken()
     {
-        if(session()->hasKey('_nur_token')) {
+        if (session()->hasKey('_nur_token')) {
             session()->delete('_nur_token');
         }
     }
@@ -202,7 +202,7 @@ if (!function_exists('resetToken')) {
  * CSRF Token Generate
  * @return string
  */
-if (!function_exists('csrfToken')) {
+if (! function_exists('csrfToken')) {
     function csrfToken($name = null)
     {
         $csrf = hash_hmac('sha256', getToken(), uniqid('', true));
@@ -217,7 +217,7 @@ if (!function_exists('csrfToken')) {
  * @param $token
  * @return boolean
  */
-if (!function_exists('csrfCheck')) {
+if (! function_exists('csrfCheck')) {
     function csrfCheck($token, $name = null)
     {
         $session = session();
@@ -236,7 +236,7 @@ if (!function_exists('csrfCheck')) {
  * @param ...$args
  * @return string
  */
-if (!function_exists('dd')) {
+if (! function_exists('dd')) {
     function dd(...$args)
     {
         foreach ($args as $arg) {
@@ -249,7 +249,7 @@ if (!function_exists('dd')) {
 
 
 ### Escape HTML special characters in a string.
-if (!function_exists('e')) {
+if (! function_exists('e')) {
     function e(string $value, $doubleEncode = true)
     {
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);

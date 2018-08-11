@@ -10,11 +10,10 @@
 
 namespace Nur\Kernel;
 
+use Exception;
 use Nur\Kernel\Facade;
 use Nur\Container\Container;
 use Nur\Facades\Http;
-use Nur\Facades\Session;
-use Nur\Facades\Route;
 use Whoops\Run as WhoopsRun;
 use Whoops\Handler\PrettyPageHandler as WhoopsPrettyPageHandler;
 
@@ -25,7 +24,7 @@ class Kernel
      * 
      * @var string
      */
-    const VERSION		= '1.4.0';
+    const VERSION		= '1.4.1';
 
     /**
      * Framework container 
@@ -74,12 +73,15 @@ class Kernel
                 $this->config[$keyName] = require($file);
             }
         }
-        catch (\Exception $e) {
-            die(printf("The configuration information could not be retrieved properly. \n Error Message: %s", $e->getMessage()));
+        catch (Exception $e) {
+            die(printf(
+                "The configuration information could not be retrieved properly. \n Error Message: %s",
+                $e->getMessage()
+            ));
         }
         
         $this->init();
-        $this->docRoot		= realpath(Http::server('DOCUMENT_ROOT'));
+        $this->docRoot		= realpath($this->app->get('http')->server('DOCUMENT_ROOT'));
         $this->baseFolder	= trim(
             str_replace('\\', '/', str_replace($this->docRoot, '', $this->root	) . '/'), '/'
         );
@@ -88,7 +90,6 @@ class Kernel
     /**
      * Kernel start
      *
-     * @param Nur\Router\Route $route 
      * @param string $env
      * @return void
      */
@@ -110,11 +111,11 @@ class Kernel
                 die('The application environment is not set correctly.');
         }
         
-        if($routerFiltersFile = realpath($this->root . '/app/filters.php')) {
+        if ($routerFiltersFile = realpath($this->root . '/app/filters.php')) {
             require_once $routerFiltersFile;
         }
         require_once realpath($this->root . '/app/routes.php');
-        Route::run();
+        $this->app->get('route')->run();
     }
     
     /**
@@ -124,11 +125,12 @@ class Kernel
      */
     public function generateToken()
     {
-        if(!Session::hasKey('_nur_token')) {
-            Session::set('_nur_token', sha1(uniqid(mt_rand(), true)) );
+        $session = $this->app->get('session');
+        if (! $session->hasKey('_nur_token')) {
+            $session->set('_nur_token', sha1(uniqid(mt_rand(), true)) );
         }
 
-        return Session::get('_nur_token');
+        return $session->get('_nur_token');
     }
 
     /**
@@ -176,7 +178,7 @@ class Kernel
      *
      * @return void
      */
-    private function initWhoops()
+    protected function initWhoops()
     {
         $whoops = new WhoopsRun;
         $whoops->pushHandler(new WhoopsPrettyPageHandler);
@@ -188,19 +190,19 @@ class Kernel
      *
      * @return void
      */
-    private function init()
+    protected function init()
     {
         $this->app->set('config', $this->config);
 
         $this->registerCoreProviders();
         $this->registerCoreAliases();
-        $this->registerProviders(config('services.providers'));
+        $this->registerApplicationProviders(config('services.providers'));
         $this->resolveFacades(config('services.aliases'));
     }
 
-    private function registerCoreProviders()
+    protected function registerCoreProviders()
     {
-        foreach([
+        foreach ([
             \Nur\Providers\Load::class,
             \Nur\Providers\Uri::class,
             \Nur\Providers\Http::class,
@@ -211,25 +213,25 @@ class Kernel
         }
     }
 
-    private function registerProviders($providers)
+    protected function registerApplicationProviders($providers)
     {
-        foreach($providers as $provider) {
+        foreach ($providers as $provider) {
             (new $provider($this->app))->register();
         }
     }
 
-    private function registerCoreAliases()
+    protected function registerCoreAliases()
     {
-        foreach([
+        foreach ([
             'Route' => \Nur\Facades\Route::class,
         ] as $key => $value) {
-            if(!class_exists($key)) {
+            if (! class_exists($key)) {
                 class_alias($value, $key);
             }
         }
     }
 
-    private function resolveFacades($aliases)
+    protected function resolveFacades($aliases)
     {
         // Prepare Facades
         Facade::clearResolvedInstances();
@@ -237,7 +239,7 @@ class Kernel
 
         // Create Aliases
         foreach ($aliases as $key => $value) {
-            if(!class_exists($key)) {
+            if (! class_exists($key)) {
                 class_alias($value, $key);
             }
         }
@@ -250,7 +252,7 @@ class Kernel
      */
     public function __destruct()
     {
-        if(ob_get_contents()) {
+        if (ob_get_contents()) {
             ob_end_flush();
         }
     }

@@ -98,7 +98,7 @@ abstract class Facade
         $accessor     = strtolower(static::getFacadeAccessor());
         $provider     = static::resolveInstance(strtolower($accessor));
 
-        if (!array_key_exists($accessor, static::$createdInstances)) {
+        if (! array_key_exists($accessor, static::$createdInstances)) {
             static::$createdInstances[$accessor] = $provider;
         }
         

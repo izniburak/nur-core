@@ -14,7 +14,7 @@ class Cookie
      */
     public function set($key, $value, $time = 0)
     {
-        if(is_array($key)) {
+        if (is_array($key)) {
             foreach ($key as $k => $v) {
                 setcookie($k, $v, ($time == 0 ? 0 : time() + $time), '/');
                 $_COOKIE[$k] = $v;
@@ -57,7 +57,7 @@ class Cookie
      */
     public function delete($key)
     {
-        if($this->hasKey($key)) {
+        if ($this->hasKey($key)) {
             setcookie($key, null, -1, '/');
             unset($_COOKIE[$key]);
         }

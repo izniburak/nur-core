@@ -17,8 +17,8 @@ class Sql extends PdoxProvider
         
         $config = config('database');
         $config['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
-        if($config['driver'] == 'sqlite') {
-            if(strpos($config['database'], ':') === false) {
+        if ($config['driver'] == 'sqlite') {
+            if (strpos($config['database'], ':') === false) {
                 $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
             }
         }

@@ -17,10 +17,9 @@ class ExceptionHandler
     public function __construct($title, $message)
     {
         $debug = (APP_ENV == 'dev' ? true : false);
-        if($debug){
+        if ($debug){
             throw new Exception(strip_tags($title . ' - ' . $message), 1);
-        }
-        else {
+        } else {
             Load::error($title, $message);
         }
     }

@@ -15,12 +15,11 @@ class Session
      */
     public function set($key, $value)
     {
-        if(is_array($key)) {
+        if (is_array($key)) {
             foreach ($key as $k => $v) {
                 $_SESSION[$k] = $v;
             }
-        }
-        else {
+        } else {
             $_SESSION[$key] = $value;
         }
 
@@ -60,7 +59,8 @@ class Session
     public function setFlash($key, $value, $redirect = null)
     {
         $this->set('_nur_flash', [$key => $value]);
-        if (!is_null($redirect)) {
+
+        if (! is_null($redirect)) {
             Uri::redirect($redirect);
         }
 
@@ -75,9 +75,10 @@ class Session
      */
     public function getFlash($key = null)
     {
-        if(!is_null($key)) {
+        if (! is_null($key)) {
             $value = null;
-            if($this->hasFlash($key)) {
+
+            if ($this->hasFlash($key)) {
                 $value = $this->get('_nur_flash')[$key];
                 unset($_SESSION['_nur_flash'][$key]);
             }
@@ -107,7 +108,7 @@ class Session
      */
     public function delete($key)
     {
-        if($this->hasKey($key)) {
+        if ($this->hasKey($key)) {
             unset($_SESSION[$key]);
         }
 

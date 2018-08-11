@@ -130,20 +130,20 @@ class Validation
                 ? $this->texts[$field][$filter] : $this->msg);
         $text = str_replace([':label:', ':value:'], '%s', $text);
 
-        if(!isset($this->data[$field])) {
+        if (! isset($this->data[$field])) {
             $this->errors[] = sprintf($text, $this->labels[$field], $params);
-        } elseif(!is_null($params)) {
-            if($filter == 'matches') {
-                if($this->matches($this->data[$field], $this->data[$params]) === false) {
+        } elseif (! is_null($params)) {
+            if ($filter == 'matches') {
+                if ($this->matches($this->data[$field], $this->data[$params]) === false) {
                     $this->errors[] = sprintf($text, $this->labels[$field], $params);
                 }
             } else {
-                if($this->$filter($this->data[$field], $params) === false) {
+                if ($this->$filter($this->data[$field], $params) === false) {
                     $this->errors[] = sprintf($text, $this->labels[$field], $params);
                 }
             }
         } else {
-            if($this->$filter($this->data[$field]) === false) {
+            if ($this->$filter($this->data[$field]) === false) {
                 $this->errors[] = sprintf($text, $this->labels[$field], $params);
             }
         }
@@ -157,7 +157,7 @@ class Validation
      */
     public function sanitize($data)
     {
-        if (!is_array($data)) {
+        if (! is_array($data)) {
             return filter_var(trim($data), FILTER_SANITIZE_STRING);
         } 
         
@@ -278,7 +278,7 @@ class Validation
      */
     protected function alpha_dash($data)
     {
-        return (!preg_match("/^([A-Za-z0-9_-])+$/i", $data)) ? false : true;
+        return !(!preg_match("/^([A-Za-z0-9_-])+$/i", $data));
     }
 
     /**
@@ -289,7 +289,7 @@ class Validation
      */
     protected function alpha_space($data)
     {
-        return (!preg_match("/^([A-Za-z0-9- ])+$/i", $data)) ? false : true;
+        return !(!preg_match("/^([A-Za-z0-9- ])+$/i", $data));
     }
 
     /**
@@ -300,7 +300,7 @@ class Validation
      */
     protected function integer($data)
     {
-        return (!preg_match("/^([0-9])+$/i", $data)) ? false : true;
+        return !(!preg_match("/^([0-9])+$/i", $data));
     }
 
     /**

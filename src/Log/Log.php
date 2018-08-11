@@ -129,7 +129,7 @@ class Log
         $fileName 	= 'log_' . date('Y-m-d') . '.log';
         $file 		= fopen(ROOT . '/storage/log/' . $fileName, 'a');
 
-        if(fwrite($file, $text . "\n") === false) {
+        if (fwrite($file, $text . "\n") === false) {
             return new ExceptionHandler(
                 'Oppss! Log file not created.',  
                 'Can you check chmod settings to save log file in log directory, please?'

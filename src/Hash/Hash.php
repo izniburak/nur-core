@@ -69,7 +69,7 @@ class Hash implements HashInterface
      */
     protected function driver()
     {
-        if($this->getDefaultDriver() === 'argon') {
+        if ($this->getDefaultDriver() === 'argon') {
             return $this->createArgonDriver();
         } 
 

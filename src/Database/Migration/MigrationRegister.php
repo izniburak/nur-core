@@ -7,8 +7,8 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 $container = Container::getInstance();
 $config = config('database');
 
-if($config['driver'] == 'sqlite') {
-    if(strpos($config['database'], ':') === false) {
+if ($config['driver'] === 'sqlite') {
+    if (strpos($config['database'], ':') === false) {
         $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
     }
 }

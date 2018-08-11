@@ -13,9 +13,10 @@ class Http
      */
     public function post($key = null, $filter = false)
     {
-        if(is_null($key)) {
+        if (is_null($key)) {
             return $_POST;
         }
+
         $value = (isset($_POST[$key]) ? $_POST[$key] : null);
 
         return $this->filter($value, $filter);
@@ -30,9 +31,10 @@ class Http
      */
     public function get($key = null, $filter = false)
     {
-        if(is_null($key)) {
+        if (is_null($key)) {
             return $_GET;
         }
+
         $value = (isset($_GET[$key]) ? $_GET[$key] : null);
 
         return $this->filter($value, $filter);
@@ -47,8 +49,9 @@ class Http
      */
     public function put($key = null, $filter = true)
     {
-      	parse_str(file_get_contents("php://input"), $_PUT);
-      	if($key == null) {
+        parse_str(file_get_contents("php://input"), $_PUT);
+  
+      	if ($key == null) {
             return $_PUT;
         }
 
@@ -64,7 +67,8 @@ class Http
      */
     public function delete($key = null, $filter = true)
     {
-      	parse_str(file_get_contents("php://input"), $_DELETE);
+        parse_str(file_get_contents("php://input"), $_DELETE);
+  
       	if($key == null) {
             return $_DELETE;
         }
@@ -81,9 +85,10 @@ class Http
      */
     public function request($key = null, $filter = false)
     {
-        if(is_null($key)) {
+        if (is_null($key)) {
             return $_REQUEST;
         }
+
         $value = (isset($_REQUEST[$key]) ? $_REQUEST[$key] : null);
 
         return $this->filter($value, $filter);
@@ -98,12 +103,12 @@ class Http
      */
     public function files($key = null, $name = null)
     {
-        if(is_null($key)) {
+        if (is_null($key)) {
             return $_FILES;
         }
 
         if (isset($_FILES[$key])) {
-            if (!is_null($name)) {
+            if (! is_null($name)) {
                 return $_FILES[$key][$name];
             }
 
@@ -121,9 +126,10 @@ class Http
      */
     public function server($key = null)
     {
-        if(is_null($key)) {
+        if (is_null($key)) {
             return $_SERVER;
         }
+
         $key = strtoupper($key);
 
         return (isset($_SERVER[$key]) ? $_SERVER[$key] : null);
@@ -151,13 +157,12 @@ class Http
         $forward = $this->server('HTTP_X_FORWARDED_FOR');
         $remote  = $this->server('REMOTE_ADDR');
 
-        if(filter_var($client, FILTER_VALIDATE_IP)) {
+        if (filter_var($client, FILTER_VALIDATE_IP)) {
             $ip = $client;
         }
-        elseif(filter_var($forward, FILTER_VALIDATE_IP)) {
+        elseif (filter_var($forward, FILTER_VALIDATE_IP)) {
             $ip = $forward;
-        }
-        else {
+        } else {
             $ip = $remote;
         }
 
@@ -173,11 +178,11 @@ class Http
      */
     public function filter($data = null, $filter = false)
     {
-        if(is_null($data)) {
+        if (is_null($data)) {
             return null;
         }
 
-        if(is_array($data)) {
+        if (is_array($data)) {
             return array_map(function($value) use ($filter) { 
                 return $this->filter($value, $filter);
             }, $data);
