@@ -15,6 +15,6 @@ class Form extends FormProvider
      */
     public function __construct()
     {
-        return parent::__construct(new Uri, new Html, csrfToken());
+        return parent::__construct(new Uri, new Html, csrf_token());
     }
 }

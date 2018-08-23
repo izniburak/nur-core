@@ -110,10 +110,7 @@ class Kernel
                 header('HTTP/1.1 503 Service Unavailable.', TRUE, 503);
                 die('The application environment is not set correctly.');
         }
-        
-        if ($routerFiltersFile = realpath($this->root . '/app/filters.php')) {
-            require_once $routerFiltersFile;
-        }
+
         require_once realpath($this->root . '/app/routes.php');
         $this->app->get('route')->run();
     }
@@ -200,6 +197,11 @@ class Kernel
         $this->resolveFacades(config('services.aliases'));
     }
 
+    /**
+     * Register providers of Framework core
+     *
+     * @return void
+     */
     protected function registerCoreProviders()
     {
         foreach ([
@@ -213,6 +215,11 @@ class Kernel
         }
     }
 
+    /**
+     * Register providers of Application
+     *
+     * @return void
+     */
     protected function registerApplicationProviders($providers)
     {
         foreach ($providers as $provider) {
@@ -220,6 +227,11 @@ class Kernel
         }
     }
 
+    /**
+     * Register aliases of Framework core
+     *
+     * @return void
+     */
     protected function registerCoreAliases()
     {
         foreach ([
@@ -231,6 +243,12 @@ class Kernel
         }
     }
 
+    /**
+     * Resolve Facades
+     * 
+     * @param string $aliases
+     * @return void
+     */
     protected function resolveFacades($aliases)
     {
         // Prepare Facades

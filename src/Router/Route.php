@@ -21,20 +21,22 @@ class Route
      */
     public function __construct()
     {
-        if(file_exists(ROOT . '/app.down')) {
+        if (file_exists(ROOT . '/app.down')) {
             throw new ExceptionHandler('The system is under maintenance.', 'We will be back very soon.');
         }
 
         if (null === self::$instance)
         {
             self::$instance = new Router([
+                'base_folder' => ROOT,
+                'main_method' => 'main',
                 'paths' => [
                     'controllers' => 'app/Controllers/',
                     'middlewares' => 'app/Middlewares/'
                 ],
                 'namespaces' => [
-                    'controllers' => 'App\\Controllers',
-                    'middlewares' => 'App\\Middlewares'
+                    'controllers' => 'App\Controllers',
+                    'middlewares' => 'App\Middlewares'
                 ]
             ]);
         }
