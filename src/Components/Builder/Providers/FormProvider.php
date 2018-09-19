@@ -1,11 +1,10 @@
-<?php 
+<?php
 
 namespace Nur\Components\Builder\Providers;
 
-use BadMethodCallException;
 use DateTime;
-use Nur\Uri\Uri;
 use Nur\Components\Builder\Html;
+use Nur\Uri\Uri;
 
 class FormProvider
 {
@@ -67,6 +66,12 @@ class FormProvider
 
     /**
      * Create a new form builder instance.
+     *
+     * @param Uri    $uri
+     * @param Html   $html
+     * @param string $csrfToken
+     *
+     * @return void
      */
     public function __construct(Uri $uri, Html $html, $csrfToken)
     {
@@ -108,7 +113,7 @@ class FormProvider
         // format the array of attributes. We will also add on the appendage which
         // is used to spoof requests for this PUT, PATCH, etc. methods on forms.
         $attributes = array_merge(
-          $attributes, array_except($options, $this->reserved)
+            $attributes, array_except($options, $this->reserved)
         );
 
         // Finally, we will concatenate all of the attributes into a single string so
@@ -161,23 +166,11 @@ class FormProvider
 
         $value = $this->formatLabel($name, $value);
 
-        if ($escape_html)
+        if ($escape_html) {
             $value = $this->html->entities($value);
+        }
 
         return $this->toHtmlString('<label for="' . $name . '"' . $options . '>' . $value . '</label>');
-    }
-
-    /**
-     * Format the label value.
-     *
-     * @param  string      $name
-     * @param  string|null $value
-     *
-     * @return string
-     */
-    protected function formatLabel($name, $value)
-    {
-        return $value ?: ucwords(str_replace('_', ' ', $name));
     }
 
     /**
@@ -194,16 +187,18 @@ class FormProvider
     {
         $this->type = $type;
 
-        if (! isset($options['name'])) 
+        if (! isset($options['name'])) {
             $options['name'] = $name;
+        }
 
         // We will get the appropriate value for the given field. We will look for the
         // value in the session for the value in the old input data then we'll look
         // in the model instance if one is set. Otherwise we will just use empty.
         $id = $this->getIdAttribute($name, $options);
 
-        if (! in_array($type, $this->skipValueTypes)) 
+        if (! in_array($type, $this->skipValueTypes)) {
             $value = $this->getValueAttribute($name, $value);
+        }
 
         // Once we have the type, value, and ID we can merge them into the rest of the
         // attributes array so we can convert them into their HTML attribute format
@@ -323,8 +318,9 @@ class FormProvider
      */
     public function date($name, $value = null, $options = [])
     {
-        if ($value instanceof DateTime) 
+        if ($value instanceof DateTime) {
             $value = $value->format('Y-m-d');
+        }
 
         return $this->input('date', $name, $value, $options);
     }
@@ -340,8 +336,9 @@ class FormProvider
      */
     public function datetime($name, $value = null, $options = [])
     {
-        if ($value instanceof DateTime) 
+        if ($value instanceof DateTime) {
             $value = $value->format(DateTime::RFC3339);
+        }
 
         return $this->input('datetime', $name, $value, $options);
     }
@@ -357,8 +354,9 @@ class FormProvider
      */
     public function datetimeLocal($name, $value = null, $options = [])
     {
-        if ($value instanceof DateTime) 
+        if ($value instanceof DateTime) {
             $value = $value->format('Y-m-d\TH:i');
+        }
 
         return $this->input('datetime-local', $name, $value, $options);
     }
@@ -428,7 +426,7 @@ class FormProvider
 
         $options['id'] = $this->getIdAttribute($name, $options);
 
-        $value = (string) $this->getValueAttribute($name, $value);
+        $value = (string)$this->getValueAttribute($name, $value);
 
         unset($options['size']);
 
@@ -437,44 +435,7 @@ class FormProvider
         // the element. Then we'll create the final textarea elements HTML for us.
         $options = $this->html->attributes($options);
 
-        return $this->toHtmlString('<textarea' . $options . '>' . e($value). '</textarea>');
-    }
-
-    /**
-     * Set the text area size on the attributes.
-     *
-     * @param  array $options
-     *
-     * @return array
-     */
-    protected function setTextAreaSize($options)
-    {
-        if (isset($options['size'])) {
-            return $this->setQuickTextAreaSize($options);
-        }
-
-        // If the "size" attribute was not specified, we will just look for the regular
-        // columns and rows attributes, using sane defaults if these do not exist on
-        // the attributes array. We'll then return this entire options array back.
-        $cols = array_get($options, 'cols', 50);
-
-        $rows = array_get($options, 'rows', 10);
-
-        return array_merge($options, compact('cols', 'rows'));
-    }
-
-    /**
-     * Set the text area size using the quick "size" attribute.
-     *
-     * @param  array $options
-     *
-     * @return array
-     */
-    protected function setQuickTextAreaSize($options)
-    {
-        $segments = explode('x', $options['size']);
-
-        return array_merge($options, ['cols' => $segments[0], 'rows' => $segments[1]]);
+        return $this->toHtmlString('<textarea' . $options . '>' . e($value) . '</textarea>');
     }
 
     /**
@@ -554,12 +515,6 @@ class FormProvider
     /**
      * Create a select year field.
      *
-     * @param  string $name
-     * @param  string $begin
-     * @param  string $end
-     * @param  string $selected
-     * @param  array  $options
-     *
      * @return mixed
      */
     public function selectYear()
@@ -605,6 +560,202 @@ class FormProvider
         }
 
         return $this->option($display, $value, $selected, $attributes);
+    }
+
+    /**
+     * Create a checkbox input field.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     * @param  bool   $checked
+     * @param  array  $options
+     *
+     * @return string
+     */
+    public function checkbox($name, $value = 1, $checked = null, $options = [])
+    {
+        return $this->checkable('checkbox', $name, $value, $checked, $options);
+    }
+
+    /**
+     * Create a radio button input field.
+     *
+     * @param  string $name
+     * @param  mixed  $value
+     * @param  bool   $checked
+     * @param  array  $options
+     *
+     * @return string
+     */
+    public function radio($name, $value = null, $checked = null, $options = [])
+    {
+        if (is_null($value)) {
+            $value = $name;
+        }
+
+        return $this->checkable('radio', $name, $value, $checked, $options);
+    }
+
+    /**
+     * Create a HTML reset input element.
+     *
+     * @param  string $value
+     * @param  array  $attributes
+     *
+     * @return string
+     */
+    public function reset($value, $attributes = [])
+    {
+        return $this->input('reset', null, $value, $attributes);
+    }
+
+    /**
+     * Create a HTML image input element.
+     *
+     * @param  string $name
+     * @param  string $file
+     * @param  array  $attributes
+     * @param  bool   $secure
+     *
+     * @return string
+     */
+    public function image($name, $file, $attributes = [], $secure = null)
+    {
+        $attributes['src'] = $this->uri->assets($file, $secure);
+
+        return $this->input('image', $name, null, $attributes);
+    }
+
+    /**
+     * Create a color input field.
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  array  $options
+     *
+     * @return string
+     */
+    public function color($name, $value = null, $options = [])
+    {
+        return $this->input('color', $name, $value, $options);
+    }
+
+    /**
+     * Create a submit button element.
+     *
+     * @param  string $value
+     * @param  array  $options
+     *
+     * @return string
+     */
+    public function submit($value = null, $options = [])
+    {
+        return $this->input('submit', null, $value, $options);
+    }
+
+    /**
+     * Create a button element.
+     *
+     * @param  string $value
+     * @param  array  $options
+     *
+     * @return string
+     */
+    public function button($value = null, $options = [])
+    {
+        if (! array_key_exists('type', $options)) {
+            $options['type'] = 'button';
+        }
+
+        return $this->toHtmlString('<button' . $this->html->attributes($options) . '>' . $value . '</button>');
+    }
+
+    /**
+     * Get the ID attribute for a field name.
+     *
+     * @param  string $name
+     * @param  array  $attributes
+     *
+     * @return string
+     */
+    public function getIdAttribute($name, $attributes)
+    {
+        if (array_key_exists('id', $attributes)) {
+            return $attributes['id'];
+        }
+
+        if (in_array($name, $this->labels)) {
+            return $name;
+        }
+    }
+
+    /**
+     * Get the value that should be assigned to the field.
+     *
+     * @param  string $name
+     * @param  string $value
+     *
+     * @return mixed
+     */
+    public function getValueAttribute($name, $value = null)
+    {
+        if (is_null($name)) {
+            return $value;
+        }
+
+        if (! is_null($value)) {
+            return $value;
+        }
+    }
+
+    /**
+     * Format the label value.
+     *
+     * @param  string      $name
+     * @param  string|null $value
+     *
+     * @return string
+     */
+    protected function formatLabel($name, $value)
+    {
+        return $value ?: ucwords(str_replace('_', ' ', $name));
+    }
+
+    /**
+     * Set the text area size on the attributes.
+     *
+     * @param  array $options
+     *
+     * @return array
+     */
+    protected function setTextAreaSize($options)
+    {
+        if (isset($options['size'])) {
+            return $this->setQuickTextAreaSize($options);
+        }
+
+        // If the "size" attribute was not specified, we will just look for the regular
+        // columns and rows attributes, using sane defaults if these do not exist on
+        // the attributes array. We'll then return this entire options array back.
+        $cols = array_get($options, 'cols', 50);
+
+        $rows = array_get($options, 'rows', 10);
+
+        return array_merge($options, compact('cols', 'rows'));
+    }
+
+    /**
+     * Set the text area size using the quick "size" attribute.
+     *
+     * @param  array $options
+     *
+     * @return array
+     */
+    protected function setQuickTextAreaSize($options)
+    {
+        $segments = explode('x', $options['size']);
+
+        return array_merge($options, ['cols' => $segments[0], 'rows' => $segments[1]]);
     }
 
     /**
@@ -661,7 +812,7 @@ class FormProvider
 
         $options = [
             'selected' => $selected,
-            'value' => ''
+            'value' => '',
         ];
 
         return $this->toHtmlString('<option' . $this->html->attributes($options) . '>' . e($display) . '</option>');
@@ -679,43 +830,9 @@ class FormProvider
     {
         if (is_array($selected)) {
             return in_array($value, $selected, true) ? 'selected' : null;
-        } 
-
-        return ((string) $value == (string) $selected) ? 'selected' : null;
-    }
-
-    /**
-     * Create a checkbox input field.
-     *
-     * @param  string $name
-     * @param  mixed  $value
-     * @param  bool   $checked
-     * @param  array  $options
-     *
-     * @return string
-     */
-    public function checkbox($name, $value = 1, $checked = null, $options = [])
-    {
-        return $this->checkable('checkbox', $name, $value, $checked, $options);
-    }
-
-    /**
-     * Create a radio button input field.
-     *
-     * @param  string $name
-     * @param  mixed  $value
-     * @param  bool   $checked
-     * @param  array  $options
-     *
-     * @return string
-     */
-    public function radio($name, $value = null, $checked = null, $options = [])
-    {
-        if (is_null($value)) {
-            $value = $name;
         }
 
-        return $this->checkable('radio', $name, $value, $checked, $options);
+        return ((string)$value == (string)$selected) ? 'selected' : null;
     }
 
     /**
@@ -782,7 +899,7 @@ class FormProvider
         if (is_array($posted)) {
             return in_array($value, $posted);
         } else {
-            return (bool) $posted;
+            return (bool)$posted;
         }
     }
 
@@ -798,81 +915,6 @@ class FormProvider
     protected function getRadioCheckedState($name, $value, $checked)
     {
         return $this->getValueAttribute($name) == $value;
-    }
-
-
-    /**
-     * Create a HTML reset input element.
-     *
-     * @param  string $value
-     * @param  array  $attributes
-     *
-     * @return string
-     */
-    public function reset($value, $attributes = [])
-    {
-        return $this->input('reset', null, $value, $attributes);
-    }
-
-    /**
-     * Create a HTML image input element.
-     *
-     * @param  string $name
-     * @param  string $file
-     * @param  array  $attributes
-     * @param  bool  $secure
-     *
-     * @return string
-     */
-    public function image($name, $file, $attributes = [], $secure = null)
-    {
-        $attributes['src'] = $this->uri->assets($file, $secure);
-
-        return $this->input('image', $name, null, $attributes);
-    }
-
-    /**
-     * Create a color input field.
-     *
-     * @param  string $name
-     * @param  string $value
-     * @param  array  $options
-     *
-     * @return string
-     */
-    public function color($name, $value = null, $options = [])
-    {
-        return $this->input('color', $name, $value, $options);
-    }
-
-    /**
-     * Create a submit button element.
-     *
-     * @param  string $value
-     * @param  array  $options
-     *
-     * @return string
-     */
-    public function submit($value = null, $options = [])
-    {
-        return $this->input('submit', null, $value, $options);
-    }
-
-    /**
-     * Create a button element.
-     *
-     * @param  string $value
-     * @param  array  $options
-     *
-     * @return string
-     */
-    public function button($value = null, $options = [])
-    {
-        if (! array_key_exists('type', $options)) {
-            $options['type'] = 'button';
-        }
-
-        return $this->toHtmlString('<button' . $this->html->attributes($options) . '>' . $value . '</button>');
     }
 
     /**
@@ -915,44 +957,6 @@ class FormProvider
         }
 
         return $appendage;
-    }
-
-    /**
-     * Get the ID attribute for a field name.
-     *
-     * @param  string $name
-     * @param  array  $attributes
-     *
-     * @return string
-     */
-    public function getIdAttribute($name, $attributes)
-    {
-        if (array_key_exists('id', $attributes)) {
-            return $attributes['id'];
-        }
-
-        if (in_array($name, $this->labels)) {
-            return $name;
-        }
-    }
-
-    /**
-     * Get the value that should be assigned to the field.
-     *
-     * @param  string $name
-     * @param  string $value
-     *
-     * @return mixed
-     */
-    public function getValueAttribute($name, $value = null)
-    {
-        if (is_null($name)) {
-            return $value;
-        }
-
-        if (! is_null($value)) {
-            return $value;
-        }
     }
 
     /**

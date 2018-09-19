@@ -2,15 +2,15 @@
 
 namespace Nur\Components\Builder;
 
-use Nur\Uri\Uri;
 use Nur\Components\Builder\Providers\HtmlProvider;
+use Nur\Uri\Uri;
 
 class Html extends HtmlProvider
 {
     /**
-     * Class constructer
-     * 
-     * @return void
+     * Class constructor
+     *
+     * @return mixed
      */
     public function __construct()
     {

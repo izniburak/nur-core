@@ -17,20 +17,20 @@ class Blade
     protected $templateFolder = '/storage/cache/blade';
 
     /**
-     * Class constructer and create Blade Template Engine.
+     * Class constructor and create Blade Template Engine.
      *
      * @return void
      */
     public function __construct()
     {
-        $cache = ROOT . $this->templateFolder;
+        $cache = cache_path('blade');
 
         if (! is_dir(realpath($cache))) {
             mkdir($cache, 0755);
             touch($cache . "/index.html");
         }
 
-        $views = realpath(ROOT . '/app/Views');
+        $views = app_path('Views');
         $this->class = new BladeTemplate($views, $cache);
     }
 
@@ -38,8 +38,9 @@ class Blade
      * Display view file.
      *
      * @param string $view
-     * @param array $data 
-     * @param array $mergeData
+     * @param array  $data
+     * @param array  $mergeData
+     *
      * @return string|false
      */
     public function make($view, $data = [], $mergeData = [])
@@ -52,7 +53,7 @@ class Blade
     }
 
     /**
-     * Class destructer
+     * Class destructor
      *
      * @return void
      */

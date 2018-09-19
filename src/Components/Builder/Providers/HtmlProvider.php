@@ -98,7 +98,7 @@ class HtmlProvider
         $attributes['alt'] = $alt;
 
         return $this->toHtmlString('<img src="' . $this->uri->assets($url,
-            $secure) . '"' . $this->attributes($attributes) . '>');
+                $secure) . '"' . $this->attributes($attributes) . '>');
     }
 
     /**
@@ -297,7 +297,7 @@ class HtmlProvider
         $html = "<dl{$attributes}>";
 
         foreach ($list as $key => $value) {
-            $value = (array) $value;
+            $value = (array)$value;
 
             $html .= "<dt>$key</dt>";
 
@@ -309,6 +309,97 @@ class HtmlProvider
         $html .= '</dl>';
 
         return $this->toHtmlString($html);
+    }
+
+    /**
+     * Build an HTML attribute string from an array.
+     *
+     * @param array $attributes
+     *
+     * @return string
+     */
+    public function attributes($attributes)
+    {
+        $html = [];
+
+        foreach ((array)$attributes as $key => $value) {
+            $element = $this->attributeElement($key, $value);
+
+            if (! is_null($element)) {
+                $html[] = $element;
+            }
+        }
+
+        return count($html) > 0 ? ' ' . implode(' ', $html) : '';
+    }
+
+    /**
+     * Obfuscate a string to prevent spam-bots from sniffing it.
+     *
+     * @param string $value
+     *
+     * @return string
+     */
+    public function obfuscate($value)
+    {
+        $safe = '';
+
+        foreach (str_split($value) as $letter) {
+            if (ord($letter) > 128) {
+                return $letter;
+            }
+
+            // To properly obfuscate the value, we will randomly convert each letter to
+            // its entity or hexadecimal representation, keeping a bot from sniffing
+            // the randomly obfuscated letters out of the string on the responses.
+            switch (rand(1, 3)) {
+                case 1:
+                    $safe .= '&#' . ord($letter) . ';';
+                    break;
+
+                case 2:
+                    $safe .= '&#x' . dechex(ord($letter)) . ';';
+                    break;
+
+                case 3:
+                    $safe .= $letter;
+            }
+        }
+
+        return $safe;
+    }
+
+    /**
+     * Generate a meta tag.
+     *
+     * @param string $name
+     * @param string $content
+     * @param array  $attributes
+     *
+     * @return string
+     */
+    public function meta($name, $content, array $attributes = [])
+    {
+        $defaults = compact('name', 'content');
+
+        $attributes = array_merge($defaults, $attributes);
+
+        return $this->toHtmlString('<meta' . $this->attributes($attributes) . '>' . PHP_EOL);
+    }
+
+    /**
+     * Generate an html tag.
+     *
+     * @param string $tag
+     * @param mixed  $content
+     * @param array  $attributes
+     *
+     * @return string
+     */
+    public function tag($tag, $content, array $attributes = [])
+    {
+        $content = is_array($content) ? implode(PHP_EOL, $content) : $content;
+        return $this->toHtmlString('<' . $tag . $this->attributes($attributes) . '>' . PHP_EOL . $this->toHtmlString($content) . PHP_EOL . '</' . $tag . '>' . PHP_EOL);
     }
 
     /**
@@ -377,28 +468,6 @@ class HtmlProvider
     }
 
     /**
-     * Build an HTML attribute string from an array.
-     *
-     * @param array $attributes
-     *
-     * @return string
-     */
-    public function attributes($attributes)
-    {
-        $html = [];
-
-        foreach ((array) $attributes as $key => $value) {
-            $element = $this->attributeElement($key, $value);
-
-            if (! is_null($element)) {
-                $html[] = $element;
-            }
-        }
-
-        return count($html) > 0 ? ' ' . implode(' ', $html) : '';
-    }
-
-    /**
      * Build a single attribute element.
      *
      * @param string $key
@@ -425,75 +494,6 @@ class HtmlProvider
         if (! is_null($value)) {
             return $key . '="' . e($value) . '"';
         }
-    }
-
-    /**
-     * Obfuscate a string to prevent spam-bots from sniffing it.
-     *
-     * @param string $value
-     *
-     * @return string
-     */
-    public function obfuscate($value)
-    {
-        $safe = '';
-
-        foreach (str_split($value) as $letter) {
-            if (ord($letter) > 128) {
-                return $letter;
-            }
-
-            // To properly obfuscate the value, we will randomly convert each letter to
-            // its entity or hexadecimal representation, keeping a bot from sniffing
-            // the randomly obfuscated letters out of the string on the responses.
-            switch (rand(1, 3)) {
-                case 1:
-                    $safe .= '&#' . ord($letter) . ';';
-                    break;
-
-                case 2:
-                    $safe .= '&#x' . dechex(ord($letter)) . ';';
-                    break;
-
-                case 3:
-                    $safe .= $letter;
-            }
-        }
-
-        return $safe;
-    }
-
-    /**
-     * Generate a meta tag.
-     *
-     * @param string $name
-     * @param string $content
-     * @param array  $attributes
-     *
-     * @return string
-     */
-    public function meta($name, $content, array $attributes = [])
-    {
-        $defaults = compact('name', 'content');
-
-        $attributes = array_merge($defaults, $attributes);
-
-        return $this->toHtmlString('<meta' . $this->attributes($attributes) . '>' . PHP_EOL);
-    }
-
-    /**
-     * Generate an html tag.
-     *
-     * @param string $tag
-     * @param mixed $content
-     * @param array  $attributes
-     *
-     * @return string
-     */
-    public function tag($tag, $content, array $attributes = [])
-    {
-        $content = is_array($content) ? implode(PHP_EOL, $content) : $content;
-        return $this->toHtmlString('<' . $tag . $this->attributes($attributes) . '>' . PHP_EOL . $this->toHtmlString($content) . PHP_EOL . '</' . $tag . '>' . PHP_EOL);
     }
 
     /**

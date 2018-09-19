@@ -2,8 +2,6 @@
 
 namespace Nur\Components\Validation;
 
-use Nur\Facades\Http;
-
 class Validation
 {
     /**
@@ -35,7 +33,7 @@ class Validation
     protected $data = [];
 
     /**
-     * Fields validation error messagses
+     * Fields validation error messages
      *
      * @var array
      */
@@ -53,6 +51,7 @@ class Validation
      * Define Validation Rules
      *
      * @param array $rules
+     *
      * @return void
      */
     public function rules(Array $rules)
@@ -61,7 +60,7 @@ class Validation
             $this->rule(
                 $key, $value['label'],
                 $value['rules'],
-                isset($value['text']) && !empty($value['text']) ? $value['text'] : []
+                isset($value['text']) && ! empty($value['text']) ? $value['text'] : []
             );
         }
     }
@@ -72,25 +71,28 @@ class Validation
      * @param string $field
      * @param string $label
      * @param string $rules
+     * @param array  $text
+     *
      * @return void
      */
-    public function rule($field, $label, $rules, Array $text = [])
+    public function rule($field, $label, $rules, array $text = [])
     {
         $this->labels[$field] = $label;
         $this->rules[$field] = $rules;
-        $this->texts[$field] = (!empty($text) ? $text : null);
+        $this->texts[$field] = (! empty($text) ? $text : null);
     }
 
     /**
      * Validate
      *
      * @param array $data
+     *
      * @return boolean
      */
-    public function isValid(Array $data = [])
+    public function isValid(array $data = [])
     {
         if (empty($data)) {
-            $data = Http::method() == 'GET' ? Http::get() : Http::post();
+            $data = http()->method() == 'GET' ? http()->get() : http()->post();
         }
         $this->data = $data;
 
@@ -117,47 +119,15 @@ class Validation
     }
 
     /**
-     * Field validation error messages
-     *
-     * @param string $filter
-     * @param string $field
-     * @param string $params
-     * @return void
-     */
-    protected function errorMessage($filter, $field, $params = null)
-    {
-        $text = (isset($this->texts[$field][$filter]) && !is_null($this->texts[$field][$filter])
-            ? $this->texts[$field][$filter] : $this->msg);
-        $text = str_replace([':label:', ':value:'], '%s', $text);
-
-        if (!isset($this->data[$field])) {
-            $this->errors[] = sprintf($text, $this->labels[$field], $params);
-        } elseif (!is_null($params)) {
-            if ($filter == 'matches') {
-                if ($this->matches($this->data[$field], $this->data[$params]) === false) {
-                    $this->errors[] = sprintf($text, $this->labels[$field], $params);
-                }
-            } else {
-                if ($this->$filter($this->data[$field], $params) === false) {
-                    $this->errors[] = sprintf($text, $this->labels[$field], $params);
-                }
-            }
-        } else {
-            if ($this->$filter($this->data[$field]) === false) {
-                $this->errors[] = sprintf($text, $this->labels[$field], $params);
-            }
-        }
-    }
-
-    /**
      * Sanitizing Data
      *
      * @param string $data
+     *
      * @return string
      */
     public function sanitize($data)
     {
-        if (!is_array($data)) {
+        if (! is_array($data)) {
             return filter_var(trim($data), FILTER_SANITIZE_STRING);
         }
 
@@ -178,20 +148,56 @@ class Validation
     }
 
     /**
+     * Field validation error messages
+     *
+     * @param string $filter
+     * @param string $field
+     * @param string $params
+     *
+     * @return void
+     */
+    protected function errorMessage($filter, $field, $params = null)
+    {
+        $text = (isset($this->texts[$field][$filter]) && ! is_null($this->texts[$field][$filter])
+            ? $this->texts[$field][$filter] : $this->msg);
+        $text = str_replace([':label:', ':value:'], '%s', $text);
+
+        if (! isset($this->data[$field])) {
+            $this->errors[] = sprintf($text, $this->labels[$field], $params);
+        } elseif (! is_null($params)) {
+            if ($filter == 'matches') {
+                if ($this->matches($this->data[$field], $this->data[$params]) === false) {
+                    $this->errors[] = sprintf($text, $this->labels[$field], $params);
+                }
+            } else {
+                if ($this->$filter($this->data[$field], $params) === false) {
+                    $this->errors[] = sprintf($text, $this->labels[$field], $params);
+                }
+            }
+        } else {
+            if ($this->$filter($this->data[$field]) === false) {
+                $this->errors[] = sprintf($text, $this->labels[$field], $params);
+            }
+        }
+    }
+
+    /**
      * Required Field Control
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function required($data)
     {
-        return (!empty($data) && !is_null($data) && $data !== '');
+        return (! empty($data) && ! is_null($data) && $data !== '');
     }
 
     /**
      * Numeric Field Control
      *
      * @param int $data
+     *
      * @return boolean
      */
     protected function numeric($data)
@@ -203,6 +209,7 @@ class Validation
      * Email Validation
      *
      * @param string $email
+     *
      * @return boolean
      */
     protected function email($email)
@@ -215,6 +222,7 @@ class Validation
      *
      * @param string $data
      * @param int    $length
+     *
      * @return boolean
      */
     protected function min_len($data, $length)
@@ -227,6 +235,7 @@ class Validation
      *
      * @param string $data
      * @param int    $length
+     *
      * @return boolean
      */
     protected function max_len($data, $length)
@@ -239,6 +248,7 @@ class Validation
      *
      * @param string $data
      * @param int    $length
+     *
      * @return boolean
      */
     protected function exact_len($data, $length)
@@ -250,6 +260,7 @@ class Validation
      * Alpha Character Validation
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function alpha($data)
@@ -262,6 +273,7 @@ class Validation
      * Alphanumeric Character Validation
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function alpha_num($data)
@@ -274,39 +286,43 @@ class Validation
      * Alpha-dash Character Validation
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function alpha_dash($data)
     {
-        return !(!preg_match("/^([A-Za-z0-9_-])+$/i", $data));
+        return ! (! preg_match("/^([A-Za-z0-9_-])+$/i", $data));
     }
 
     /**
      * Alpha-space Character Validation
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function alpha_space($data)
     {
-        return !(!preg_match("/^([A-Za-z0-9- ])+$/i", $data));
+        return ! (! preg_match("/^([A-Za-z0-9- ])+$/i", $data));
     }
 
     /**
      * Integer Validation
      *
      * @param int $data
+     *
      * @return boolean
      */
     protected function integer($data)
     {
-        return !(!preg_match("/^([0-9])+$/i", $data));
+        return ! (! preg_match("/^([0-9])+$/i", $data));
     }
 
     /**
      * Boolean Validation
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function boolean($data)
@@ -318,17 +334,19 @@ class Validation
      * Float Validation
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function float($data)
     {
-        return (!preg_match("/^([0-9\.])+$/i", $data)) ? false : true;
+        return (! preg_match("/^([0-9\.])+$/i", $data)) ? false : true;
     }
 
     /**
      * URL Validation
      *
      * @param string $url
+     *
      * @return boolean
      */
     protected function valid_url($url)
@@ -340,6 +358,7 @@ class Validation
      * IP Validation
      *
      * @param string $ip
+     *
      * @return boolean
      */
     protected function valid_ip($ip)
@@ -351,6 +370,7 @@ class Validation
      * IPv4 Validation
      *
      * @param string $ip
+     *
      * @return boolean
      */
     protected function valid_ipv4($ip)
@@ -362,6 +382,7 @@ class Validation
      * IPv6 Validation
      *
      * @param string $ip
+     *
      * @return boolean
      */
     protected function valid_ipv6($ip)
@@ -373,6 +394,7 @@ class Validation
      * Credit Card Validation
      *
      * @param string $data
+     *
      * @return boolean
      */
     protected function valid_cc($data)
@@ -408,6 +430,7 @@ class Validation
      *
      * @param string $data
      * @param string $part
+     *
      * @return boolean
      */
     protected function contains($data, $part)
@@ -420,6 +443,7 @@ class Validation
      *
      * @param int $data
      * @param int $min
+     *
      * @return boolean
      */
     protected function min_numeric($data, $min)
@@ -432,6 +456,7 @@ class Validation
      *
      * @param int $data
      * @param int $max
+     *
      * @return boolean
      */
     protected function max_numeric($data, $max)
@@ -444,6 +469,7 @@ class Validation
      *
      * @param string $data
      * @param string $field
+     *
      * @return bool
      */
     protected function matches($data, $field)

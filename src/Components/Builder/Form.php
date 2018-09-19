@@ -2,16 +2,15 @@
 
 namespace Nur\Components\Builder;
 
-use Nur\Uri\Uri;
-use Nur\Components\Builder\Html;
 use Nur\Components\Builder\Providers\FormProvider;
+use Nur\Uri\Uri;
 
 class Form extends FormProvider
 {
     /**
-     * Class constructer
-     * 
-     * @return void
+     * Class constructor
+     *
+     * @return mixed
      */
     public function __construct()
     {
