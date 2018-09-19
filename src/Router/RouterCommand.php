@@ -2,7 +2,6 @@
 
 namespace Nur\Router;
 
-use Nur\Router\RouterException;
 use Buki\Router\RouterCommand as RouterCommandProvider;
 
 class RouterCommand extends RouterCommandProvider
@@ -11,7 +10,8 @@ class RouterCommand extends RouterCommandProvider
      * Throw new Exception for Router Error
      *
      * @param string $message
-     * @return Nur\Router\RouterException
+     *
+     * @return RouterException
      */
     public function exception($message = '')
     {

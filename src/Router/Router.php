@@ -1,32 +1,32 @@
 <?php
- 
+
 namespace Nur\Router;
 
-use Nur\Router\RouterCommand;
-use Nur\Router\RouterException;
 use Buki\Router as RouterProvider;
 
 class Router extends RouterProvider
 {
     /**
-	 * Throw new Exception for Router Error
-	 *
+     * Throw new Exception for Router Error
+     *
      * @param string $message
-	 * @return RouterException
-	 */
-	public function exception($message = '')
-	{
-		return new RouterException($message);
-	}
+     *
+     * @return RouterException
+     */
+    public function exception($message = '')
+    {
+        return new RouterException($message);
+    }
 
     /**
-	 * RouterCommand class
-	 *
+     * RouterCommand class
+     *
      * @param string $message
-	 * @return RouterCommand
-	 */
-	public function routerCommand($message = '')
-	{
-		return new RouterCommand($message);
-	}
+     *
+     * @return RouterCommand
+     */
+    public function routerCommand($message = '')
+    {
+        return new RouterCommand($message);
+    }
 }

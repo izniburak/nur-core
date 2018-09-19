@@ -2,14 +2,13 @@
 
 namespace Nur\Router;
 
-use Nur\Router\Router;
 use Nur\Exception\ExceptionHandler;
 
 class Route
 {
     /**
      * Class instance variable
-     * 
+     *
      * @var Nur\Router\Router
      */
     private static $instance = null;
@@ -18,26 +17,26 @@ class Route
      * Get class instance
      *
      * @return Nur\Router\Router
+     * @throws
      */
     public function __construct()
     {
-        if (file_exists(ROOT . '/app.down')) {
+        if (file_exists(base_path('app.down'))) {
             throw new ExceptionHandler('The system is under maintenance.', 'We will be back very soon.');
         }
 
-        if (null === self::$instance)
-        {
+        if (null === self::$instance) {
             self::$instance = new Router([
                 'base_folder' => ROOT,
                 'main_method' => 'main',
                 'paths' => [
                     'controllers' => 'app/Controllers/',
-                    'middlewares' => 'app/Middlewares/'
+                    'middlewares' => 'app/Middlewares/',
                 ],
                 'namespaces' => [
                     'controllers' => 'App\Controllers',
-                    'middlewares' => 'App\Middlewares'
-                ]
+                    'middlewares' => 'App\Middlewares',
+                ],
             ]);
         }
 
@@ -47,8 +46,9 @@ class Route
     /**
      * Call function for Class
      *
-     * @param string $method 
-     * @param array $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)
@@ -59,8 +59,9 @@ class Route
     /**
      * Call static function for Class
      *
-     * @param string $method 
-     * @param array $parameters
+     * @param string $method
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public static function __callStatic($method, $parameters)

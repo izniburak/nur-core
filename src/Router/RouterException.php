@@ -3,7 +3,6 @@
 namespace Nur\Router;
 
 use Nur\Exception\ExceptionHandler;
-use Nur\Load\Load;
 
 class RouterException extends ExceptionHandler
 {
@@ -16,6 +15,6 @@ class RouterException extends ExceptionHandler
      */
     public function __construct($message)
     {
-        return Load::error("Opss! 404...", $message);
+        return error('Opss! 404...', $message);
     }
 }

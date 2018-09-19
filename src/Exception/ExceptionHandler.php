@@ -12,7 +12,7 @@ class ExceptionHandler extends Exception
      * @param string $title
      * @param string $message
      *
-     * @return void
+     * @return mixed
      * @throws Exception
      */
     public function __construct($title, $message)
@@ -21,6 +21,6 @@ class ExceptionHandler extends Exception
             throw new Exception(strip_tags($title . ' - ' . $message), 1);
         }
 
-        app('load')->error($title, $message);
+        return error($title, $message);
     }
 }

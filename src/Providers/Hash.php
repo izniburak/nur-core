@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Nur\Providers;
 
@@ -10,6 +10,7 @@ class Hash extends ServiceProvider
      * Register the service provider.
      *
      * @return void
+     * @throws
      */
     public function register()
     {

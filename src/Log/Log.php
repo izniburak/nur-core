@@ -3,7 +3,6 @@
 namespace Nur\Log;
 
 use Nur\Exception\ExceptionHandler;
-use Nur\Facades\Http;
 
 class Log
 {
@@ -117,6 +116,7 @@ class Log
      * @param mixed  $message
      *
      * @return void
+     * @throws
      */
     protected function log($level, $message)
     {
@@ -125,7 +125,7 @@ class Log
         }
 
         $text = '[' . date($this->timeFormat,
-                time()) . '] - [' . strtoupper($level) . '] - [' . Http::getClientIP() . '] --> ' . $message;
+                time()) . '] - [' . strtoupper($level) . '] - [' . http()->getClientIP() . '] --> ' . $message;
         $this->save($text);
     }
 
@@ -140,7 +140,7 @@ class Log
     protected function save($text)
     {
         $fileName = 'log_' . date('Y-m-d') . '.log';
-        $file = fopen(ROOT . '/storage/log/' . $fileName, 'a');
+        $file = fopen(storage_path('log' . DIRECTORY_SEPARATOR . $fileName), 'a');
 
         if (fwrite($file, $text . "\n") === false) {
             throw new ExceptionHandler(
