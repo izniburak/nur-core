@@ -24,7 +24,7 @@ class Request extends SymfonyRequest
     protected $json;
 
     /**
-     * Class constructer.
+     * Class constructor.
      *
      * @return void
      */
@@ -38,6 +38,7 @@ class Request extends SymfonyRequest
      *
      * @param  string            $key
      * @param  string|array|null $default
+     *
      * @return string|array
      */
     public function server($key = null, $default = null)
@@ -46,30 +47,15 @@ class Request extends SymfonyRequest
     }
 
     /**
-     * Retrieve a parameter item from a given source.
-     *
-     * @param  string            $source
-     * @param  string            $key
-     * @param  string|array|null $default
-     * @return string|array
-     */
-    protected function retrieveItem($source, $key, $default)
-    {
-        if (is_null($key)) {
-            return $this->$source->all();
-        }
-        return $this->$source->get($key, $default);
-    }
-
-    /**
      * Determine if a header is set on the request.
      *
      * @param  string $key
+     *
      * @return bool
      */
     public function hasHeader($key)
     {
-        return !is_null($this->header($key));
+        return ! is_null($this->header($key));
     }
 
     /**
@@ -77,6 +63,7 @@ class Request extends SymfonyRequest
      *
      * @param  string            $key
      * @param  string|array|null $default
+     *
      * @return string|array
      */
     public function header($key = null, $default = null)
@@ -101,6 +88,7 @@ class Request extends SymfonyRequest
      * Determine if the request contains a given input item key.
      *
      * @param  string|array $key
+     *
      * @return bool
      */
     public function exists($key)
@@ -112,6 +100,7 @@ class Request extends SymfonyRequest
      * Determine if the request contains a given input item key.
      *
      * @param  string|array $key
+     *
      * @return bool
      */
     public function has($key)
@@ -119,7 +108,7 @@ class Request extends SymfonyRequest
         $keys = is_array($key) ? $key : func_get_args();
         $input = $this->all();
         foreach ($keys as $value) {
-            if (!Arr::has($input, $value)) {
+            if (! Arr::has($input, $value)) {
                 return false;
             }
         }
@@ -130,12 +119,13 @@ class Request extends SymfonyRequest
      * Get all of the input and files for the request.
      *
      * @param  array|mixed $keys
+     *
      * @return array
      */
     public function all($keys = null)
     {
         $input = array_replace_recursive($this->input(), $this->allFiles());
-        if (!$keys) {
+        if (! $keys) {
             return $input;
         }
         $results = [];
@@ -150,6 +140,7 @@ class Request extends SymfonyRequest
      *
      * @param  string|null       $key
      * @param  string|array|null $default
+     *
      * @return string|array|null
      */
     public function input($key = null, $default = null)
@@ -157,20 +148,6 @@ class Request extends SymfonyRequest
         return data_get(
             $this->getInputSource()->all() + $this->query->all(), $key, $default
         );
-    }
-
-    /**
-     * Get the input source for the request.
-     *
-     * @return \Symfony\Component\HttpFoundation\ParameterBag
-     */
-    protected function getInputSource()
-    {
-        if ($this->isJson()) {
-            return $this->json();
-        }
-
-        return in_array($this->getRealMethod(), ['GET', 'HEAD']) ? $this->query : $this->request;
     }
 
     /**
@@ -188,11 +165,12 @@ class Request extends SymfonyRequest
      *
      * @param  string $key
      * @param  mixed  $default
+     *
      * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed
      */
     public function json($key = null, $default = null)
     {
-        if (!isset($this->json)) {
+        if (! isset($this->json)) {
             $this->json = new ParameterBag((array)json_decode($this->getContent(), true));
         }
         if (is_null($key)) {
@@ -215,6 +193,7 @@ class Request extends SymfonyRequest
      * Determine if the request contains any of the given inputs.
      *
      * @param  string|array $keys
+     *
      * @return bool
      */
     public function hasAny($keys)
@@ -233,6 +212,7 @@ class Request extends SymfonyRequest
      * Determine if the request contains a non-empty value for any of the given inputs.
      *
      * @param  string|array $keys
+     *
      * @return bool
      */
     public function anyFilled($keys)
@@ -250,6 +230,7 @@ class Request extends SymfonyRequest
      * Determine if the request contains a non-empty value for an input item.
      *
      * @param  string|array $key
+     *
      * @return bool
      */
     public function filled($key)
@@ -261,18 +242,6 @@ class Request extends SymfonyRequest
             }
         }
         return true;
-    }
-
-    /**
-     * Determine if the given input key is an empty string for "has".
-     *
-     * @param  string $key
-     * @return bool
-     */
-    protected function isEmptyString($key)
-    {
-        $value = $this->input($key);
-        return !is_bool($value) && !is_array($value) && trim((string)$value) === '';
     }
 
     /**
@@ -289,6 +258,7 @@ class Request extends SymfonyRequest
      * Get a subset containing the provided keys with values from the input data.
      *
      * @param  array|mixed $keys
+     *
      * @return array
      */
     public function only($keys)
@@ -309,6 +279,7 @@ class Request extends SymfonyRequest
      * Get all of the input except for a specified array of items.
      *
      * @param  array|mixed $keys
+     *
      * @return array
      */
     public function except($keys)
@@ -336,11 +307,12 @@ class Request extends SymfonyRequest
      * Determine if a cookie is set on the request.
      *
      * @param  string $key
+     *
      * @return bool
      */
     public function hasCookie($key)
     {
-        return !is_null($this->cookie($key));
+        return ! is_null($this->cookie($key));
     }
 
     /**
@@ -348,6 +320,7 @@ class Request extends SymfonyRequest
      *
      * @param  string            $key
      * @param  string|array|null $default
+     *
      * @return string|array
      */
     public function cookie($key = null, $default = null)
@@ -359,11 +332,12 @@ class Request extends SymfonyRequest
      * Determine if the uploaded data contains a file.
      *
      * @param  string $key
+     *
      * @return bool
      */
     public function hasFile($key)
     {
-        if (!is_array($files = $this->file($key))) {
+        if (! is_array($files = $this->file($key))) {
             $files = [$files];
         }
         foreach ($files as $file) {
@@ -379,22 +353,12 @@ class Request extends SymfonyRequest
      *
      * @param  string $key
      * @param  mixed  $default
+     *
      * @return \Illuminate\Http\UploadedFile|array|null
      */
     public function file($key = null, $default = null)
     {
         return data_get($this->allFiles(), $key, $default);
-    }
-
-    /**
-     * Check that the given file is a valid file instance.
-     *
-     * @param  mixed $file
-     * @return bool
-     */
-    protected function isValidFile($file)
-    {
-        return $file instanceof SplFileInfo && $file->getPath() !== '';
     }
 
     /**
@@ -421,6 +385,7 @@ class Request extends SymfonyRequest
      * Get the full URL for the request with the added query string parameters.
      *
      * @param  array $query
+     *
      * @return string
      */
     public function fullUrlWithQuery(array $query)
@@ -436,6 +401,7 @@ class Request extends SymfonyRequest
      *
      * @param  string            $key
      * @param  string|array|null $default
+     *
      * @return string|array
      */
     public function query($key = null, $default = null)
@@ -470,6 +436,7 @@ class Request extends SymfonyRequest
      *
      * @param  int         $index
      * @param  string|null $default
+     *
      * @return string|null
      */
     public function segment($index, $default = null)
@@ -555,6 +522,7 @@ class Request extends SymfonyRequest
      * Merge new input into the current request's input array.
      *
      * @param  array $input
+     *
      * @return \Nur\Http\Request
      */
     public function merge(array $input)
@@ -567,6 +535,7 @@ class Request extends SymfonyRequest
      * Replace the input for the current request.
      *
      * @param  array $input
+     *
      * @return \Nur\Http\Request
      */
     public function replace(array $input)
@@ -582,6 +551,7 @@ class Request extends SymfonyRequest
      *
      * @param  string $key
      * @param  mixed  $default
+     *
      * @return mixed
      */
     public function get($key, $default = null)
@@ -603,17 +573,19 @@ class Request extends SymfonyRequest
      * Check if an input element is set on the request.
      *
      * @param  string $key
+     *
      * @return bool
      */
     public function __isset($key)
     {
-        return !is_null($this->__get($key));
+        return ! is_null($this->__get($key));
     }
 
     /**
      * Get an input element from the request.
      *
      * @param  string $key
+     *
      * @return mixed|void
      */
     public function __get($key)
@@ -632,10 +604,8 @@ class Request extends SymfonyRequest
      */
     public function expectsJson()
     {
-        return ($this->ajax() && !$this->pjax() && $this->acceptsAnyContentType()) || $this->wantsJson();
+        return ($this->ajax() && ! $this->pjax() && $this->acceptsAnyContentType()) || $this->wantsJson();
     }
-
-    /** Illuminate\Http\Concerns\InteractsWithContentTypes; */
 
     /**
      * Determine if the request is the result of an AJAX call.
@@ -681,10 +651,13 @@ class Request extends SymfonyRequest
         return isset($acceptable[0]) && Str::contains($acceptable[0], ['/json', '+json']);
     }
 
+    /** Illuminate\Http\Concerns\InteractsWithContentTypes; */
+
     /**
      * Return the most suitable content type from the given array based on content negotiation.
      *
      * @param  string|array $contentTypes
+     *
      * @return string|null
      */
     public function prefers($contentTypes)
@@ -697,7 +670,7 @@ class Request extends SymfonyRequest
             }
             foreach ($contentTypes as $contentType) {
                 $type = $contentType;
-                if (!is_null($mimeType = $this->getMimeType($contentType))) {
+                if (! is_null($mimeType = $this->getMimeType($contentType))) {
                     $type = $mimeType;
                 }
                 if ($this->matchesType($type, $accept) || $accept === strtok($type, '/') . '/*') {
@@ -712,6 +685,7 @@ class Request extends SymfonyRequest
      *
      * @param  string $actual
      * @param  string $type
+     *
      * @return bool
      */
     public static function matchesType($actual, $type)
@@ -738,6 +712,7 @@ class Request extends SymfonyRequest
      * Determines whether the current requests accepts a given content type.
      *
      * @param  string|array $contentTypes
+     *
      * @return bool
      */
     public function accepts($contentTypes)
@@ -774,6 +749,7 @@ class Request extends SymfonyRequest
      * Get the data format expected in the response.
      *
      * @param  string $default
+     *
      * @return string
      */
     public function format($default = 'html')
@@ -784,5 +760,61 @@ class Request extends SymfonyRequest
             }
         }
         return $default;
+    }
+
+    /**
+     * Retrieve a parameter item from a given source.
+     *
+     * @param  string            $source
+     * @param  string            $key
+     * @param  string|array|null $default
+     *
+     * @return string|array
+     */
+    protected function retrieveItem($source, $key, $default)
+    {
+        if (is_null($key)) {
+            return $this->$source->all();
+        }
+        return $this->$source->get($key, $default);
+    }
+
+    /**
+     * Get the input source for the request.
+     *
+     * @return \Symfony\Component\HttpFoundation\ParameterBag
+     */
+    protected function getInputSource()
+    {
+        if ($this->isJson()) {
+            return $this->json();
+        }
+
+        return in_array($this->getRealMethod(), ['GET', 'HEAD']) ? $this->query : $this->request;
+    }
+
+    /**
+     * Determine if the given input key is an empty string for "has".
+     *
+     * @param  string $key
+     *
+     * @return bool
+     */
+    protected function isEmptyString($key)
+    {
+        $value = $this->input($key);
+        return ! is_bool($value) && ! is_array($value) && trim((string)$value) === '';
+    }
+
+    /**
+     * Check that the given file is a valid file instance.
+     *
+     * @param  mixed $file
+     *
+     * @return bool
+     */
+    protected function isValidFile($file)
+    {
+        return $file instanceof SplFileInfo && $file->getPath() !== '';
     }
 }

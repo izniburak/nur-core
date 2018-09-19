@@ -10,7 +10,11 @@ class Response extends SymfonyResponse
     protected $json = false;
 
     /**
-     * Class constructer
+     * Class constructor
+     *
+     * @param mixed $content
+     * @param int   $status
+     * @param array $headers
      *
      * @return void
      */

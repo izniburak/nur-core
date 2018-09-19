@@ -3,7 +3,6 @@
 namespace Nur\Exception;
 
 use Exception;
-use Nur\Facades\Load;
 
 class ExceptionHandler extends Exception
 {
@@ -12,16 +11,16 @@ class ExceptionHandler extends Exception
      *
      * @param string $title
      * @param string $message
+     *
      * @return void
      * @throws Exception
      */
     public function __construct($title, $message)
     {
-        $debug = (APP_ENV === 'dev' ? true : false);
-        if ($debug) {
+        if (APP_ENV === 'dev') {
             throw new Exception(strip_tags($title . ' - ' . $message), 1);
-        } else {
-            Load::error($title, $message);
         }
+
+        app('load')->error($title, $message);
     }
 }

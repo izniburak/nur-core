@@ -6,10 +6,11 @@ class Cookie
 {
     /**
      * Set cookie method.
-     * 
-     * @param string $key
-     * @param string $value
+     *
+     * @param string  $key
+     * @param string  $value
      * @param integer $time
+     *
      * @return void
      */
     public function set($key, $value, $time = 0)
@@ -19,8 +20,7 @@ class Cookie
                 setcookie($k, $v, ($time == 0 ? 0 : time() + $time), '/');
                 $_COOKIE[$k] = $v;
             }
-        }
-        else {
+        } else {
             setcookie($key, $value, ($time == 0 ? 0 : time() + $time), '/');
             $_COOKIE[$key] = $value;
         }
@@ -32,6 +32,7 @@ class Cookie
      * Get cookie method.
      *
      * @param string $key
+     *
      * @return null|mixed
      */
     public function get($key = null)
@@ -41,7 +42,9 @@ class Cookie
 
     /**
      * Cookie has key ?
+     *
      * @param string $key
+     *
      * @return bool
      */
     public function hasKey($key)
@@ -51,8 +54,9 @@ class Cookie
 
     /**
      * Delete cookie method.
-     * 
+     *
      * @param string $key
+     *
      * @return void
      */
     public function delete($key)

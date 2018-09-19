@@ -10,9 +10,11 @@ class Event
      * Trigger an event
      *
      * @param string $event
-     * @param array $params
+     * @param array  $params
      * @param string $method
+     *
      * @return mixed
+     * @throws ExceptionHandler
      */
     public function trigger($event, array $params = [], $method = 'handle')
     {

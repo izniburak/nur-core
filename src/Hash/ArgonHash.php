@@ -30,7 +30,8 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Create a new hasher instance.
      *
-     * @param  array  $options
+     * @param  array $options
+     *
      * @return void
      */
     public function __construct(array $options = [])
@@ -43,8 +44,9 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Hash the given value.
      *
-     * @param  string  $value
+     * @param  string $value
      * @param  array  $options
+     *
      * @return string
      */
     public function make($value, array $options = [])
@@ -65,8 +67,9 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Check if the given hash has been hashed using the given options.
      *
-     * @param  string  $hashedValue
+     * @param  string $hashedValue
      * @param  array  $options
+     *
      * @return bool
      */
     public function needsRehash($hashedValue, array $options = [])
@@ -81,7 +84,8 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Set the default password memory factor.
      *
-     * @param  int  $memory
+     * @param  int $memory
+     *
      * @return $this
      */
     public function setMemory(int $memory)
@@ -94,7 +98,8 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Set the default password timing factor.
      *
-     * @param  int  $time
+     * @param  int $time
+     *
      * @return $this
      */
     public function setTime(int $time)
@@ -107,7 +112,8 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Set the default password threads factor.
      *
-     * @param  int  $threads
+     * @param  int $threads
+     *
      * @return $this
      */
     public function setThreads(int $threads)
@@ -120,7 +126,8 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Extract the memory cost value from the options array.
      *
-     * @param  array  $options
+     * @param  array $options
+     *
      * @return int
      */
     protected function memory(array $options)
@@ -131,7 +138,8 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Extract the time cost value from the options array.
      *
-     * @param  array  $options
+     * @param  array $options
+     *
      * @return int
      */
     protected function time(array $options)
@@ -142,7 +150,8 @@ class ArgonHash extends AbstractHash implements HashInterface
     /**
      * Extract the threads value from the options array.
      *
-     * @param  array  $options
+     * @param  array $options
+     *
      * @return int
      */
     protected function threads(array $options)

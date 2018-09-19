@@ -8,9 +8,10 @@ class Session
 {
     /**
      * Set session method.
-     * 
+     *
      * @param string $key
      * @param string $value
+     *
      * @return void
      */
     public function set($key, $value)
@@ -28,8 +29,9 @@ class Session
 
     /**
      * Get session method.
-     * 
+     *
      * @param string $key
+     *
      * @return null|mixed
      */
     public function get($key = null)
@@ -39,8 +41,9 @@ class Session
 
     /**
      * Session has key ?
-     * 
+     *
      * @param string $key
+     *
      * @return bool
      */
     public function hasKey($key)
@@ -50,10 +53,11 @@ class Session
 
     /**
      * Setting Flash Message
-     * 
+     *
      * @param string $key
      * @param string $value
      * @param string $redirect
+     *
      * @return bool
      */
     public function setFlash($key, $value, $redirect = null)
@@ -61,7 +65,7 @@ class Session
         $this->set('_nur_flash', [$key => $value]);
 
         if (! is_null($redirect)) {
-            Uri::redirect($redirect);
+            uri()->redirect($redirect);
         }
 
         return false;
@@ -69,8 +73,9 @@ class Session
 
     /**
      * Getting Flash Message
-     * 
+     *
      * @param string $key
+     *
      * @return null|string
      */
     public function getFlash($key = null)
@@ -91,8 +96,9 @@ class Session
 
     /**
      * Session has flash key ?
-     * 
+     *
      * @param string $key
+     *
      * @return bool
      */
     public function hasFlash($key)
@@ -102,8 +108,9 @@ class Session
 
     /**
      * Delete session method.
-     * 
+     *
      * @param string $key
+     *
      * @return void
      */
     public function delete($key)
