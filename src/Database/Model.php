@@ -3,7 +3,6 @@
 namespace Nur\Database;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Nur\Database\Eloquent;
 
 class Model extends EloquentModel
 {

@@ -3,7 +3,6 @@
 namespace Nur\Database;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Nur\Database\Eloquent;
 
 class Builder extends Capsule
 {
@@ -20,6 +19,9 @@ class Builder extends Capsule
 
     /**
      * Call function for Class
+     *
+     * @param $method
+     * @param $parameters
      *
      * @return mixed
      */

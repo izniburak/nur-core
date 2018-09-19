@@ -2,26 +2,29 @@
 
 namespace Nur\Database;
 
+use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Events\Dispatcher;
-use Illuminate\Container\Container;
 
 class Eloquent
 {
     /**
-     * Class instance 
+     * Class instance
+     *
      * @var void
      */
     protected static $instance = null;
 
     /**
-     * Capsule 
+     * Capsule
+     *
      * @var Capsule
      */
     protected static $capsule = null;
 
     /**
      * Schema
+     *
      * @var Schema
      */
     protected static $schema = null;
@@ -34,23 +37,18 @@ class Eloquent
     function __construct()
     {
         $capsule = new Capsule;
-
         $config = config('database');
-
         if ($config['driver'] == 'sqlite') {
             if (strpos($config['database'], ':') === false) {
-                $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
+                $config['database'] = realpath(ROOT . '/storage/database/' . $config['database']);
             }
         }
-        
-        $capsule->addConnection($config);
 
+        $capsule->addConnection($config);
         // Set the event dispatcher used by Eloquent models... (optional)
         $capsule->setEventDispatcher(new Dispatcher(new Container));
-
         // Make this Capsule instance available globally via static methods... (optional)
         $capsule->setAsGlobal();
-
         // Setup the Eloquent ORM... (optional; unless you've used setEventDispatcher())
         $capsule->bootEloquent();
 
@@ -61,12 +59,13 @@ class Eloquent
     /**
      * instance of Class.
      *
-     * @return instance
+     * @return Eloquent
      */
     public static function getInstance()
     {
-        if (null === self::$instance)
+        if (null === self::$instance) {
             self::$instance = new static();
+        }
 
         return self::$instance;
     }

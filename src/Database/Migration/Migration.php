@@ -9,9 +9,9 @@ class Migration extends BaseMigration
     protected $schema;
 
     /**
-     * Initialize for Migration Class. 
+     * Initialize for Migration Class.
      *
-     * @return null
+     * @return void
      */
     public function init()
     {

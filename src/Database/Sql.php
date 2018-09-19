@@ -8,22 +8,19 @@ class Sql extends PdoxProvider
 {
     /**
      * Class constructer
-     * 
+     *
      * @return Buki\Pdox
      */
     public function __construct()
     {
-        $debug = (APP_ENV === 'dev' ? true : false);
-        
         $config = config('database');
-        $config['cachedir'] = realpath(ROOT . '/storage/cache/sql/');
+        $config['cachedir'] = cache_path('sql');
         if ($config['driver'] == 'sqlite') {
             if (strpos($config['database'], ':') === false) {
-                $config['database'] = realpath(ROOT . '/storage/database/'. $config['database']);
+                $config['database'] = database_path($config['database']);
             }
         }
-        $config['debug'] = $debug;
-
+        $config['debug'] = APP_ENV === 'dev';
         return parent::__construct($config);
     }
 
@@ -31,7 +28,8 @@ class Sql extends PdoxProvider
      * Call function for Class
      *
      * @param string $method
-     * @param array $parameters
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function __call($method, $parameters)
