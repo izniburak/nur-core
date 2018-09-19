@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 namespace Nur\Container;
 
-use Pimple\Container as BaseContainer;
 use Nur\Exception\ExceptionHandler;
+use Pimple\Container as BaseContainer;
 
 class Container implements ContainerInterface
 {
@@ -31,7 +31,7 @@ class Container implements ContainerInterface
     /**
      * Constructor of Container
      *
-     * @return static
+     * @return void
      */
     public function __construct()
     {
@@ -41,15 +41,20 @@ class Container implements ContainerInterface
     /**
      * Set a new service in Container
      *
+     * @param string          $name
+     * @param string|callable $service
+     * @param array           $args
+     *
      * @return void
+     * @throws ExceptionHandler
      */
-    public function set($name, $service, $args = [])
+    public function set($name, $service, array $args = [])
     {
         $this->setService($name);
         $this->container[$name] = is_callable($service)
-            ? $service 
+            ? $service
             : (is_string($service) && class_exists($service)
-                ? function($c) use ($service, $args) {
+                ? function ($c) use ($service, $args) {
                     return new $service(...$args);
                 }
                 : $service
@@ -57,17 +62,9 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Get a created service if it's exists.
-     *
-     * @return mixed|null
-     */
-    public function get($name = null) 
-    {
-        return $this->has($name) ? $this->container[$name] : null;
-    }
-
-    /**
      * Check service is created?
+     *
+     * @param string $name
      *
      * @return bool
      */
@@ -77,17 +74,34 @@ class Container implements ContainerInterface
     }
 
     /**
+     * Get a created service if it's exists.
+     *
+     * @param string $name
+     *
+     * @return mixed|null
+     */
+    public function get($name = null)
+    {
+        return $this->has($name) ? $this->container[$name] : null;
+    }
+
+    /**
      * Set a new service in Container as factory
      *
+     * @param string          $name
+     * @param string|callable $service
+     * @param array           $args
+     *
      * @return void
+     * @throws
      */
-    public function factory($name, $service, $args = [])
+    public function factory($name, $service, array $args = [])
     {
         $this->setService($name);
         $factory = is_callable($service)
-            ? $service 
-            : function($c) use ($service, $args) {
-            return new $service(...$args);
+            ? $service
+            : function ($c) use ($service, $args) {
+                return new $service(...$args);
             };
 
         $this->container[$name] = $this->container->factory($factory);
@@ -104,29 +118,15 @@ class Container implements ContainerInterface
     }
 
     /**
-     * Set a new service in Container as protect 
+     * Set a new service in Container as protect
      *
      * @return void
+     * @throws
      */
     public function protect($name, $service)
     {
         $this->setService($name);
         $this->container[$name] = $this->container->protect($service);
-    }
-
-    /**
-     * Add a new service in service list in Container 
-     * if it's not exists
-     *
-     * @return void
-     */
-    protected function setService($name)
-    {
-        if($this->has($name)) {
-            throw new ExceptionHandler('Service already defined. ('.$name.')');
-        }
-
-        return array_push($this->services, $name);
     }
 
     /**
@@ -156,11 +156,29 @@ class Container implements ContainerInterface
     /**
      * Set the shared instance of the container.
      *
-     * @param  \Nur\Container\Container|null  $container
-     * @return \Nur\Container\Container|static
+     * @param  \Nur\Container\ContainerInterface $container
+     *
+     * @return \Nur\Container\ContainerInterface
      */
-    public static function setInstance(ContainerInterface $container = null)
+    public static function setInstance(ContainerInterface $container)
     {
         return static::$instance = $container;
+    }
+
+    /**
+     * Add a new service in service list in Container if it's not exists
+     *
+     * @param string $name
+     *
+     * @return int
+     * @throws
+     */
+    protected function setService($name)
+    {
+        if ($this->has($name)) {
+            throw new ExceptionHandler('Service already defined. (' . $name . ')');
+        }
+
+        return array_push($this->services, $name);
     }
 }

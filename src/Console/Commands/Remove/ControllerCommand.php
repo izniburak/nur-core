@@ -3,10 +3,10 @@
 namespace Nur\Console\Commands\Remove;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ControllerCommand extends Command
 {
@@ -16,8 +16,7 @@ class ControllerCommand extends Command
             ->setName('remove:controller')
             ->addArgument('name', InputArgument::REQUIRED, 'The name for the controller.')
             ->setDescription('Remove a controller.')
-            ->setHelp("This command makes you to remove controller...")
-        ;
+            ->setHelp("This command makes you to remove controller...");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -25,15 +24,14 @@ class ControllerCommand extends Command
         $name = $input->getArgument('name');
         $file = ROOT . '/app/Controllers/' . $name . '.php';
 
-        if(file_exists($file)) {
+        if (file_exists($file)) {
             unlink($file);
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" controller removed.'
             );
-        }
-        else {
+        } else {
             $output->writeln(
-                "\n" . ' <error>-Error!</error> Controller not found! ('.$name.')'
+                "\n" . ' <error>-Error!</error> Controller not found! (' . $name . ')'
             );
         }
 

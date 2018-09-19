@@ -3,10 +3,10 @@
 namespace Nur\Console\Commands\Make;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class MiddlewareCommand extends Command
 {
@@ -17,8 +17,7 @@ class MiddlewareCommand extends Command
             ->addArgument('name', InputArgument::REQUIRED, 'The name for the middleware.')
             ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL, 'Force to re-create middleware.')
             ->setDescription('Create a new middleware.')
-            ->setHelp("This command makes you to create middleware...")
-        ;
+            ->setHelp("This command makes you to create middleware...");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -27,25 +26,23 @@ class MiddlewareCommand extends Command
         $force = $input->hasParameterOption('--force');
         $file = ROOT . '/app/Middlewares/' . $name . '.php';
 
-        if(!file_exists($file)) {
+        if (! file_exists($file)) {
             $this->createNewFile($file, $name);
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware created.'
             );
-        }
-        else {
-            if($force !== false) {
+        } else {
+            if ($force !== false) {
                 unlink($file);
                 $this->createNewFile($file, $name);
                 $output->writeln(
                     "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware re-created.'
                 );
-            }
-            else {
+            } else {
                 $output->writeln(
-                    "\n" . ' <error>-Error!</error> Middleware already exists! ('.$name.')'
+                    "\n" . ' <error>-Error!</error> Middleware already exists! (' . $name . ')'
                 );
-            } 
+            }
         }
 
         return;
@@ -72,7 +69,7 @@ class $middleware extends Middleware
 PHP;
 
         if (false === file_put_contents($file, $contents)) {
-            throw new \RuntimeException( sprintf('The file "%s" could not be written to', $file) );
+            throw new \RuntimeException(sprintf('The file "%s" could not be written to', $file));
         }
 
         return;

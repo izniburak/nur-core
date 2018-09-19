@@ -8,45 +8,45 @@ class Validation
 {
     /**
      * Validation errors
-     * 
+     *
      * @var array
      */
-    protected $errors 	= [];
+    protected $errors = [];
 
     /**
      * Label for fields
-     * 
+     *
      * @var array
      */
-    protected $labels	= [];
+    protected $labels = [];
 
     /**
      * Validation rules
-     * 
+     *
      * @var array
      */
-    protected $rules 	= [];
+    protected $rules = [];
 
     /**
      * Data to validate
-     * 
+     *
      * @var array
      */
-    protected $data		= [];
+    protected $data = [];
 
     /**
      * Fields validation error messagses
-     * 
+     *
      * @var array
      */
-    protected $texts	= [];
-    
+    protected $texts = [];
+
     /**
      * Default validation error message
-     * 
+     *
      * @var string
      */
-    protected $msg      = '%s is not valid.';
+    protected $msg = '%s is not valid.';
 
 
     /**
@@ -59,8 +59,8 @@ class Validation
     {
         foreach ($rules as $key => $value) {
             $this->rule(
-                $key, $value['label'], 
-                $value['rules'], 
+                $key, $value['label'],
+                $value['rules'],
                 isset($value['text']) && !empty($value['text']) ? $value['text'] : []
             );
         }
@@ -72,13 +72,13 @@ class Validation
      * @param string $field
      * @param string $label
      * @param string $rules
-     * @return void 
+     * @return void
      */
     public function rule($field, $label, $rules, Array $text = [])
     {
         $this->labels[$field] = $label;
-        $this->rules[$field]  = $rules;
-        $this->texts[$field]  = (!empty($text) ? $text : null);
+        $this->rules[$field] = $rules;
+        $this->texts[$field] = (!empty($text) ? $text : null);
     }
 
     /**
@@ -89,7 +89,7 @@ class Validation
      */
     public function isValid(Array $data = [])
     {
-        if(empty($data)) {
+        if (empty($data)) {
             $data = Http::method() == 'GET' ? Http::get() : Http::post();
         }
         $this->data = $data;
@@ -98,7 +98,7 @@ class Validation
             $rules = explode('|', $value);
             foreach ($rules as $rule) {
                 if (strpos($rule, ',')) {
-                    $group  = explode(',', $rule);
+                    $group = explode(',', $rule);
                     $filter = $group[0];
                     $params = $group[1];
                     $this->errorMessage($filter, $key, $params);
@@ -107,32 +107,32 @@ class Validation
                 }
             }
         }
-        
+
         $this->errors = array_values(array_unique($this->errors));
         if (count($this->errors) > 0) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     /**
      * Field validation error messages
-     * 
+     *
      * @param string $filter
      * @param string $field
-     * @param string $params 
+     * @param string $params
      * @return void
      */
     protected function errorMessage($filter, $field, $params = null)
     {
-        $text = (isset($this->texts[$field][$filter]) && !is_null($this->texts[$field][$filter]) 
-                ? $this->texts[$field][$filter] : $this->msg);
+        $text = (isset($this->texts[$field][$filter]) && !is_null($this->texts[$field][$filter])
+            ? $this->texts[$field][$filter] : $this->msg);
         $text = str_replace([':label:', ':value:'], '%s', $text);
 
-        if (! isset($this->data[$field])) {
+        if (!isset($this->data[$field])) {
             $this->errors[] = sprintf($text, $this->labels[$field], $params);
-        } elseif (! is_null($params)) {
+        } elseif (!is_null($params)) {
             if ($filter == 'matches') {
                 if ($this->matches($this->data[$field], $this->data[$params]) === false) {
                     $this->errors[] = sprintf($text, $this->labels[$field], $params);
@@ -157,10 +157,10 @@ class Validation
      */
     public function sanitize($data)
     {
-        if (! is_array($data)) {
+        if (!is_array($data)) {
             return filter_var(trim($data), FILTER_SANITIZE_STRING);
-        } 
-        
+        }
+
         foreach ($data as $key => $value) {
             $data[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
@@ -214,7 +214,7 @@ class Validation
      * Minimum Character Check
      *
      * @param string $data
-     * @param int $length
+     * @param int    $length
      * @return boolean
      */
     protected function min_len($data, $length)
@@ -226,7 +226,7 @@ class Validation
      * Maximum Character Check
      *
      * @param string $data
-     * @param int $length
+     * @param int    $length
      * @return boolean
      */
     protected function max_len($data, $length)
@@ -238,7 +238,7 @@ class Validation
      * Exact Length Check
      *
      * @param string $data
-     * @param int $length
+     * @param int    $length
      * @return boolean
      */
     protected function exact_len($data, $length)
@@ -255,7 +255,7 @@ class Validation
     protected function alpha($data)
     {
         return (preg_match('/^[a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
-                ? true : ctype_alpha($data));
+            ? true : ctype_alpha($data));
     }
 
     /**
@@ -267,7 +267,7 @@ class Validation
     protected function alpha_num($data)
     {
         return (preg_match('/^[0-9a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
-                ? true : ctype_alnum($data));
+            ? true : ctype_alnum($data));
     }
 
     /**
@@ -386,7 +386,7 @@ class Validation
 
         $parity = $number_length % 2;
         $total = 0;
-        for ($i=0; $i<$number_length; $i++) {
+        for ($i = 0; $i < $number_length; $i++) {
             $digit = $number[$i];
 
             if ($i % 2 == $parity) {

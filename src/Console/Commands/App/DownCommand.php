@@ -12,21 +12,19 @@ class DownCommand extends Command
     {
         $this
             ->setName('app:down')
-            ->setDescription("Put the application into maintenance mode.")
-        ;
+            ->setDescription("Put the application into maintenance mode.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = ROOT . '/app.down';
 
-        if(!file_exists($file)) {
+        if (! file_exists($file)) {
             touch($file);
             $output->writeln(
                 "\n" . ' <info>+Success!</info> Nur Application was stopped.'
             );
-        }
-        else  {
+        } else {
             $output->writeln(
                 "\n" . " <error>+Error!</error> Nur Application's already stopped."
             );

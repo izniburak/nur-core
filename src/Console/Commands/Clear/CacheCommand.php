@@ -12,8 +12,7 @@ class CacheCommand extends Command
     {
         $this
             ->setName('clear:cache')
-            ->setDescription("Clear the application cache files. (View and SQL files)")
-        ;
+            ->setDescription("Clear the application cache files. (View and SQL files)");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -22,29 +21,28 @@ class CacheCommand extends Command
 
         $count = 0;
         $folders = ['blade' => 'Blade', 'html' => 'Html', 'sql' => 'SQL'];
-        foreach($folders as $key => $value) {
+        foreach ($folders as $key => $value) {
             $files = $path . $key;
-            foreach(glob($files.'/*.*') as $file) {
-                if(!stristr($file, 'index.html')) {
-                    if(unlink($file)) {
+            foreach (glob($files . '/*.*') as $file) {
+                if (! stristr($file, 'index.html')) {
+                    if (unlink($file)) {
                         $count++;
                     }
                 }
             }
         }
 
-        if($count > 0) {
+        if ($count > 0) {
             touch($file);
             $output->writeln(
-                "\n" . ' <info>+Success!</info> '.$count.' cache file(s) deleted.'
+                "\n" . ' <info>+Success!</info> ' . $count . ' cache file(s) deleted.'
             );
-        }
-        else  {
+        } else {
             $output->writeln(
                 "\n" . " <question>+Info!</question> There are no cache files."
             );
         }
-        
+
         return;
     }
 }

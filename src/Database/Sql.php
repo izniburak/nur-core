@@ -13,7 +13,7 @@ class Sql extends PdoxProvider
      */
     public function __construct()
     {
-        $debug = (APP_ENV == 'dev' ? true : false);
+        $debug = (APP_ENV === 'dev' ? true : false);
         
         $config = config('database');
         $config['cachedir'] = realpath(ROOT . '/storage/cache/sql/');

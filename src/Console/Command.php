@@ -2,8 +2,6 @@
 
 namespace Nur\Console;
 
-use Phpmig\Console\Command as MigrationCommand;
-
 class Command
 {
     protected $app;
@@ -44,41 +42,42 @@ class Command
     ];
 
     /**
-    * Set console application. 
-    *
-    * @return null
-    */
+     * Set console application.
+     *
+     * @param $app
+     *
+     * @return null
+     */
     function __construct($app)
     {
         $this->app = $app;
-
         $this->generate();
     }
 
     /**
-    * Genereta all Command class. 
-    *
-    * @return null
-    */
+     * Genereta all Command class.
+     *
+     * @return void
+     */
     public function generate()
     {
         foreach ($this->commandList as $key => $value) {
-            $this->app->add( new $value );
+            $this->app->add(new $value);
         }
 
         foreach ($this->migrationCommands as $command) {
             $newCommand = new $command;
             $newCommand->setName("migration:" . $newCommand->getName());
-            $this->app->add( $newCommand );
+            $this->app->add($newCommand);
             $newCommand = null;
         }
     }
 
     /**
-    * Run console commands. 
-    *
-    * @return null
-    */
+     * Run console commands.
+     *
+     * @return void
+     */
     public function run()
     {
         $this->app->run();

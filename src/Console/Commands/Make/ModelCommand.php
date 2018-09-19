@@ -3,10 +3,10 @@
 namespace Nur\Console\Commands\Make;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ModelCommand extends Command
 {
@@ -18,8 +18,7 @@ class ModelCommand extends Command
             ->addOption('--table', '-t', InputOption::VALUE_OPTIONAL, 'The table name for model.')
             ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL, 'Force to re-create model.')
             ->setDescription('Create a new model.')
-            ->setHelp("This command makes you to create model...")
-        ;
+            ->setHelp("This command makes you to create model...");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -34,23 +33,21 @@ class ModelCommand extends Command
         }
         $file = ROOT . '/app/Models/' . $name . '.php';
 
-        if(!file_exists($file)) {
+        if (! file_exists($file)) {
             $this->createNewFile($file, $name, $table);
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" model created.'
             );
-        }
-        else {
-            if($force !== false) {
+        } else {
+            if ($force !== false) {
                 unlink($file);
                 $this->createNewFile($file, $name, $table);
                 $output->writeln(
                     "\n" . ' <info>+Success!</info> "' . ($name) . '" model re-created.'
                 );
-            }
-            else {
+            } else {
                 $output->writeln(
-                    "\n" . ' <error>-Error!</error> Model already exists! ('.$name.')'
+                    "\n" . ' <error>-Error!</error> Model already exists! (' . $name . ')'
                 );
             }
         }
@@ -61,7 +58,7 @@ class ModelCommand extends Command
     private function createNewFile($file, $name, $tableName = '')
     {
         $model = ucfirst($name);
-        $table = 'protected $table = \''.$tableName.'\';';
+        $table = 'protected $table = \'' . $tableName . '\';';
         $contents = <<<PHP
 <?php
 
@@ -82,7 +79,7 @@ class $model extends Model
 PHP;
 
         if (false === file_put_contents($file, $contents)) {
-            throw new \RuntimeException( sprintf('The file "%s" could not be written to', $file) );
+            throw new \RuntimeException(sprintf('The file "%s" could not be written to', $file));
         }
 
         return;

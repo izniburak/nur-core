@@ -12,8 +12,7 @@ class ListCommand extends Command
     {
         $this
             ->setName('database:list')
-            ->setDescription('List all sqlite databases.')
-        ;
+            ->setDescription('List all sqlite databases.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -22,29 +21,28 @@ class ListCommand extends Command
         $mask = $dir . '*.sqlite*';
         $dbList = glob($mask);
 
-        if(count($dbList) > 0) {
+        if (count($dbList) > 0) {
             $output->writeln('');
             $output->writeln('        Database Name         Size           Time');
             $output->writeln(' -----------------------------------------------------');
 
-            foreach ($dbList as $file)  {
+            foreach ($dbList as $file) {
                 $mb = false;
                 $filesize = (filesize($file) / 1024);
-                if($filesize > 1024) {
+                if ($filesize > 1024) {
                     $filesize = ($filesize / 1024);
                     $mb = true;
                 }
                 $output->writeln(
                     sprintf(
-                        " %20s  %11.3f".($mb ? 'MB' : 'KB')."  %17s",
+                        " %20s  %11.3f" . ($mb ? 'MB' : 'KB') . "  %17s",
                         str_replace($dir, '', $file),
                         $filesize,
                         date("d.m.Y", filemtime($file))
                     )
                 );
             }
-        }
-        else {
+        } else {
             $output->writeln(
                 "\n" . ' No SQLite databases yet. '
             );

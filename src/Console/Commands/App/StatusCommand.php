@@ -12,20 +12,18 @@ class StatusCommand extends Command
     {
         $this
             ->setName('app:status')
-            ->setDescription("The current state of the application.")
-        ;
+            ->setDescription("The current state of the application.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = ROOT . '/app.down';
 
-        if(!file_exists($file)) {
+        if (! file_exists($file)) {
             $output->writeln(
                 "\n" . " Nur Application's running."
             );
-        }
-        else {
+        } else {
             $output->writeln(
                 "\n" . " Nur Application has been stopped."
             );

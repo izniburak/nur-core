@@ -3,10 +3,10 @@
 namespace Nur\Console\Commands\Make;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ControllerCommand extends Command
 {
@@ -17,8 +17,7 @@ class ControllerCommand extends Command
             ->addArgument('name', InputArgument::REQUIRED, 'The name for the controller.')
             ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL, 'Force to re-create controller.')
             ->setDescription('Create a new controller.')
-            ->setHelp("This command makes you to create controller...")
-        ;
+            ->setHelp("This command makes you to create controller...");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -27,25 +26,23 @@ class ControllerCommand extends Command
         $force = $input->hasParameterOption('--force');
         $file = ROOT . '/app/Controllers/' . $name . '.php';
 
-        if(!file_exists($file)) {
+        if (! file_exists($file)) {
             $this->createNewFile($file, $name);
             $output->writeln(
                 "\n" . ' <info>+Success!</info> "' . ($name) . '" controller created.'
             );
-        }
-        else {
-            if($force !== false) {
+        } else {
+            if ($force !== false) {
                 unlink($file);
                 $this->createNewFile($file, $name);
                 $output->writeln(
                     "\n" . ' <info>+Success!</info> "' . ($name) . '" controller re-created.'
                 );
-            }
-            else {
+            } else {
                 $output->writeln(
-                    "\n" . ' <error>-Error!</error> Controller already exists! ('.$name.')'
+                    "\n" . ' <error>-Error!</error> Controller already exists! (' . $name . ')'
                 );
-            }  
+            }
         }
 
         return;
@@ -77,7 +74,7 @@ class $controller extends Controller
 PHP;
 
         if (false === file_put_contents($file, $contents)) {
-            throw new \RuntimeException( sprintf('The file "%s" could not be written to', $file) );
+            throw new \RuntimeException(sprintf('The file "%s" could not be written to', $file));
         }
 
         return;

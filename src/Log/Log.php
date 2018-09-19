@@ -2,13 +2,14 @@
 
 namespace Nur\Log;
 
-use Nur\Facades\Http;
 use Nur\Exception\ExceptionHandler;
+use Nur\Facades\Http;
 
 class Log
 {
     /**
      * Log file time format
+     *
      * @var string
      */
     protected $timeFormat = 'Y-m-d H:i:s';
@@ -17,6 +18,7 @@ class Log
      * Save log as emergency
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function emergency($message)
@@ -28,6 +30,7 @@ class Log
      * Save log as alert
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function alert($message)
@@ -39,6 +42,7 @@ class Log
      * Save log as critical
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function critical($message)
@@ -50,6 +54,7 @@ class Log
      * Save log as error
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function error($message)
@@ -61,6 +66,7 @@ class Log
      * Save log as warning
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function warning($message)
@@ -72,6 +78,7 @@ class Log
      * Save log as notice
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function notice($message)
@@ -83,6 +90,7 @@ class Log
      * Save log as info
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function info($message)
@@ -94,6 +102,7 @@ class Log
      * Save log as debug
      *
      * @param mixed $message
+     *
      * @return void
      */
     public function debug($message)
@@ -105,7 +114,8 @@ class Log
      * Create log text to file
      *
      * @param string $level
-     * @param mixed $message
+     * @param mixed  $message
+     *
      * @return void
      */
     protected function log($level, $message)
@@ -114,7 +124,8 @@ class Log
             $message = json_encode($message);
         }
 
-        $text = '['.date($this->timeFormat, time()).'] - ['.strtoupper($level).'] - ['.Http::getClientIP().'] --> ' . $message;
+        $text = '[' . date($this->timeFormat,
+                time()) . '] - [' . strtoupper($level) . '] - [' . Http::getClientIP() . '] --> ' . $message;
         $this->save($text);
     }
 
@@ -122,20 +133,22 @@ class Log
      * Save Log
      *
      * @param string $text
+     *
      * @return void
+     * @throws ExceptionHandler
      */
     protected function save($text)
     {
-        $fileName 	= 'log_' . date('Y-m-d') . '.log';
-        $file 		= fopen(ROOT . '/storage/log/' . $fileName, 'a');
+        $fileName = 'log_' . date('Y-m-d') . '.log';
+        $file = fopen(ROOT . '/storage/log/' . $fileName, 'a');
 
         if (fwrite($file, $text . "\n") === false) {
-            return new ExceptionHandler(
-                'Oppss! Log file not created.',  
+            throw new ExceptionHandler(
+                'Oppss! Log file not created.',
                 'Can you check chmod settings to save log file in log directory, please?'
             );
         }
-            
+
         fclose($file);
     }
 }

@@ -12,26 +12,24 @@ class UpCommand extends Command
     {
         $this
             ->setName('app:up')
-            ->setDescription("Bring the application out of maintenance mode.")
-        ;
+            ->setDescription("Bring the application out of maintenance mode.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $file = ROOT . '/app.down';
 
-        if(file_exists($file)) {
+        if (file_exists($file)) {
             unlink($file);
             $output->writeln(
                 "\n" . ' <info>+Success!</info> Nur Application was started.'
             );
-        }
-        else {
+        } else {
             $output->writeln(
                 "\n" . " <error>+Error!</error> Nur Application's already started."
             );
         }
-         
+
         return;
     }
 }

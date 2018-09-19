@@ -4,8 +4,8 @@ namespace Nur\Console\Commands\App;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class ServeCommand extends Command
 {
@@ -13,20 +13,22 @@ class ServeCommand extends Command
     {
         $this
             ->setName('serve')
-            ->setDescription("Start application on PHP Development Server (Default: 127.0.0.1:7070)")
-            ->addOption('--port', '-p', InputOption::VALUE_OPTIONAL, 'Application running port (Default: 7070)')
-        ;
+            ->setDescription("Start application on PHP Development Server (Default: 127.0.0.1:8000)")
+            ->addOption('--port', '-p', InputOption::VALUE_OPTIONAL, 'Application running port (Default: 8000)')
+            ->addOption('--host', '-s', InputOption::VALUE_OPTIONAL, 'Application running host (Default: 127.0.0.1)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $host = $input->hasParameterOption('--host');
+        $host = ($host !== false ? $input->getOption('host') : '127.0.0.1');
         $port = $input->hasParameterOption('--port');
-        $port = ($port !== false ? $input->getOption('port') : '7070');
+        $port = ($port !== false ? $input->getOption('port') : '8000');
 
         $output->writeln(
-            "\n" . "<info>Nur Application's started on PHP Development Server (http://127.0.0.1:".$port."/)" . "\n" . 
+            "\n" . "<info>Nur Application's started on PHP Development Server (http://" . $host . ":" . $port . "/)" . "\n" .
             "Press Ctrl-C to Quit.</info>" . "\n"
         );
-        passthru("php -S 127.0.0.1:".$port." -t " . getcwd());
+        passthru('php -S ' . $host . ':' . $port);
     }
 }
