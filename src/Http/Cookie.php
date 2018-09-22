@@ -37,7 +37,7 @@ class Cookie
      */
     public function get($key = null)
     {
-        return (is_null($key) ? $_COOKIE : ($this->hasKey($key) ? $_COOKIE[$key] : null));
+        return (is_null($key) ? $_COOKIE : ($this->has($key) ? $_COOKIE[$key] : null));
     }
 
     /**
@@ -47,7 +47,7 @@ class Cookie
      *
      * @return bool
      */
-    public function hasKey($key)
+    public function has($key)
     {
         return isset($_COOKIE[$key]);
     }
@@ -61,7 +61,7 @@ class Cookie
      */
     public function delete($key)
     {
-        if ($this->hasKey($key)) {
+        if ($this->has($key)) {
             setcookie($key, null, -1, '/');
             unset($_COOKIE[$key]);
         }

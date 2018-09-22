@@ -2,15 +2,13 @@
 
 namespace Nur\Http;
 
-use Nur\Facades\Uri;
-
 class Session
 {
     /**
      * Set session method.
      *
      * @param string $key
-     * @param string $value
+     * @param mixed  $value
      *
      * @return void
      */
@@ -36,7 +34,7 @@ class Session
      */
     public function get($key = null)
     {
-        return (is_null($key) ? $_SESSION : ($this->hasKey($key) ? $_SESSION[$key] : null));
+        return (is_null($key) ? $_SESSION : ($this->has($key) ? $_SESSION[$key] : null));
     }
 
     /**
@@ -46,7 +44,7 @@ class Session
      *
      * @return bool
      */
-    public function hasKey($key)
+    public function has($key)
     {
         return isset($_SESSION[$key]);
     }
@@ -115,7 +113,7 @@ class Session
      */
     public function delete($key)
     {
-        if ($this->hasKey($key)) {
+        if ($this->has($key)) {
             unset($_SESSION[$key]);
         }
 
