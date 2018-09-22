@@ -70,10 +70,15 @@ if (! function_exists('abort')) {
      * @param  array  $headers
      *
      * @return void
+     * @throws
      */
     function abort($code, $message = '', array $headers = [])
     {
+        if ($code === 404) {
+            throw new \Nur\Exception\NotFoundHttpException($message);
+        }
 
+        throw new \Nur\Exception\HttpException($code, $message, null, $headers);
     }
 }
 
@@ -87,6 +92,7 @@ if (! function_exists('abort_if')) {
      * @param  array  $headers
      *
      * @return void
+     * @throws
      */
     function abort_if($boolean, $code, $message = '', array $headers = [])
     {
