@@ -30,34 +30,27 @@ if (! function_exists('app')) {
 
 if (! function_exists('config')) {
     /**
-     * Get config values
+     * Get/set config values
      *
-     * @param string|null $param
+     * @param string|null $key
+     * @param string|null $value
      *
      * @return mixed
+     * @throws
      */
-    function config($param = null)
+    function config($key = null, $value = null)
     {
-        $config = app('config');
-
-        if (is_null($param)) {
-            return $config;
+        if (func_num_args() === 0) {
+            return app('config');
         }
 
-        if (! strstr($param, '.')) {
-            return $config[$param];
+        if (is_null($value)) {
+            return app('config')->get($key);
         }
 
-        $value = $config;
-        foreach (explode('.', $param) as $index) {
-            if (key_exists($index, $value)) {
-                $value = $value[$index];
-            } else {
-                return null;
-            }
-        }
+        app('config')->set($key, $value);
 
-        return $value;
+        return true;
     }
 }
 

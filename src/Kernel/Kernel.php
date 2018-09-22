@@ -268,7 +268,9 @@ class Kernel
      */
     protected function init()
     {
-        $this->app->set('config', $this->config);
+        $this->app->set('config', function() {
+            return new \Nur\Config\Config($this->config);
+        });
 
         $this->bindPathsInContainer();
         $this->registerCoreProviders();
