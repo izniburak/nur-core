@@ -59,6 +59,7 @@ class ModelCommand extends Command
     {
         $model = ucfirst($name);
         $table = 'protected $table = \'' . $tableName . '\';';
+        $timestamps = 'public $timestamps = true;';
         $contents = <<<PHP
 <?php
 
@@ -69,8 +70,9 @@ use Nur\Database\Model;
 class $model extends Model
 {
     $table
+    $timestamps
 
-    function yourModelMethod()
+    public function yourModelMethod()
     {
         return;
     }

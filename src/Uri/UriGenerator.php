@@ -19,10 +19,12 @@ class UriGenerator
         $this->base = BASE_FOLDER;
 
         $this->url = http()->server('HTTP_HOST') . '/' . $this->base . '/';
-        if ((! empty(http()->server('HTTPS')) && http()->server('HTTPS') !== 'off') ||
+        if (!in_array(http()->server('HTTPS'), ['off', 'false']) ||
             http()->server('SERVER_PORT') == 443 || config('app.https') === true) {
             $this->cachedHttps = true;
         }
+
+        return;
     }
 
     /**

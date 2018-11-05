@@ -101,19 +101,19 @@ class $className extends Migration
     /* Do the migration */
     public function up()
     {
-        {$schema}->schema->create("{$tableName}", function(Blueprint $blueprint)
+        {$schema}->schema->create('{$tableName}', function(Blueprint $blueprint)
         {
-            {$blueprint}->increments("id");
+            {$blueprint}->increments('id');
             
             {$blueprint}->timestamps();
-            {$blueprint}->enum("status", [0, 1]);
+            {$blueprint}->enum('status', [0, 1]);
         });
     }
 
     /* Undo the migration */
     public function down()
     {
-        {$schema}->schema->dropIfExists("{$tableName}");
+        {$schema}->schema->dropIfExists('{$tableName}');
     }
 }
 

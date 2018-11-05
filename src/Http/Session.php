@@ -53,7 +53,7 @@ class Session
      * Setting Flash Message
      *
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      * @param string $redirect
      *
      * @return bool

@@ -60,7 +60,7 @@ use Nur\Middleware\Middleware;
 
 class $middleware extends Middleware
 {
-    function main()
+    public function handle()
     {
 
     }
