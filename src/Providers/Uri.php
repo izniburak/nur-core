@@ -14,6 +14,6 @@ class Uri extends ServiceProvider
      */
     public function register()
     {
-        $this->app->set('uri', \Nur\Uri\Uri::class);
+        $this->app->singleton('uri', \Nur\Uri\Uri::class);
     }
 }

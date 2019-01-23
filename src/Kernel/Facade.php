@@ -1,14 +1,8 @@
 <?php
-/**
- * nur - a simple framework for PHP Developers
- *
- * @author   izni burak demirtaş (@izniburak) <izniburak@gmail.com>
- * @web      <http://burakdemirtas.org>
- * @url      <https://github.com/izniburak/nur>
- * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
- */
 
 namespace Nur\Kernel;
+
+use RuntimeException;
 
 abstract class Facade
 {
@@ -17,7 +11,7 @@ abstract class Facade
      *
      * @var array
      */
-    protected static $applications;
+    protected static $app;
 
     /**
      * Resolved instances of objects in Facade
@@ -41,7 +35,17 @@ abstract class Facade
      */
     public static function setApplication($app)
     {
-        static::$applications = $app;
+        static::$app = $app;
+    }
+
+    /**
+     * Get the application instance behind the facade.
+     *
+     * @return \Nur\Kernel\Application
+     */
+    public static function getFacadeApplication()
+    {
+        return static::$app;
     }
 
     /**
@@ -66,6 +70,74 @@ abstract class Facade
     }
 
     /**
+     * Run a Closure when the facade has been resolved.
+     *
+     * @param  \Closure  $callback
+     * @return void
+     */
+    public static function resolved(Closure $callback)
+    {
+        static::$app->afterResolving(static::getFacadeAccessor(), function ($service) use ($callback) {
+            $callback($service);
+        });
+    }
+
+    /**
+     * Hotswap the underlying instance behind the facade.
+     *
+     * @param  mixed  $instance
+     * @return void
+     */
+    public static function swap($instance)
+    {
+        static::$resolvedInstance[static::getFacadeAccessor()] = $instance;
+        if (isset(static::$app)) {
+            static::$app->instance(static::getFacadeAccessor(), $instance);
+        }
+    }
+
+    /**
+     * Get the root object behind the facade.
+     *
+     * @return mixed
+     */
+    public static function getFacadeRoot()
+    {
+        return static::resolveFacadeInstance(static::getFacadeAccessor());
+    }
+
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    protected static function getFacadeAccessor()
+    {
+        throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
+    }
+
+    /**
+     * Resolved Instance
+     *
+     * @param string $facadeName
+     * @return string
+     */
+    protected static function resolveInstance($facadeName)
+    {
+        if (is_object($facadeName)) {
+            return $facadeName;
+        }
+
+        if (isset(static::$resolvedInstance[$facadeName])) {
+            return static::$resolvedInstance[$facadeName];
+        }
+
+        return static::$resolvedInstance[$facadeName] = static::$app->get($facadeName);
+    }
+
+    /**
      * Call Methods in Application Object
      *
      * @param string $method
@@ -85,21 +157,14 @@ abstract class Facade
     }
 
     /**
-     * Resolved Instance
+     * Call Methods in Application Object
      *
-     * @param string $facadeName
-     * @return string
+     * @param string $method
+     * @param array  $parameters
+     * @return mixed
      */
-    protected static function resolveInstance($facadeName)
+    public function __call($method, $parameters)
     {
-        if (is_object($facadeName)) {
-            return $facadeName;
-        }
-
-        if (isset(static::$resolvedInstance[$facadeName])) {
-            return static::$resolvedInstance[$facadeName];
-        }
-
-        return static::$resolvedInstance[$facadeName] = static::$applications->get($facadeName);
+        return self::__callStatic($method, $parameters);
     }
 }

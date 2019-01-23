@@ -17,19 +17,12 @@ class DownCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = ROOT . '/app.down';
-
+        $file = storage_path('app.down');
         if (! file_exists($file)) {
             touch($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> Nur Application was stopped.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . " <error>+Error!</error> Nur Application's already stopped."
-            );
+            return $output->writeln('<info>+Success!</info> Nur Application was stopped.');
         }
 
-        return;
+        return $output->writeln("<error>+Error!</error> Nur Application's already stopped.");
     }
 }

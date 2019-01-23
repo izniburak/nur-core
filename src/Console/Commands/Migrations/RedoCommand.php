@@ -46,6 +46,7 @@ EOT
         }
 
         if (!isset($migrations[$version])) {
+            $output->writeLn('<error>-Error!</error> "'.$version.'" migration not found. Please check migration ID.');
             return;
         }
 

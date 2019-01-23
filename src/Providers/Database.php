@@ -3,6 +3,7 @@
 namespace Nur\Providers;
 
 use Nur\Kernel\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class Database extends ServiceProvider
 {
@@ -14,7 +15,20 @@ class Database extends ServiceProvider
      */
     public function register()
     {
-        $this->app->set('sql', \Nur\Database\Sql::class);
-        $this->app->set('builder', \Nur\Database\Builder::class);
+        $this->app->singleton('builder', \Nur\Database\Builder::class);
+
+        // Paginator::viewFactoryResolver(function () {
+        //     return $this->app['view'];
+        // });
+        Paginator::currentPathResolver(function () {
+            return $this->app['request']->url();
+        });
+        Paginator::currentPageResolver(function ($pageName = 'page') {
+            $page = $this->app['request']->input($pageName);
+            if (filter_var($page, FILTER_VALIDATE_INT) !== false && (int) $page >= 1) {
+                return (int) $page;
+            }
+            return 1;
+        });
     }
 }

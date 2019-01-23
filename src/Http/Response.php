@@ -48,16 +48,20 @@ class Response extends SymfonyResponse
     /**
      * Add custom header data in Response
      *
-     * @param array $data
+     * @param array|string $key
+     * @param string $value
      *
      * @return Response
      */
-    public function addHeaders(array $data = [])
+    public function header($key, $value)
     {
-        foreach ($data as $key => $value) {
+        if (is_array($key) && !empty($key)) {
+            foreach ($key as $k => $v) {
+                $this->headers->set($k, $v);
+            }
+        } elseif (is_string($key) && !empty($key)) {
             $this->headers->set($key, $value);
         }
-
         return $this;
     }
 
@@ -95,7 +99,7 @@ class Response extends SymfonyResponse
     {
         if (function_exists('app')) {
             $this->setContent(
-                app('blade')->make($view, $data, $mergeData)
+                app('view')->make($view, $data, $mergeData)->render()
             );
 
             return $this;

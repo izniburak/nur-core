@@ -13,7 +13,7 @@ class CreateCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('database:create')
+            ->setName('db:create')
             ->addArgument('name', InputArgument::REQUIRED, 'The name for the database.')
             ->addOption('--type', '-t', InputOption::VALUE_OPTIONAL, 'The type for database.')
             ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL, 'Force to re-create database file.')
@@ -24,32 +24,20 @@ class CreateCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $force = $input->hasParameterOption('--force');
-        $type = $input->hasParameterOption('--type');
 
-        $databaseType = ($type) ? $input->getOption('type') : 'sqlite';
-
-        $file = ROOT . '/storage/database/' . $name . '.' . $databaseType;
-
+        $databaseType = $input->hasParameterOption('--type') ? $input->getOption('type') : 'sqlite';
+        $file = database_path($name.'.'.$databaseType);
         if (! file_exists($file)) {
             touch($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" ' . $databaseType . ' database created.'
-            );
-        } else {
-            if ($force !== false) {
-                unlink($file);
-                touch($file);
-                $output->writeln(
-                    "\n" . ' <info>+Success!</info> "' . ($name) . '" ' . $databaseType . ' database re-created.'
-                );
-            } else {
-                $output->writeln(
-                    "\n" . ' <error>-Error!</error> Database already exists! (' . $name . '.' . $databaseType . ')'
-                );
-            }
+            return $output->writeln('<info>+Success!</info> "'.$name.'" '.$databaseType.' database created.');
         }
 
-        return;
+        if ($input->hasParameterOption('--force') !== false) {
+            unlink($file);
+            touch($file);
+            return $output->writeln('<info>+Success!</info> "'.$name.'" '.$databaseType.' database re-created.');
+        }
+
+        return $output->writeln('<error>-Error!</error> Database already exists! ('.$name.'.'.$databaseType.')');
     }
 }

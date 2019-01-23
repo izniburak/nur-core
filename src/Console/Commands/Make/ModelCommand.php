@@ -24,41 +24,31 @@ class ModelCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $force = $input->hasParameterOption('--force');
-        $tableName = $input->hasParameterOption('--table');
         $table = '';
 
-        if ($tableName) {
+        if ($input->hasParameterOption('--table')) {
             $table = $input->getOption('table');
         }
-        $file = ROOT . '/app/Models/' . $name . '.php';
 
+        $file = app_path('Models/'.$name.'.php');
         if (! file_exists($file)) {
             $this->createNewFile($file, $name, $table);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" model created.'
-            );
-        } else {
-            if ($force !== false) {
-                unlink($file);
-                $this->createNewFile($file, $name, $table);
-                $output->writeln(
-                    "\n" . ' <info>+Success!</info> "' . ($name) . '" model re-created.'
-                );
-            } else {
-                $output->writeln(
-                    "\n" . ' <error>-Error!</error> Model already exists! (' . $name . ')'
-                );
-            }
+            return $output->writeln('<info>+Success!</info> "' . ($name) . '" model created.');
         }
 
-        return;
+        if ($input->hasParameterOption('--force') !== false) {
+            unlink($file);
+            $this->createNewFile($file, $name, $table);
+            return $output->writeln('<info>+Success!</info> "' . ($name) . '" model re-created.');
+        }
+
+        return $output->writeln('<error>-Error!</error> Model already exists! (' . $name . ')');
     }
 
     private function createNewFile($file, $name, $tableName = '')
     {
         $model = ucfirst($name);
-        $table = 'protected $table = \'' . $tableName . '\';';
+        $table = 'protected $table = \''.$tableName.'\';';
         $timestamps = 'public $timestamps = true;';
         $contents = <<<PHP
 <?php
@@ -71,19 +61,11 @@ class $model extends Model
 {
     $table
     $timestamps
-
-    public function yourModelMethod()
-    {
-        return;
-    }
 }
 
 PHP;
-
         if (false === file_put_contents($file, $contents)) {
             throw new \RuntimeException(sprintf('The file "%s" could not be written to', $file));
         }
-
-        return;
     }
 }

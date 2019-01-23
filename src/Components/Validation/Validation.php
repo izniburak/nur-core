@@ -46,7 +46,6 @@ class Validation
      */
     protected $msg = '%s is not valid.';
 
-
     /**
      * Define Validation Rules
      *

@@ -5,49 +5,50 @@ namespace Nur\Console\Commands\Database;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\Table;
 
 class ListCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('database:list')
+            ->setName('db:list')
             ->setDescription('List all sqlite databases.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dir = $mask = ROOT . '/storage/database/';
+        $dir = $mask = database_path().'/';
         $mask = $dir . '*.sqlite*';
         $dbList = glob($mask);
 
         if (count($dbList) > 0) {
-            $output->writeln('');
-            $output->writeln('        Database Name         Size           Time');
-            $output->writeln(' -----------------------------------------------------');
-
+            $rows = [];
             foreach ($dbList as $file) {
+                $filename = explode('.', str_replace($dir, '', $file));
+                    unset($filename[count($filename)-1]);
+                    $filename = implode('.', $filename);
                 $mb = false;
                 $filesize = (filesize($file) / 1024);
                 if ($filesize > 1024) {
                     $filesize = ($filesize / 1024);
                     $mb = true;
                 }
-                $output->writeln(
-                    sprintf(
-                        " %20s  %11.3f" . ($mb ? 'MB' : 'KB') . "  %17s",
-                        str_replace($dir, '', $file),
-                        $filesize,
-                        date("d.m.Y", filemtime($file))
-                    )
-                );
+                $rows[] = [
+                    $filename,
+                    end(explode('.', $file)),
+                    $filesize . ($mb ? 'MB' : 'KB'),
+                    date("d M Y H:i", filemtime($file)),
+                ];
             }
-        } else {
-            $output->writeln(
-                "\n" . ' No SQLite databases yet. '
-            );
+
+            $table = new Table($output);
+            $table->setHeaders(['Database', 'Type', 'Size', 'Created at'])
+                ->setRows($rows);
+
+            return $table->render();
         }
 
-        return;
+        return $output->writeln('No SQLite database yet.');
     }
 }

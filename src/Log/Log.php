@@ -121,7 +121,8 @@ class Log
     protected function log($level, $message)
     {
         if (is_array($message) || is_object($message)) {
-            $message = json_encode($message);
+            // $message = json_encode($message);
+            $message = print_r($message, true);
         }
 
         $text = '[' . date($this->timeFormat,
@@ -135,7 +136,7 @@ class Log
      * @param string $text
      *
      * @return void
-     * @throws ExceptionHandler
+     * @throws
      */
     protected function save($text)
     {

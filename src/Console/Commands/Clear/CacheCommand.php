@@ -17,12 +17,11 @@ class CacheCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path = ROOT . '/storage/cache/';
-
+        $path = cache_path();
         $count = 0;
         $folders = ['blade' => 'Blade', 'html' => 'Html', 'sql' => 'SQL'];
         foreach ($folders as $key => $value) {
-            $files = $path . $key;
+            $files = $path . '/' . $key;
             foreach (glob($files . '/*.*') as $file) {
                 if (! stristr($file, 'index.html')) {
                     if (unlink($file)) {
@@ -33,16 +32,9 @@ class CacheCommand extends Command
         }
 
         if ($count > 0) {
-            touch($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> ' . $count . ' cache file(s) deleted.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . " <question>+Info!</question> There are no cache files."
-            );
+            return $output->writeln('<info>+Success!</info> ' . $count . ' cache file(s) deleted.');
         }
 
-        return;
+        return $output->writeln('<question>+Info!</question> There are no cache files.');
     }
 }

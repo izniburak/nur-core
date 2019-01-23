@@ -40,31 +40,17 @@ EOT
         $version = $input->getArgument('version');
 
         if (in_array($version, $versions)) {
-            $output->writeLn("\n" . ' <error>-Error!</error> "' . ($version) . '" migration is active. Please down it.');
+            $output->writeLn('<error>-Error!</error> "'.$version.'" migration is active. Please down it first.');
             return;
         }
 
         if (!isset($migrations[$version])) {
+            $output->writeLn('<error>-Error!</error> "'.$version.'" migration not found. Please check migration ID.');
             return;
         }
 
-        $mask = ROOT . '/app/Migrations/' . $version . '_*.php';
-        array_map('unlink', glob($mask));
-        $output->writeLn("\n" . ' <info>+Success!</info> "' . ($version) . '" migration removed.');
-
-        /*
-        $container = $this->getContainer();
-        $container['phpmig.migrator']->up($migrations[$version]);
-
-        $delete = $this->getContainer()['db']->table('nur_migrations')->where('version', $version)->delete();
-        if($delete)
-        {
-            $mask = getcwd() . '/app/Migrations/' . $version . "_*.php";
-            array_map("unlink", glob($mask));
-            $output->writeLn("\n" . ' <info>+Success!</info> "' . ($version) . '" migration removed.');
-        }
-        else
-            $output->writeLn("\n" . ' <danger>+Error!</danger> "' . ($version) . '" migration not found.');
-        */
+        $mask = glob(database_path('migrations/'.$version.'_*.php'));
+        array_map('unlink', $mask);
+        $output->writeLn('<info>+Success!</info> "'.$version.'" migration removed.');
     }
 }

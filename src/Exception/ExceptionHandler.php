@@ -17,10 +17,10 @@ class ExceptionHandler extends Exception
      */
     public function __construct($title, $message)
     {
-        if (APP_ENV === 'dev') {
+        if (config('app.env') !== 'prod') {
             throw new Exception(strip_tags($title . ' - ' . $message), 1);
         }
 
-        return error($title, $message);
+        return require __DIR__ . '/views/index.php';
     }
 }

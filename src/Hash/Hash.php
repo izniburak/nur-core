@@ -75,6 +75,8 @@ class Hash implements HashInterface
     {
         if ($this->getDefaultDriver() === 'argon') {
             return $this->createArgonDriver();
+        } elseif ($this->getDefaultDriver() === 'argon2id') {
+            return $this->createArgon2IdDriver();
         }
 
         return $this->createBcryptDriver();
@@ -85,7 +87,7 @@ class Hash implements HashInterface
      *
      * @return \Nur\Hash\BcryptHash
      */
-    protected function createBcryptDriver()
+    public function createBcryptDriver()
     {
         return new BcryptHash(config('hashing.bcrypt') ?? []);
     }
@@ -95,8 +97,18 @@ class Hash implements HashInterface
      *
      * @return \Nur\Hash\ArgonHash
      */
-    protected function createArgonDriver()
+    public function createArgonDriver()
     {
         return new ArgonHash(config('hashing.argon') ?? []);
+    }
+
+    /**
+     * Create an instance of the Argon2 hash Driver.
+     *
+     * @return \Nur\Hash\ArgonHash
+     */
+    public function createArgon2IdDriver()
+    {
+        return new Argon2IdHash(config('hashing.argon') ?? []);
     }
 }

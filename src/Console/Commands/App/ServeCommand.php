@@ -26,7 +26,7 @@ class ServeCommand extends Command
         $port = ($port !== false ? $input->getOption('port') : '8000');
 
         $output->writeln(
-            "\n" . "<info>Nur Application's started on PHP Development Server (http://" . $host . ":" . $port . "/)" . "\n" .
+            "<info>Nur Application's started on PHP Development Server (http://" . $host . ":" . $port . "/)" . "\n" .
             "Press Ctrl-C to Quit.</info>" . "\n"
         );
         passthru('php -S ' . $host . ':' . $port);

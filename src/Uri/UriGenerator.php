@@ -19,7 +19,7 @@ class UriGenerator
         $this->base = BASE_FOLDER;
 
         $this->url = http()->server('HTTP_HOST') . '/' . $this->base . '/';
-        if (!in_array(http()->server('HTTPS'), ['off', 'false']) ||
+        if (!in_array(http()->server('HTTPS'), [null, 'off', 'false']) ||
             http()->server('SERVER_PORT') == 443 || config('app.https') === true) {
             $this->cachedHttps = true;
         }
@@ -68,9 +68,11 @@ class UriGenerator
      */
     public function route($name, array $params = null, $secure = false)
     {
-        $routes = app('route')->getRoutes();
-        $found = false;
+        $routes = file_exists(cache_path('routes.php'))
+            ? require cache_path('routes.php')
+            : app('route')->getRoutes();
 
+        $found = false;
         foreach ($routes as $key => $value) {
             if ($value['alias'] == $name) {
                 $found = true;
@@ -163,7 +165,7 @@ class UriGenerator
         if (! is_null($num)) {
             $uri = $this->replace(str_replace($this->base, '', http()->server('REQUEST_URI')));
             $uriA = explode('/', $uri);
-            return (isset($uriA[$num]) ? $uriA[$num] : null);
+            return (isset($uriA[$num]) ? reset(explode('?', $uriA[$num])) : null);
         }
 
         return null;

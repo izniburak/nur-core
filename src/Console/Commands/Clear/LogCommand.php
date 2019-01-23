@@ -12,15 +12,14 @@ class LogCommand extends Command
     {
         $this
             ->setName('clear:log')
-            ->setDescription("Clear the application log files.");
+            ->setDescription('Clear the application log files.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path = ROOT . '/storage/log/';
-
+        $path = storage_path('log');
         $count = 0;
-        foreach (glob($path . '*.*') as $file) {
+        foreach (glob($path . '/' . '*.*') as $file) {
             if (! stristr($file, 'index.html')) {
                 if (unlink($file)) {
                     $count++;
@@ -29,16 +28,9 @@ class LogCommand extends Command
         }
 
         if ($count > 0) {
-            touch($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> ' . $count . ' log file(s) deleted.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . " <question>+Info!</question> There are no log files."
-            );
+            return $output->writeln('<info>+Success!</info> ' . $count . ' log file(s) deleted.');
         }
 
-        return;
+        return $output->writeln('<question>+Info!</question> There are no log files.');
     }
 }

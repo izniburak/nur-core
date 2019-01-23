@@ -42,10 +42,12 @@ EOT
         $version = $input->getArgument('version');
 
         if (!in_array($version, $versions)) {
+            $output->writeLn('<error>-Error!</error> "'.$version.'" migration status already inactive.');
             return;
         }
 
         if (!isset($migrations[$version])) {
+            $output->writeLn('<error>-Error!</error> "'.$version.'" migration not found. Please check migration ID.');
             return;
         }
 

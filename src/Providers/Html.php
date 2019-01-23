@@ -7,6 +7,13 @@ use Nur\Kernel\ServiceProvider;
 class Html extends ServiceProvider
 {
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+
+    /**
      * Register the service provider.
      *
      * @return void
@@ -14,7 +21,7 @@ class Html extends ServiceProvider
      */
     public function register()
     {
-        $this->app->set('html', \Nur\Components\Builder\Html::class);
-        $this->app->set('form', \Nur\Components\Builder\Form::class);
+        $this->app->singleton('html', \Nur\Components\Builder\Html::class);
+        $this->app->singleton('form', \Nur\Components\Builder\Form::class);
     }
 }

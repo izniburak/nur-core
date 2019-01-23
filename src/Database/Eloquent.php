@@ -38,13 +38,12 @@ class Eloquent
     {
         $capsule = new Capsule;
         $config = config('database');
-        if ($config['driver'] == 'sqlite') {
-            if (strpos($config['database'], ':') === false) {
-                $config['database'] = realpath(ROOT . '/storage/database/' . $config['database']);
-            }
+        $activeDb = $config['connections'][$config['default']];
+        if ($activeDb['driver'] === 'sqlite') {
+            $activeDb['database'] = database_path($activeDb['database']);
         }
 
-        $capsule->addConnection($config);
+        $capsule->addConnection($activeDb);
         // Set the event dispatcher used by Eloquent models... (optional)
         $capsule->setEventDispatcher(new Dispatcher(new Container));
         // Make this Capsule instance available globally via static methods... (optional)

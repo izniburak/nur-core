@@ -11,9 +11,15 @@ class Command
         'Nur\Console\Commands\App\DownCommand',
         'Nur\Console\Commands\App\StatusCommand',
         'Nur\Console\Commands\App\ServeCommand',
+        'Nur\Console\Commands\App\KeygenCommand',
+
+        'Nur\Console\Commands\Cache\RouteCommand',
+        'Nur\Console\Commands\Cache\ConfigCommand',
 
         'Nur\Console\Commands\Clear\CacheCommand',
         'Nur\Console\Commands\Clear\LogCommand',
+        'Nur\Console\Commands\Clear\RouteCommand',
+        'Nur\Console\Commands\Clear\ConfigCommand',
 
         'Nur\Console\Commands\Make\ControllerCommand',
         'Nur\Console\Commands\Make\ModelCommand',
@@ -69,7 +75,6 @@ class Command
             $newCommand = new $command;
             $newCommand->setName("migration:" . $newCommand->getName());
             $this->app->add($newCommand);
-            $newCommand = null;
         }
     }
 

@@ -37,13 +37,13 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->bootstrap($input, $output);
-
-        $tableName = $input->hasParameterOption('--table');
-        $tableName = ($tableName !== false ? $input->getOption('table') : '');
+        $tableName = $input->hasParameterOption('--table') !== false 
+            ? $input->getOption('table') 
+            : '';
 
         $path = $this->container['phpmig.migrations_path'];
         $locator = new FileLocator(array());
-        $path    = $locator->locate($path, ROOT, $first = true);
+        $path    = $locator->locate($path, base_path(), $first = true);
 
         if (!is_writeable($path)) {
             throw new \InvalidArgumentException(sprintf(
@@ -53,44 +53,17 @@ EOT
         }
 
         $path = realpath($path);
-
         $migrationName = $this->transMigName($input->getArgument('name'));
-
         $basename  = date('YmdHis') . '_' . $migrationName . '.php';
-
         $path = $path . DIRECTORY_SEPARATOR . $basename;
-
-        if (file_exists($path)) 
-        {
-            throw new \InvalidArgumentException(sprintf(
-                'The file "%s" already exists',
-                $path
-            ));
+        if (file_exists($path)) {
+            throw new \InvalidArgumentException(sprintf('The file "%s" already exists', $path));
         }
 
         $className = $this->migrationToClassName($migrationName);
-
-        if (isset($this->container['phpmig.migrations_template_path'])) {
-            $migrationsTemplatePath = $this->container['phpmig.migrations_template_path'];
-            if (false === file_exists($migrationsTemplatePath)) {
-                throw new \RuntimeException(sprintf(
-                    'The template file "%s" not found',
-                    $migrationsTemplatePath
-                ));
-            }
-
-            if (preg_match('/\.php$/', $migrationsTemplatePath)) {
-                ob_start();
-                include($migrationsTemplatePath);
-                $contents = ob_get_clean();
-            } else {
-                $contents = file_get_contents($migrationsTemplatePath);
-                $contents = sprintf($contents, $className);
-            }
-        } else {
-            $schema = '$this';
-            $blueprint = '$table';
-            $contents = <<<PHP
+        $schema = '$this';
+        $blueprint = '$table';
+        $contents = <<<PHP
 <?php
 
 use Nur\Database\Migration\Migration;
@@ -101,8 +74,7 @@ class $className extends Migration
     /* Do the migration */
     public function up()
     {
-        {$schema}->schema->create('{$tableName}', function(Blueprint $blueprint)
-        {
+        {$schema}->schema->create('{$tableName}', function(Blueprint $blueprint) {
             {$blueprint}->increments('id');
             
             {$blueprint}->timestamps();
@@ -118,18 +90,13 @@ class $className extends Migration
 }
 
 PHP;
-        }
-
         if (false === file_put_contents($path, $contents)) {
-            throw new \RuntimeException(sprintf(
-                'The file "%s" could not be written to',
-                $path
-            ));
+            throw new \RuntimeException(sprintf('The file "%s" could not be written to', $path));
         }
 
         $output->writeln(
-            "\n" . ' <info>+Success!</info> ' .
-            '"' . str_replace([getcwd(), 'app', 'Migrations', '/', '\\', '.php'], '', $path) . '" migration generated.'
+            '<info>+Success!</info> ' .
+            '"'.str_replace([getcwd(), 'database', 'migrations', '/', '\\', '.php'], '', $path).'" migration generated.'
         );
 
         return;
@@ -137,7 +104,6 @@ PHP;
 
     protected function transMigName($migrationName)
     {
-        //http://php.net/manual/en/language.variables.basics.php
         if (preg_match('/[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/', $migrationName)) {
             return $migrationName;
         }

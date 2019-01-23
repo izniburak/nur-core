@@ -12,19 +12,18 @@ use Nur\Container\Container;
 
 if (! function_exists('app')) {
     /**
-     * Get application container or a service.
+     * Get the available container instance.
      *
-     * @param string|null $name
-     *
-     * @return mixed|Nur\Container\Container
+     * @param  string  $abstract
+     * @param  array   $parameters
+     * @return mixed|\Nur\Kernel\Kernel
      */
-    function app($name = null)
+    function app($abstract = null, array $parameters = [])
     {
-        if (is_null($name)) {
+        if (is_null($abstract)) {
             return Container::getInstance();
         }
-
-        return Container::getInstance()->get($name);
+        return Container::getInstance()->make($abstract, $parameters);
     }
 }
 
@@ -33,24 +32,22 @@ if (! function_exists('config')) {
      * Get/set config values
      *
      * @param string|null $key
-     * @param string|null $value
+     * @param string|null $default
      *
      * @return mixed
      * @throws
      */
-    function config($key = null, $value = null)
+    function config($key = null, $default = null)
     {
         if (func_num_args() === 0) {
             return app('config');
         }
 
-        if (is_null($value)) {
-            return app('config')->get($key);
+        if (is_array($key)) {
+            return app('config')->set($key);
         }
 
-        app('config')->set($key, $value);
-
-        return true;
+        return app('config')->get($key, $default);
     }
 }
 
@@ -65,7 +62,7 @@ if (! function_exists('abort')) {
      * @return void
      * @throws
      */
-    function abort($code, $message = '', array $headers = [])
+    function abort($code, $message = null, array $headers = [])
     {
         if ($code === 404) {
             throw new \Nur\Exception\NotFoundHttpException($message);
@@ -87,7 +84,7 @@ if (! function_exists('abort_if')) {
      * @return void
      * @throws
      */
-    function abort_if($boolean, $code, $message = '', array $headers = [])
+    function abort_if($boolean, $code, $message = null, array $headers = [])
     {
         if ($boolean) {
             abort($code, $message, $headers);
@@ -144,19 +141,18 @@ if (! function_exists('view')) {
     }
 }
 
-if (! function_exists('error')) {
+if (! function_exists('helper')) {
     /**
-     * Error messages as view
+     * Load a helper
      *
-     * @param string|null $title
-     * @param string|null $message
-     * @param string|null $page
+     * @param string|null $file
+     * @param string|null $directory
      *
-     * @return string
+     * @return mixed
      */
-    function error($title = null, $message = null, $page = null)
+    function helper($file, $directory = null)
     {
-        return app('load')->error($title, $message, $page);
+        return app('load')->helper($file, $directory ?? 'Helpers');
     }
 }
 
@@ -244,7 +240,49 @@ if (! function_exists('event')) {
      */
     function event($event, array $params = [], $method = 'handle')
     {
-        return app('event')->trigger($event, $params, $method);
+        return app('listener')->trigger($event, $params, $method);
+    }
+}
+
+if (! function_exists('encrypt')) {
+    /**
+     * Encrypt the given value.
+     *
+     * @param  mixed  $value
+     * @param  bool   $serialize
+     * @return string
+     */
+    function encrypt($value, $serialize = true)
+    {
+        return app('encrypter')->encrypt($value, $serialize);
+    }
+}
+
+if (! function_exists('decrypt')) {
+    /**
+     * Decrypt the given value.
+     *
+     * @param  string  $value
+     * @param  bool   $unserialize
+     * @return mixed
+     */
+    function decrypt($value, $unserialize = true)
+    {
+        return app('encrypter')->decrypt($value, $unserialize);
+    }
+}
+
+if (! function_exists('bcrypt')) {
+    /**
+     * Hash the given value against the bcrypt algorithm.
+     *
+     * @param  string  $value
+     * @param  array  $options
+     * @return string
+     */
+    function bcrypt($value, $options = [])
+    {
+        return app('hash')->driver('bcrypt')->make($value, $options);
     }
 }
 
@@ -346,34 +384,6 @@ if (! function_exists('public_path')) {
     }
 }
 
-if (! function_exists('get_token')) {
-    /**
-     * Get Application token
-     *
-     * @return string
-     */
-    function get_token()
-    {
-        return _TOKEN;
-    }
-}
-
-if (! function_exists('reset_token')) {
-    /**
-     * Application token reset
-     *
-     * @return void
-     */
-    function reset_token()
-    {
-        if (session()->hasKey('_nur_token')) {
-            session()->delete('_nur_token');
-        }
-
-        return;
-    }
-}
-
 if (! function_exists('csrf_token')) {
     /**
      * CSRF Token Generate
@@ -386,7 +396,7 @@ if (! function_exists('csrf_token')) {
     function csrf_token($name = null)
     {
         $csrf = hash_hmac('sha256', get_token(), uniqid('', true));
-        session()->set('_nur_csrf_token' . (! is_null($name) ? '_' . $name : ''), $csrf);
+        session()->set('_nur_csrf' . (! is_null($name) ? '_' . $name : ''), $csrf);
 
         return $csrf;
     }
@@ -405,8 +415,8 @@ if (! function_exists('csrf_check')) {
     {
         $session = session();
         $name = (! is_null($name) ? '_' . $name : '');
-        if ($session->hasKey('_nur_csrf_token' . $name) && $token === $session->get('_nur_csrf_token' . $name)) {
-            $session->delete('_nur_csrf_token' . $name);
+        if ($session->has('_nur_csrf' . $name) && $token === $session->get('_nur_csrf' . $name)) {
+            $session->delete('_nur_csrf' . $name);
             return true;
         }
 
@@ -438,7 +448,7 @@ if (! function_exists('method_field')) {
      */
     function method_field(string $method)
     {
-        return '<input type="hidden" name="_method" value="' . $method . '" />';
+        return '<input type="hidden" name="_method" value="'.$method.'" />';
     }
 }
 
@@ -528,5 +538,95 @@ if (! function_exists('e')) {
     function e(string $value, $doubleEncode = true)
     {
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
+    }
+}
+
+if (! function_exists('paginationLinks')) {
+    function paginationLinks($records, $link = '', array $settings = [], $simple = false)
+    {
+        if (is_null($records) || empty($records)) {
+            return;
+        }
+
+        $config = [
+            'class' => 'pagination pagination-sm',
+            'scroll' => 5,
+            'show' => 10,
+            'next' => '&raquo;',
+            'prev' => '&laquo;',
+        ];
+        $config = array_merge($config, $settings);
+
+        $ul = '<ul class="' . $config['class'] . '">';
+        $scroll = $config['scroll'];
+        $show = $config['show'];
+        
+        $link = $link === '' ? uri()->current() : $link;
+        $info = $records->toArray();
+        $pageName = 'page';
+        $total = $info['last_page'];
+        $page = $info['current_page'];
+
+        $link = preg_replace('/([?&])'.$pageName.'=[^&]+(&|$)/','$1', $link);
+        $link = trim($link, '&');
+        $link = trim($link, '?');
+        $link .= strstr($link, '?') ? '&' : '?'; 
+
+        if ($total > 1) {
+            $page = (intval($page) ? $page : 1);
+            if ($page != 1) {
+                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page - 1) . '">'.$config['prev'].'</a>';
+            }
+
+            if (!$simple) {
+                if ($total <= $scroll) {
+                    if ($total <= $show) {
+                        $start = 1;
+                        $finish = $total;
+                    } else {
+                        $start = 1;
+                        $finish = $total;
+                    }
+                } else {
+                    if ($page < intval($scroll / 2) + 1) {
+                        $start = 1;
+                        $finish = $scroll;
+                    } else {
+                        $start = $page - intval($scroll / 2);
+                        $finish = $page + intval($scroll / 2);
+                        if ($finish > $total) {
+                            $finish = $total;
+                        }
+                    }
+                }
+    
+                for ($i = $start; $i <= $finish; $i++) {
+                    if ($page == $i) {
+                        $ul .= '<li class="active"><a href="javascript:;">' . $i . '</a></li>';
+                    } else {
+                        $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($i) . '">' . $i . '</a></li>';
+                    }
+                }
+            }
+
+            if ($page != $total) {
+                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page + 1) . '">'.$config['next'].'</a>';
+            }
+        } else {
+            return '';
+        }
+
+        $ul .= '</ul>';
+        $ul = str_replace('//', '/', $ul);
+        $ul = str_replace(['http:/', 'https:/'], ['http://', 'https://'], $ul);
+
+        return $ul;
+    }
+}
+
+if (! function_exists('simplePaginationLinks')) {
+    function simplePaginationLinks($records, $link = '', array $settings = [])
+    {
+        return paginationLinks($records, $link, $settings, true);
     }
 }

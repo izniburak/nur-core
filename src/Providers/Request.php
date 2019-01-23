@@ -14,6 +14,6 @@ class Request extends ServiceProvider
      */
     public function register()
     {
-        $this->app->set('request', \Nur\Http\Request::class);
+        $this->app->singleton('request', \Nur\Http\Request::class);
     }
 }

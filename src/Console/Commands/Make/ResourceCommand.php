@@ -23,29 +23,20 @@ class ResourceCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $force = $input->hasParameterOption('--force');
-        $file = ROOT . '/app/Controllers/' . $name . '.php';
+        $file = app_path('Controllers/'.$name.'.php');
 
         if (! file_exists($file)) {
             $this->createNewFile($file, $name);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" resource controller created.'
-            );
-        } else {
-            if ($force !== false) {
-                unlink($file);
-                $this->createNewFile($file, $name);
-                $output->writeln(
-                    "\n" . ' <info>+Success!</info> "' . ($name) . '" resource controller re-created.'
-                );
-            } else {
-                $output->writeln(
-                    "\n" . ' <error>-Error!</error> Resource Controller already exists! (' . $name . ')'
-                );
-            }
+            return $output->writeln('<info>+Success!</info> "'.$name.'" resource controller created.');
         }
 
-        return;
+        if ($input->hasParameterOption('--force') !== false) {
+            unlink($file);
+            $this->createNewFile($file, $name);
+            return $output->writeln('<info>+Success!</info> "'.$name.'" resource controller re-created.');
+        }
+
+        return $output->writeln('<error>-Error!</error> Resource Controller already exists! ('.$name.')');
     }
 
     private function createNewFile($file, $name)
@@ -55,8 +46,6 @@ class ResourceCommand extends Command
 <?php
 
 namespace App\Controllers;
-
-use Nur\Controller\Controller;
 
 class $controller extends Controller
 {
@@ -136,11 +125,8 @@ class $controller extends Controller
 }
 
 PHP;
-
         if (false === file_put_contents($file, $contents)) {
             throw new \RuntimeException(sprintf('The file "%s" could not be written to', $file));
         }
-
-        return;
     }
 }

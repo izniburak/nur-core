@@ -72,7 +72,6 @@ abstract class AbstractCommand extends Command
         $this->setMigrations($this->bootstrapMigrations($input, $output));
 
         $container['phpmig.migrator'] = $this->bootstrapMigrator($output);
-
     }
 
     /**
@@ -81,11 +80,12 @@ abstract class AbstractCommand extends Command
      */
     protected function findBootstrapFile($filename)
     {
-        if (null === $filename)
-            $filename = ROOT . '/vendor/izniburak/nur-core/src/Database/Migration/MigrationRegister.php';
+        if ($filename === null) {
+            $filename = base_path('/vendor/izniburak/nur-core/src/Database/Migration/MigrationRegister.php');
+        }
 
         $locator = new FileLocator(array(
-            ROOT . DIRECTORY_SEPARATOR . 'config', ROOT
+            config_path(), base_path()
         ));
 
         return $locator->locate($filename);

@@ -22,19 +22,13 @@ class MiddlewareCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $file = ROOT . '/app/Middlewares/' . $name . '.php';
+        $file = app_path('Middlewares/'.$name.'.php');
 
         if (file_exists($file)) {
             unlink($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware removed.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . ' <error>-Error!</error> Middleware not found! (' . $name . ')'
-            );
+            return $output->writeln('<info>+Success!</info> "'.$name.'" middleware removed.');
         }
 
-        return;
+        return $output->writeln('<error>-Error!</error> Middleware not found! ('.$name.')');
     }
 }

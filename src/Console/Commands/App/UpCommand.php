@@ -17,19 +17,12 @@ class UpCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $file = ROOT . '/app.down';
-
+        $file = storage_path('app.down');
         if (file_exists($file)) {
             unlink($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> Nur Application was started.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . " <error>+Error!</error> Nur Application's already started."
-            );
+            return $output->writeln('<info>+Success!</info> Nur Application was started.');
         }
 
-        return;
+        return $output->writeln("<error>+Error!</error> Nur Application's already started.");
     }
 }

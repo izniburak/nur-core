@@ -23,29 +23,20 @@ class MiddlewareCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $force = $input->hasParameterOption('--force');
-        $file = ROOT . '/app/Middlewares/' . $name . '.php';
+        $file = app_path('Middlewares/'.$name.'.php');
 
         if (! file_exists($file)) {
             $this->createNewFile($file, $name);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware created.'
-            );
-        } else {
-            if ($force !== false) {
-                unlink($file);
-                $this->createNewFile($file, $name);
-                $output->writeln(
-                    "\n" . ' <info>+Success!</info> "' . ($name) . '" middleware re-created.'
-                );
-            } else {
-                $output->writeln(
-                    "\n" . ' <error>-Error!</error> Middleware already exists! (' . $name . ')'
-                );
-            }
+            return $output->writeln('<info>+Success!</info> "'.$name.'" middleware created.');
         }
 
-        return;
+        if ($input->hasParameterOption('--force') !== false) {
+            unlink($file);
+            $this->createNewFile($file, $name);
+            return $output->writeln('<info>+Success!</info> "'.$name.'" middleware re-created.');
+        }
+
+        return $output->writeln('<error>-Error!</error> Middleware already exists! ('.$name.')');
     }
 
     private function createNewFile($file, $name)
@@ -62,16 +53,15 @@ class $middleware extends Middleware
 {
     public function handle()
     {
-
+        // your code...
+        
+        return true;
     }
 }
 
 PHP;
-
         if (false === file_put_contents($file, $contents)) {
             throw new \RuntimeException(sprintf('The file "%s" could not be written to', $file));
         }
-
-        return;
     }
 }

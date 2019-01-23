@@ -14,44 +14,36 @@ class Load
      *
      * @return mixed
      *
-     * @throws ExceptionHandler
+     * @throws
      */
     public function view($name, array $data = [])
     {
-        $name = ($name);
         $file = app_path('Views' . DIRECTORY_SEPARATOR . $name . '.php');
-
         if (file_exists($file)) {
             extract($data);
             require $file;
             return ob_get_clean();
         }
 
-        throw new ExceptionHandler('Oppss! File not found.', '<b>View::' . $name . '</b> not found.');
+        throw new ExceptionHandler('Oppss! File not found.', 'View::' . $name . ' not found.');
     }
 
     /**
-     * Set Error Message and Display.
+     * Load helper file.
      *
-     * @param string $title
-     * @param string $msg
-     * @param string $page
+     * @param string $name
+     * @param string $directory
+     * @return mixed
      *
-     * @return void
+     * @throws
      */
-    public function error($title = null, $msg = null, $page = null)
+    public function helper($name, $directory = 'Helpers')
     {
-        $title = is_null($title) ? 'Oppss! System Error. ' : $title;
-        $message = is_null($msg) ? 'Please check your codes.' : $msg;
-        $page = is_null($page) ? 'index' : $page;
-
-        $file = realpath(ROOT . '/app/Views/errors/' . $page . '.php');
-        app_path('Views' . DIRECTORY_SEPARATOR . 'errors' . DIRECTORY_SEPARATOR . $page . '.php');
+        $file = app_path($directory . DIRECTORY_SEPARATOR . $name . '.php');
         if (file_exists($file)) {
-            require $file;
-            die();
+            return require $file;
         }
 
-        die('<h2>' . $title . '</h2> ' . $message);
+        throw new ExceptionHandler('Oppss! File not found.', 'Helper::' . $name . ' not found.');
     }
 }

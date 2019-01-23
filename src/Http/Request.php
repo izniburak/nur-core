@@ -545,7 +545,7 @@ class Request extends SymfonyRequest
     }
 
     /**
-     * This method belongs to Symfony HttpFoundation and is not usually needed when using Laravel.
+     * This method belongs to Symfony HttpFoundation and is not usually needed when using Nur FW.
      *
      * Instead, you may use the "input" method.
      *

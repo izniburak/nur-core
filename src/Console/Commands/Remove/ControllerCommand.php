@@ -22,19 +22,13 @@ class ControllerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $file = ROOT . '/app/Controllers/' . $name . '.php';
+        $file = app_path('Controllers/'.$name.'.php');
 
         if (file_exists($file)) {
             unlink($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" controller removed.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . ' <error>-Error!</error> Controller not found! (' . $name . ')'
-            );
+            return $output->writeln('<info>+Success!</info> "'.$name.'" controller removed.');
         }
 
-        return;
+        return $output->writeln('<error>-Error!</error> Controller not found! ('.$name.')');
     }
 }

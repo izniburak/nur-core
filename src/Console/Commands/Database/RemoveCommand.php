@@ -13,7 +13,7 @@ class RemoveCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('database:remove')
+            ->setName('db:remove')
             ->addArgument('name', InputArgument::REQUIRED, 'The name for the database.')
             ->addOption('--type', '-t', InputOption::VALUE_OPTIONAL, 'The type for database.')
             ->setDescription('Remove a sqlite database.')
@@ -23,21 +23,14 @@ class RemoveCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $type = $input->hasParameterOption('--type');
-        $databaseType = ($type) ? $input->getOption('type') : 'sqlite';
-        $file = ROOT . '/storage/database/' . $name . '.' . $databaseType;
 
+        $databaseType = $input->hasParameterOption('--type') ? $input->getOption('type') : 'sqlite';
+        $file = database_path($name.'.'.$databaseType);
         if (file_exists($file)) {
             unlink($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" ' . $databaseType . ' database removed.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . ' <error>-Error!</error> Database not found! (' . $name . '.' . $databaseType . ')'
-            );
+            return $output->writeln('<info>+Success!</info> "'.$name.'" '.$databaseType.' database removed.');
         }
 
-        return;
+        return $output->writeln('<error>-Error!</error> Database not found! ('.$name.'.'.$databaseType.')');
     }
 }

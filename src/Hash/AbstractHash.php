@@ -24,7 +24,7 @@ abstract class AbstractHash
      *
      * @return bool
      */
-    public function check($value, $hashedValue)
+    public function check($value, $hashedValue, array $options = [])
     {
         if (strlen($hashedValue) === 0) {
             return false;

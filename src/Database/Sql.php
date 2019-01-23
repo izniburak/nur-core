@@ -7,21 +7,20 @@ use Buki\Pdox as PdoxProvider;
 class Sql extends PdoxProvider
 {
     /**
-     * Class constructer
+     * Class constructor
      *
      * @return Buki\Pdox
      */
     public function __construct()
     {
         $config = config('database');
-        $config['cachedir'] = cache_path('sql');
-        if ($config['driver'] == 'sqlite') {
-            if (strpos($config['database'], ':') === false) {
-                $config['database'] = database_path($config['database']);
-            }
+        $activeDb = $config['connections'][$config['default']];
+        if ($activeDb['driver'] === 'sqlite') {
+            $activeDb['database'] = database_path($activeDb['database']);
         }
-        $config['debug'] = APP_ENV === 'dev';
-        return parent::__construct($config);
+        $activeDb['cachedir'] = cache_path('sql');
+        $activeDb['debug'] = APP_ENV === 'dev';
+        return parent::__construct($activeDb);
     }
 
     /**

@@ -21,13 +21,9 @@ class Route
      */
     public function __construct()
     {
-        if (file_exists(base_path('app.down'))) {
-            throw new ExceptionHandler('The system is under maintenance.', 'We will be back very soon.');
-        }
-
         if (null === self::$instance) {
             self::$instance = new Router([
-                'base_folder' => ROOT,
+                'base_folder' => base_path(),
                 'main_method' => 'main',
                 'paths' => [
                     'controllers' => 'app/Controllers/',
@@ -37,6 +33,7 @@ class Route
                     'controllers' => 'App\Controllers',
                     'middlewares' => 'App\Middlewares',
                 ],
+                'cache' => cache_path('routes.php'),
             ]);
         }
 

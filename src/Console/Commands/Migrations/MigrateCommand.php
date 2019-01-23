@@ -37,6 +37,7 @@ EOT
     {
         $this->bootstrap($input, $output);
 
+        $container  = $this->getContainer();
         $migrations = $this->getMigrations();
         $versions   = $this->getAdapter()->fetchAll();
 
@@ -58,7 +59,6 @@ EOT
             }
         } else {
             $versionNumbers = array_merge($versions, array_keys($migrations));
-
             if (empty($versionNumbers)) {
                 return;
             }
@@ -67,7 +67,6 @@ EOT
         }
 
         $direction = $version > $current ? 'up' : 'down';
-
         if ($direction == 'down') {
             /**
              * Run downs first
@@ -79,7 +78,6 @@ EOT
                 }
 
                 if (in_array($migration->getVersion(), $versions)) {
-                    $container = $this->getContainer();
                     $container['phpmig.migrator']->down($migration);
                 }
             }
@@ -92,7 +90,6 @@ EOT
             }
 
             if (!in_array($migration->getVersion(), $versions)) {
-                $container = $this->getContainer();
                 $container['phpmig.migrator']->up($migration);
             }
         }

@@ -14,6 +14,6 @@ class Route extends ServiceProvider
      */
     public function register()
     {
-        $this->app->set('route', \Nur\Router\Route::class);
+        $this->app->singleton('route', \Nur\Router\Route::class);
     }
 }

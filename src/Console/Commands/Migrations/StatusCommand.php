@@ -2,10 +2,10 @@
  
 namespace Nur\Console\Commands\Migrations;
 
-use Symfony\Component\Console\Helper\Table;
+use Nur\Console\Commands\Migrations\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Nur\Console\Commands\Migrations\AbstractCommand;
+use Symfony\Component\Console\Helper\Table;
 
 class StatusCommand extends AbstractCommand
 {
@@ -58,7 +58,5 @@ EOT
             ->setRows($rows)
         ;
         $table->render();
-
-        return;
     }
 }

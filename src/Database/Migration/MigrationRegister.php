@@ -7,34 +7,34 @@ use Phpmig\Adapter;
 $container = Container::getInstance();
 $config = config('database');
 
-if ($config['driver'] === 'sqlite') {
-    if (strpos($config['database'], ':') === false) {
-        $config['database'] = database_path($config['database']);
-    }
-}
-
-$container->set('db.config', $config);
-
-$container->set('db', function ($c) {
+$container->instance('db.config', $config);
+$container->singleton('db', function ($c) {
     $capsule = new Capsule();
     $capsule->getContainer()->singleton(
         \Illuminate\Contracts\Debug\ExceptionHandler::class
-    /* \Your\ExceptionHandler\Implementation::class */
+        /* \Your\ExceptionHandler\Implementation::class */
     );
-    $capsule->addConnection($c['db.config']);
+
+    $defaultDriver = $c['db.config']['default'];
+    $activeDb = $c['db.config']['connections'][$defaultDriver];
+    if ($activeDb['driver'] === 'sqlite') {
+        $activeDb['database'] = database_path($activeDb['database']);
+    }
+
+    $capsule->addConnection($activeDb);
     $capsule->setAsGlobal();
     $capsule->bootEloquent();
 
     return $capsule;
 });
 
-$container->set('phpmig.adapter', function ($c) {
-    return new Adapter\Illuminate\Database($c['db'], 'nur_migrations');
+$container->singleton('phpmig.adapter', function ($c) {
+    return new Adapter\Illuminate\Database($c['db'], $c['db.config']['migrations']);
 });
 
-$container->set('phpmig.migrations_path', app_path('Migrations'));
-$container->set('schema', function ($c) {
+$container->instance('phpmig.migrations_path', database_path('migrations'));
+$container->instance('schema', function ($c) {
     return $c['db']->schema();
 });
 
-return $container->getContainer();
+return $container;

@@ -11,11 +11,11 @@
 ob_start();
 session_start();
 
-use Nur\Kernel\Kernel;
+use Nur\Kernel\Application;
 
-$app = new Kernel();
+$app = new Application;
 
-define('NUR_VERSION', Kernel::VERSION);
+define('NUR_VERSION', Application::VERSION);
 define('ROOT', $app->root());
 define('DOC_ROOT', $app->docRoot());
 define('BASE_FOLDER', $app->baseFolder());

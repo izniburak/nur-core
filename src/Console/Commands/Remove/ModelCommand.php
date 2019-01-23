@@ -22,19 +22,13 @@ class ModelCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $file = ROOT . '/app/Models/' . $name . '.php';
+        $file = app_path('Models/'.$name.'.php');
 
         if (file_exists($file)) {
             unlink($file);
-            $output->writeln(
-                "\n" . ' <info>+Success!</info> "' . ($name) . '" model removed.'
-            );
-        } else {
-            $output->writeln(
-                "\n" . ' <error>-Error!</error> Model not found! (' . $name . ')'
-            );
+            return $output->writeln('<info>+Success!</info> "'.$name.'" model removed.');
         }
 
-        return;
+        return $output->writeln('<error>-Error!</error> Model not found! ('.$name.')');
     }
 }

@@ -47,7 +47,7 @@ EOT
 
         // Check we have at least 1 migration to revert
         if (empty($versions) || $version == end($versions)) {
-            $output->writeln("<error>No migrations to rollback</error>");
+            $output->writeln("<error>-Error</error> No migrations to rollback.");
             return;
         }
 
@@ -68,7 +68,7 @@ EOT
 
         // Check the target version exists
         if (0 !== $version && !isset($migrations[$version])) {
-            $output->writeln("<error>Target version ($version) not found</error>");
+            $output->writeln("<error>-Error</error> Migration version ($version) not found.");
             return;
         }
 

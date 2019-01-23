@@ -1,0 +1,55 @@
+<?php
+
+namespace Nur\Console\Commands\Cache;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+
+class RouteCommand extends Command
+{
+    protected function configure()
+    {
+        $this
+            ->setName('cache:route')
+            ->setDescription("Cache your application routes.");
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        try {
+            $cacheFile = cache_path('routes.php');
+            if (file_exists($cacheFile)) {
+                $helper = $this->getHelper('question');
+                $question = new ConfirmationQuestion('Old cache will be deleted and re-created. Are you sure?: ', false);
+
+                if (!$helper->ask($input, $output, $question)) {
+                    return;
+                }
+                unlink($cacheFile);
+                $output->writeln('<info>+Success!</info> Routes cache has been deleted.');
+                $output->writeln('Routes cache re-creating....'); 
+            }
+
+            require app_path('routes.php');
+            $cacheRoute = app('route')->cache();
+            $this->updateCacheFile();
+        } catch (\Exception $e) {
+            throw new \RuntimeException(sprintf($e->getMessage()));
+        }
+
+        return $output->writeln('<info>+Success!</info> Routes have been cached.');
+    }
+
+    protected function updateCacheFile()
+    {
+        $cacheFile = cache_path('routes.php');
+        $cacheContent = file_get_contents($cacheFile);
+        if (false === file_put_contents($cacheFile, str_replace(
+            "'route' => '.", "'route' => '" . BASE_FOLDER, $cacheContent
+        ))) {
+            throw new \RuntimeException(sprintf('Config cache file could not be written.'));
+        }
+    }
+}

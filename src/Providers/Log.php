@@ -7,6 +7,13 @@ use Nur\Kernel\ServiceProvider;
 class Log extends ServiceProvider
 {
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+
+    /**
      * Register the service provider.
      *
      * @return void
@@ -14,6 +21,6 @@ class Log extends ServiceProvider
      */
     public function register()
     {
-        $this->app->set('log', \Nur\Log\Log::class);
+        $this->app->singleton('log', \Nur\Log\Log::class);
     }
 }

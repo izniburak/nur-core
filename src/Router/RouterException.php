@@ -2,9 +2,9 @@
 
 namespace Nur\Router;
 
-use Nur\Exception\ExceptionHandler;
+use Nur\Exception\NotFoundHttpException;
 
-class RouterException extends ExceptionHandler
+class RouterException
 {
     /**
      * Create Exception Class.
@@ -15,6 +15,6 @@ class RouterException extends ExceptionHandler
      */
     public function __construct($message)
     {
-        return error('Opss! 404...', $message);
+        throw new NotFoundHttpException;
     }
 }

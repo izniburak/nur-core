@@ -14,6 +14,6 @@ class Load extends ServiceProvider
      */
     public function register()
     {
-        $this->app->set('load', \Nur\Load\Load::class);
+        $this->app->singleton('load', \Nur\Load\Load::class);
     }
 }
