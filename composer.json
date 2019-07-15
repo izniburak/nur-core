@@ -28,17 +28,17 @@
     "izniburak/nur-migration": "^1",
     "izniburak/pdox": "^1",
     "izniburak/router": "^1",
-    "illuminate/database": "5.7.x",
-    "illuminate/pagination": "5.7.x",
-    "illuminate/view": "5.7.x",
-    "illuminate/events": "5.7.x",
-    "symfony/console": "~4.0",
-    "symfony/http-foundation": "~4.0",
-    "symfony/var-dumper": "~4.0",
+    "illuminate/database": "5.8.x",
+    "illuminate/pagination": "5.8.x",
+    "illuminate/view": "5.8.x",
+    "illuminate/events": "5.8.x",
+    "symfony/console": "^4.2",
+    "symfony/http-foundation": "^4.2",
+    "symfony/var-dumper": "^4.2",
     "doctrine/dbal": "^2.6",
     "filp/whoops": "^2.1",
     "ramsey/uuid": "^3.7",
-    "vlucas/phpdotenv": "~2.4"
+    "vlucas/phpdotenv": "~3.3"
   },
   "autoload": {
     "files": [
