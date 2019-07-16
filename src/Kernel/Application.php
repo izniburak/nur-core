@@ -206,7 +206,7 @@ class Application extends Container
             if (file_exists($this->cachePath('config.php'))) {
                 $this->config = require $this->cachePath('config.php');
             } else {
-                $dotenv = new \Dotenv\Dotenv($this->root);
+                $dotenv = \Dotenv\Dotenv::create($this->root);
                 $dotenv->load();
                 foreach (glob($this->root . '/config/*.php') as $file) {
                     $keyName = strtolower(str_replace(
@@ -229,6 +229,7 @@ class Application extends Container
      * @param string $env
      *
      * @return void
+     * @throws ExceptionHandler
      */
     public function start($env)
     {

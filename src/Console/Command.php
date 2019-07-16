@@ -4,7 +4,15 @@ namespace Nur\Console;
 
 class Command
 {
+    /**
+     * @var Console
+     */
     protected $app;
+
+    /**
+     * @var Application
+     */
+    protected $nur;
 
     protected $commandList = [
         'Nur\Console\Commands\App\UpCommand',
@@ -25,10 +33,13 @@ class Command
         'Nur\Console\Commands\Make\ModelCommand',
         'Nur\Console\Commands\Make\MiddlewareCommand',
         'Nur\Console\Commands\Make\ResourceCommand',
+        'Nur\Console\Commands\Make\ListenerCommand',
+        'Nur\Console\Commands\Make\SeederCommand',
 
         'Nur\Console\Commands\Database\CreateCommand',
         'Nur\Console\Commands\Database\RemoveCommand',
         'Nur\Console\Commands\Database\ListCommand',
+        'Nur\Console\Commands\Database\SeedCommand',
 
         'Nur\Console\Commands\Remove\ControllerCommand',
         'Nur\Console\Commands\Remove\ModelCommand',
@@ -50,13 +61,15 @@ class Command
     /**
      * Set console application.
      *
-     * @param $app
+     * @param \Symfony\Component\Console\Application $consoleApp  Console Application
+     * @param \Nur\Kernel\Application $app                        Nur Framework Application
      *
-     * @return null
+     * @return void
      */
-    function __construct($app)
+    function __construct($consoleApp, $app)
     {
-        $this->app = $app;
+        $this->app = $consoleApp;
+        $this->nur = $app;
         $this->generate();
     }
 
