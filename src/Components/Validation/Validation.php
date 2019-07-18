@@ -57,7 +57,8 @@ class Validation
     {
         foreach ($rules as $key => $value) {
             $this->rule(
-                $key, $value['label'],
+                $key,
+                $value['label'],
                 $value['rules'],
                 isset($value['text']) && ! empty($value['text']) ? $value['text'] : []
             );
@@ -91,7 +92,7 @@ class Validation
     public function isValid(array $data = [])
     {
         if (empty($data)) {
-            $data = http()->method() == 'GET' ? http()->get() : http()->post();
+            $data = request()->method() == 'GET' ? request()->get() : request()->all();
         }
         $this->data = $data;
 

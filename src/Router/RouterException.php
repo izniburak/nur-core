@@ -15,6 +15,6 @@ class RouterException
      */
     public function __construct($message)
     {
-        throw new NotFoundHttpException;
+        throw new NotFoundHttpException($message);
     }
 }

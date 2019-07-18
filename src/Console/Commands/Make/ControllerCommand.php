@@ -50,7 +50,7 @@ namespace App\Controllers;
 class $controller extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Main method for this controller.
      *
      * @return \Nur\Http\Response|string
      */

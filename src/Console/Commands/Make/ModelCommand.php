@@ -49,7 +49,7 @@ class ModelCommand extends Command
     {
         $model = ucfirst($name);
         $table = 'protected $table = \''.$tableName.'\';';
-        $timestamps = 'public $timestamps = true;';
+        $timestamps = 'public $timestamps = false;';
         $contents = <<<PHP
 <?php
 
@@ -59,7 +59,18 @@ use Nur\Database\Model;
 
 class $model extends Model
 {
+    /**
+     * Table Name
+     *
+     * @var string
+     */
     $table
+    
+    /**
+     * Timestamps
+     *
+     * @var bool
+     */
     $timestamps
 }
 

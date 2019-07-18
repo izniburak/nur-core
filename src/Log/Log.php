@@ -126,7 +126,7 @@ class Log
         }
 
         $text = '[' . date($this->timeFormat,
-                time()) . '] - [' . strtoupper($level) . '] - [' . http()->getClientIP() . '] --> ' . $message;
+                time()) . '] - [' . strtoupper($level) . '] - [' . request()->ip() . '] --> ' . $message;
         $this->save($text);
     }
 

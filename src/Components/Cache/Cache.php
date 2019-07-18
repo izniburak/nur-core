@@ -42,7 +42,7 @@ class Cache
      */
     public function save($content = null, $time = 30)
     {
-        $fileName = md5($this->prefix . http()->server('REQUEST_URI')) . $this->extension;
+        $fileName = md5($this->prefix . request()->server('REQUEST_URI')) . $this->extension;
         $this->file = cache_path('html' . DIRECTORY_SEPARATOR . $fileName);
 
         $this->start($time);

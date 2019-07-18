@@ -51,6 +51,12 @@ use Nur\Middleware\Middleware;
 
 class $middleware extends Middleware
 {
+    /**
+     * This method will be triggered
+     * when the middleware is called 
+     *
+     * @return mixed
+     */
     public function handle()
     {
         // your code...

@@ -10,17 +10,23 @@ class UriGenerator
     protected $cachedHttps = false;
 
     /**
+     * @var \Nur\Http\Request
+     */
+    protected $request;
+
+    /**
      * Create URI class values.
      *
      * @return string | null
      */
     function __construct()
     {
+        $this->request = resolve('request');
         $this->base = BASE_FOLDER;
 
-        $this->url = http()->server('HTTP_HOST') . '/' . $this->base . '/';
-        if (!in_array(http()->server('HTTPS'), [null, 'off', 'false']) ||
-            http()->server('SERVER_PORT') == 443 || config('app.https') === true) {
+        $this->url = $this->request->server('HTTP_HOST') . '/' . $this->base . '/';
+        if (!in_array($this->request->server('HTTPS'), [null, 'off', 'false']) ||
+            $this->request->server('SERVER_PORT') == 443 || config('app.https') === true) {
             $this->cachedHttps = true;
         }
 
@@ -146,7 +152,7 @@ class UriGenerator
      */
     public function current()
     {
-        return $this->scheme() . http()->server('HTTP_HOST') . http()->server('REQUEST_URI');
+        return $this->scheme() . $this->request->server('HTTP_HOST') . $this->request->server('REQUEST_URI');
     }
 
     /**
@@ -158,12 +164,12 @@ class UriGenerator
      */
     public function segment($num = null)
     {
-        if (is_null(http()->server('REQUEST_URI')) || is_null(http()->server('SCRIPT_NAME'))) {
+        if (is_null($this->request->server('REQUEST_URI')) || is_null($this->request->server('SCRIPT_NAME'))) {
             return null;
         }
 
         if (! is_null($num)) {
-            $uri = $this->replace(str_replace($this->base, '', http()->server('REQUEST_URI')));
+            $uri = $this->replace(str_replace($this->base, '', $this->request->server('REQUEST_URI')));
             $uriA = explode('/', $uri);
             return (isset($uriA[$num]) ? reset(explode('?', $uriA[$num])) : null);
         }

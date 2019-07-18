@@ -24,6 +24,11 @@ class Request extends SymfonyRequest
     protected $json;
 
     /**
+     * @var \Nur\Components\Validation\Validation
+     */
+    protected $validation;
+
+    /**
      * Class constructor.
      *
      * @return void
@@ -31,6 +36,7 @@ class Request extends SymfonyRequest
     public function __construct()
     {
         parent::__construct($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
+        $this->validation = resolve('validation');
     }
 
     /**
@@ -554,7 +560,7 @@ class Request extends SymfonyRequest
      *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get($key = null, $default = null)
     {
         return parent::get($key, $default);
     }
@@ -816,5 +822,22 @@ class Request extends SymfonyRequest
     protected function isValidFile($file)
     {
         return $file instanceof SplFileInfo && $file->getPath() !== '';
+    }
+
+    /**
+     * Validate to request data
+     *
+     * @param array      $rules
+     * @param array|null $data
+     *
+     * @return array
+     */
+    public function validation(array $rules, array $data = null)
+    {
+        $this->validation->rules($rules);
+        $data = $data ?? $this->all();
+        return $this->validation->isValid($data)
+            ? $data
+            : $this->validation->errors();
     }
 }
