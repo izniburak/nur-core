@@ -156,6 +156,24 @@ if (! function_exists('helper')) {
     }
 }
 
+if (! function_exists('auth')) {
+    /**
+     * Authentication
+     *
+     * @param null|\Nur\Database\Model $user
+     *
+     * @return bool|Nur\Auth\Auth
+     */
+    function auth($user = null)
+    {
+        if (is_null($user)) {
+            return app('auth');
+        }
+
+        return app('auth')->login($user);
+    }
+}
+
 if (! function_exists('session')) {
     /**
      * Sessions
@@ -207,6 +225,22 @@ if (! function_exists('uri')) {
         }
 
         return app('uri')->base($name);
+    }
+}
+
+if (! function_exists('redirect')) {
+    /**
+     * Redirect URL
+     *
+     * @param string|null $url
+     * @param int         $statusCode
+     * @param bool        $secure
+     *
+     * @return void|null
+     */
+    function redirect($url = null, $statusCode = 301, $secure = false)
+    {
+        return uri()->redirect($url, $statusCode, $secure);
     }
 }
 
