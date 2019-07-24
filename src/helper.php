@@ -306,17 +306,41 @@ if (! function_exists('decrypt')) {
     }
 }
 
+if (! function_exists('hasher')) {
+    /**
+     * Hash the given value against the selected algorithm in Hash config.
+     *
+     * @param  string  $value
+     * @param  array   $options
+     *
+     * @return string|\Nur\Hash\Hash
+     */
+    function hasher($value = null, $options = [])
+    {
+        if (is_null($value)) {
+            return app('hash');
+        }
+
+        return app('hash')->make($value, $options);
+    }
+}
+
 if (! function_exists('bcrypt')) {
     /**
      * Hash the given value against the bcrypt algorithm.
      *
      * @param  string  $value
-     * @param  array  $options
-     * @return string
+     * @param  array   $options
+     *
+     * @return string|\Nur\Hash\BcryptHash
      */
-    function bcrypt($value, $options = [])
+    function bcrypt($value = null, $options = [])
     {
-        return app('hash')->driver('bcrypt')->make($value, $options);
+        if (is_null($value)) {
+            return hasher()->createBcryptDriver();
+        }
+
+        return hasher()->createBcryptDriver()->make($value, $options);
     }
 }
 
