@@ -39,8 +39,8 @@ class Auth
         $this->session = session();
         $this->checkAuthProvider();
 
-        if ($this->check()) {
-            $this->loginUsingId($this->id());
+        if ($id = $this->id()) {
+            $this->loginUsingId($id);
         }
     }
 

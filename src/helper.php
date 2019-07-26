@@ -14,8 +14,9 @@ if (! function_exists('app')) {
     /**
      * Get the available container instance.
      *
-     * @param  string  $abstract
-     * @param  array   $parameters
+     * @param string $abstract
+     * @param array  $parameters
+     *
      * @return mixed|\Nur\Kernel\Kernel
      */
     function app($abstract = null, array $parameters = [])
@@ -55,9 +56,9 @@ if (! function_exists('abort')) {
     /**
      * Throw an HttpException with the given data.
      *
-     * @param  int    $code
-     * @param  string $message
-     * @param  array  $headers
+     * @param int    $code
+     * @param string $message
+     * @param array  $headers
      *
      * @return void
      * @throws
@@ -76,10 +77,10 @@ if (! function_exists('abort_if')) {
     /**
      * Throw an HttpException with the given data if the given condition is true.
      *
-     * @param  bool   $boolean
-     * @param  int    $code
-     * @param  string $message
-     * @param  array  $headers
+     * @param bool   $boolean
+     * @param int    $code
+     * @param string $message
+     * @param array  $headers
      *
      * @return void
      * @throws
@@ -282,8 +283,9 @@ if (! function_exists('encrypt')) {
     /**
      * Encrypt the given value.
      *
-     * @param  mixed  $value
-     * @param  bool   $serialize
+     * @param mixed $value
+     * @param bool  $serialize
+     *
      * @return string
      */
     function encrypt($value, $serialize = true)
@@ -296,8 +298,9 @@ if (! function_exists('decrypt')) {
     /**
      * Decrypt the given value.
      *
-     * @param  string  $value
-     * @param  bool   $unserialize
+     * @param string $value
+     * @param bool   $unserialize
+     *
      * @return mixed
      */
     function decrypt($value, $unserialize = true)
@@ -310,8 +313,8 @@ if (! function_exists('hasher')) {
     /**
      * Hash the given value against the selected algorithm in Hash config.
      *
-     * @param  string  $value
-     * @param  array   $options
+     * @param string $value
+     * @param array  $options
      *
      * @return string|\Nur\Hash\Hash
      */
@@ -329,8 +332,8 @@ if (! function_exists('bcrypt')) {
     /**
      * Hash the given value against the bcrypt algorithm.
      *
-     * @param  string  $value
-     * @param  array   $options
+     * @param string $value
+     * @param array  $options
      *
      * @return string|\Nur\Hash\BcryptHash
      */
@@ -348,7 +351,7 @@ if (! function_exists('app_path')) {
     /**
      * Get the app path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
@@ -362,7 +365,7 @@ if (! function_exists('base_path')) {
     /**
      * Get the base path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
@@ -376,7 +379,7 @@ if (! function_exists('config_path')) {
     /**
      * Get the configuration path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
@@ -390,7 +393,7 @@ if (! function_exists('storage_path')) {
     /**
      * Get the storage path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
@@ -404,7 +407,7 @@ if (! function_exists('database_path')) {
     /**
      * Get the database path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
@@ -418,7 +421,7 @@ if (! function_exists('cache_path')) {
     /**
      * Get the cache path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
@@ -432,7 +435,7 @@ if (! function_exists('public_path')) {
     /**
      * Get the public path.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
@@ -471,10 +474,11 @@ if (! function_exists('csrf_check')) {
      */
     function csrf_check($token, $name = null)
     {
-        $session = session();
         $name = (! is_null($name) ? '_' . $name : '');
-        if ($session->has('_nur_csrf' . $name) && $token === $session->get('_nur_csrf' . $name)) {
-            $session->delete('_nur_csrf' . $name);
+        if (session()->has('_nur_csrf' . $name) &&
+            is_string($token) &&
+            $token === session()->get('_nur_csrf' . $name)) {
+            session()->delete('_nur_csrf' . $name);
             return true;
         }
 
@@ -506,7 +510,7 @@ if (! function_exists('method_field')) {
      */
     function method_field(string $method)
     {
-        return '<input type="hidden" name="_method" value="'.$method.'" />';
+        return '<input type="hidden" name="_method" value="' . $method . '" />';
     }
 }
 
@@ -514,8 +518,8 @@ if (! function_exists('request')) {
     /**
      * Get an instance of the current request or an input item from the request.
      *
-     * @param  array|string $key
-     * @param  mixed        $default
+     * @param array|string $key
+     * @param mixed        $default
      *
      * @return \Nur\Http\Request|string|array
      */
@@ -536,9 +540,9 @@ if (! function_exists('response')) {
     /**
      * Return a new response from the application.
      *
-     * @param  string|array|null $content
-     * @param  int               $status
-     * @param  array             $headers
+     * @param string|array|null $content
+     * @param int               $status
+     * @param array             $headers
      *
      * @return \Nur\Http\Response
      */
@@ -556,7 +560,7 @@ if (! function_exists('resolve')) {
     /**
      * Resolve a service from the container.
      *
-     * @param  string $name
+     * @param string $name
      *
      * @return mixed
      */
@@ -618,25 +622,25 @@ if (! function_exists('paginationLinks')) {
         $ul = '<ul class="' . $config['class'] . '">';
         $scroll = $config['scroll'];
         $show = $config['show'];
-        
+
         $link = $link === '' ? uri()->current() : $link;
         $info = $records->toArray();
         $pageName = 'page';
         $total = $info['last_page'];
         $page = $info['current_page'];
 
-        $link = preg_replace('/([?&])'.$pageName.'=[^&]+(&|$)/','$1', $link);
+        $link = preg_replace('/([?&])' . $pageName . '=[^&]+(&|$)/', '$1', $link);
         $link = trim($link, '&');
         $link = trim($link, '?');
-        $link .= strstr($link, '?') ? '&' : '?'; 
+        $link .= strstr($link, '?') ? '&' : '?';
 
         if ($total > 1) {
             $page = (intval($page) ? $page : 1);
             if ($page != 1) {
-                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page - 1) . '">'.$config['prev'].'</a>';
+                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page - 1) . '">' . $config['prev'] . '</a>';
             }
 
-            if (!$simple) {
+            if (! $simple) {
                 if ($total <= $scroll) {
                     if ($total <= $show) {
                         $start = 1;
@@ -657,7 +661,7 @@ if (! function_exists('paginationLinks')) {
                         }
                     }
                 }
-    
+
                 for ($i = $start; $i <= $finish; $i++) {
                     if ($page == $i) {
                         $ul .= '<li class="active"><a href="javascript:;">' . $i . '</a></li>';
@@ -668,7 +672,7 @@ if (! function_exists('paginationLinks')) {
             }
 
             if ($page != $total) {
-                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page + 1) . '">'.$config['next'].'</a>';
+                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page + 1) . '">' . $config['next'] . '</a>';
             }
         } else {
             return '';
