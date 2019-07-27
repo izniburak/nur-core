@@ -2,6 +2,8 @@
 
 namespace Nur\Auth;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class Auth
 {
     /**
@@ -12,7 +14,7 @@ class Auth
     /**
      * @var string
      */
-    private $sessionId = '_user_id';
+    private $sessionId = '_auth_user_id';
 
     /**
      * @var mixed|null
@@ -64,8 +66,8 @@ class Auth
     /**
      * Login the user with the given user
      *
-     * @param  \Nur\Database\Model  $user
-     * @param  bool                 $remember
+     * @param \Nur\Database\Model $user
+     * @param bool                $remember
      *
      * @return bool
      */
@@ -96,7 +98,6 @@ class Auth
      * Attempts to log a user in with the given credentials
      *
      * @param array $credentials
-     * @param bool  $remember
      *
      * @return bool
      */
@@ -158,6 +159,49 @@ class Auth
     public function id()
     {
         return $this->check() ? $this->session->get($this->sessionId) : null;
+    }
+
+    /**
+     * Get JWT Instance
+     *
+     * @return Jwt\Jwt
+     */
+    public function jwt()
+    {
+        return resolve('jwt');
+    }
+
+    /**
+     * Basic Authentication
+     *
+     * @param array $credentials
+     *
+     * @return bool
+     */
+    public function basicAuth(array $credentials = [])
+    {
+        $basicAuthConfig = config('auth.basic');
+        $useDatabase = $basicAuthConfig['driver'] === 'database';
+        if (empty($credentials)) {
+            $credentials = $basicAuthConfig['credentials'];
+        } elseif (count($credentials) !== 2) {
+            response()->setStatusCode(Response::HTTP_UNAUTHORIZED)->send();
+            exit;
+        }
+
+        $credentials = array_values($credentials);
+        $authUser = request()->header('PHP_AUTH_USER');
+        $authPass = request()->header('PHP_AUTH_PW');
+        $isAuthentication = ($useDatabase && $this->validate(array_combine($credentials, [$authUser, $authPass]))) ||
+            ($authUser == $credentials[0] && $authPass == $credentials[1]);
+        if (! $isAuthentication) {
+            response()->setStatusCode(Response::HTTP_UNAUTHORIZED)
+                ->header('WWW-Authenticate', 'Basic realm="Access denied"')
+                ->send();
+            exit;
+        }
+
+        return true;
     }
 
     /**
