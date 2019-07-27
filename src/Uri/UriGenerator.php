@@ -87,11 +87,11 @@ class UriGenerator
         }
 
         if ($found) {
-            if (strstr($routes[$key]['route'], '{')) {
+            if (strstr($routes[$key]['route'], '{') || strstr($routes[$key]['route'], ':')) {
                 $segment = explode('/', $routes[$key]['route']);
                 $i = 0;
                 foreach ($segment as $key => $value) {
-                    if (strstr($value, '{')) {
+                    if (strstr($value, '{') || strstr($value, ':')) {
                         $segment[$key] = $params[$i];
                         $i++;
                     }
