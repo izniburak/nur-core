@@ -4,9 +4,19 @@ namespace Nur\Exception;
 
 class HttpException extends \RuntimeException
 {
+    /**
+     * @var int
+     */
     private $statusCode;
+
+    /**
+     * @var array
+     */
     private $headers;
 
+    /**
+     * @var array
+     */
     protected $errorMessages = [
         401 => ['title' => 'Unauthorized', 'message' => 'Sorry, you are not authorized to access this page.'],
         403 => ['title' => 'Forbidden', 'message' => 'Sorry, you are forbidden from accessing this page.'],
@@ -17,6 +27,15 @@ class HttpException extends \RuntimeException
         503 => ['title' => 'Service Unavailable', 'message' => 'Sorry, we are doing some maintenance. Please check back soon.'],
     ];
 
+    /**
+     * HttpException constructor.
+     *
+     * @param int             $statusCode
+     * @param null            $messageText
+     * @param \Exception|null $previous
+     * @param array           $headers
+     * @param int|null        $code
+     */
     public function __construct(
         int $statusCode,
         $messageText = null,
@@ -52,14 +71,29 @@ class HttpException extends \RuntimeException
 
         $title = $title ?? 'System Error';
         $message = $message ?? 'Whoops, something went wrong on system.';
+
+        if (request()->headers->get('content-type') === 'application/json') {
+            echo response()->json([
+                'success' => false,
+                'error' => $message,
+            ], $statusCode);
+            return;
+        }
+
         return require __DIR__ . '/views/index.php';
     }
 
+    /**
+     * @return int
+     */
     public function getStatusCode()
     {
         return $this->statusCode;
     }
 
+    /**
+     * @return array
+     */
     public function getHeaders()
     {
         return $this->headers;
