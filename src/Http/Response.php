@@ -31,13 +31,16 @@ class Response extends SymfonyResponse
     /**
      * Json response
      *
-     * @param array $data
-     * @param int   $statusCode
+     * @param array|object $data
+     * @param int          $statusCode
      *
      * @return Response
      */
-    public function json(array $data = [], int $statusCode = 200)
+    public function json($data = null, int $statusCode = 200)
     {
+        if (is_null($data)) {
+            $data = [];
+        }
         $this->setContent(json_encode($data));
         $this->setStatusCode($statusCode);
         $this->json = true;
@@ -49,17 +52,17 @@ class Response extends SymfonyResponse
      * Add custom header data in Response
      *
      * @param array|string $key
-     * @param string $value
+     * @param string       $value
      *
      * @return Response
      */
     public function header($key, $value)
     {
-        if (is_array($key) && !empty($key)) {
+        if (is_array($key) && ! empty($key)) {
             foreach ($key as $k => $v) {
                 $this->headers->set($k, $v);
             }
-        } elseif (is_string($key) && !empty($key)) {
+        } elseif (is_string($key) && ! empty($key)) {
             $this->headers->set($key, $value);
         }
         return $this;

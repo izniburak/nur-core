@@ -2,40 +2,93 @@
 
 namespace Nur\Console\Commands\App;
 
+use Nur\Encryption\Encrypter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
-use Nur\Encryption\Encrypter;
 
 class KeygenCommand extends Command
 {
+    /**
+     * @return void
+     */
     protected function configure()
     {
         $this
             ->setName('app:keygen')
             ->setDescription("Set the application key.")
             ->setHelp("This command makes you to create or re-create application key.")
-            ->addOption('--show', '-s', InputOption::VALUE_OPTIONAL, 'Display the key instead of modifying files');
+            ->addOption('--show', '-s', InputOption::VALUE_OPTIONAL, 'Display the key instead of modifying files')
+            ->addOption('--jwt', '-jwt', InputOption::VALUE_OPTIONAL,
+                'Generate JWT Secret Key for JWT Authentication.');
     }
 
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int|void|null
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $key = $this->generateRandomKey();
-        if ($input->hasParameterOption('--show') !== false) {
-            return $output->writeln('<comment>'.$key.'</comment>');
+        if ($input->hasParameterOption('--jwt') !== false) {
+            return $this->jwtKeyGenerator($input, $output);
         }
+
+        $this->appKeyGenerator($input, $output);
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
+    protected function appKeyGenerator(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->hasParameterOption('--show') !== false) {
+            return $output->writeln('<comment>' . config('app.key') . '</comment>');
+        }
+
+        $key = $this->generateRandomKey();
 
         // Next, we will replace the application key in the environment file so it is
         // automatically setup for this developer. This key gets generated using a
         // secure random byte generator and is later base64 encoded for storage.
-        if (! $this->setKeyInEnvironmentFile($key, $input, $output)) {
+        if (! $this->setKeyInEnvironmentFile('APP_KEY', $key, config('app.key'), $input, $output)) {
             return;
         }
 
         config()->set('app.key', $key);
-        $output->writeln('<info>+Success!</info> Application key set successfully.');
+        $output->writeln("<info>+Success!</info> Application key set successfully. [{$key}]");
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return void
+     */
+    protected function jwtKeyGenerator(InputInterface $input, OutputInterface $output)
+    {
+        if ($input->hasParameterOption('--show') !== false) {
+            return $output->writeln('<comment>' . config('auth.jwt.secret') . '</comment>');
+        }
+
+        $key = $this->generateRandomKey();
+        $key = substr($key, 7, strlen($key));
+
+        // Next, we will replace the application key in the environment file so it is
+        // automatically setup for this developer. This key gets generated using a
+        // secure random byte generator and is later base64 encoded for storage.
+        if (! $this->setKeyInEnvironmentFile('JWT_SECRET', $key, config('auth.jwt.secret'), $input, $output)) {
+            return;
+        }
+
+        config()->set('auth.jwt.key', $key);
+        $output->writeln("<info>+Success!</info> JWT secret key set successfully. [{$key}]");
     }
 
     /**
@@ -45,54 +98,66 @@ class KeygenCommand extends Command
      */
     protected function generateRandomKey()
     {
-        return 'base64:'.base64_encode(
-            Encrypter::generateKey(config('app.cipher'))
-        );
+        return 'base64:' . base64_encode(
+                Encrypter::generateKey(config('app.cipher'))
+            );
     }
 
     /**
      * Set the application key in the environment file.
      *
-     * @param  string  $key
+     * @param string          $key
+     * @param string          $value
+     * @param string          $currentValue
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
      * @return bool
      */
-    protected function setKeyInEnvironmentFile($key, $input, $output)
+    protected function setKeyInEnvironmentFile($key, $value, $currentValue, $input, $output)
     {
-        $currentKey = config('app.key');
-
         $helper = $this->getHelper('question');
-        $question = new ConfirmationQuestion('Application key will re-generate. Are you sure?: ', false);
-        if (strlen($currentKey) !== 0 && (! $helper->ask($input, $output, $question))) {
+        $question = new ConfirmationQuestion("{$key} key will re-generate. Are you sure?: ", false);
+        if (strlen($currentValue) !== 0 && (! $helper->ask($input, $output, $question))) {
             return false;
         }
 
-        $this->writeNewEnvironmentFileWith($key);
+        $this->writeNewEnvironmentFileWith($key, $value, $currentValue);
         return true;
     }
 
     /**
      * Write a new environment file with the given key.
      *
-     * @param  string  $key
+     * @param string $key
+     * @param string $value
+     * @param string $currentValue
+     *
      * @return void
      */
-    protected function writeNewEnvironmentFileWith($key)
+    protected function writeNewEnvironmentFileWith($key, $value, $currentValue)
     {
-        file_put_contents(base_path('.env'), preg_replace(
-            $this->keyReplacementPattern(),
-            'APP_KEY='.$key,
-            file_get_contents(base_path('.env'))
-        ));
+        $envContent = file_get_contents(base_path('.env'));
+        if (strpos($envContent, $key . '=') !== false) {
+            file_put_contents(base_path('.env'), preg_replace(
+                    $this->keyReplacementPattern($key, $currentValue), $key . '=' . $value, $envContent)
+            );
+        } else {
+            file_put_contents(base_path('.env'), $envContent . PHP_EOL . $key . '=' . $value);
+        }
     }
 
     /**
      * Get a regex pattern that will match env APP_KEY with any random key.
      *
+     * @param string $key
+     * @param string $value
+     *
      * @return string
      */
-    protected function keyReplacementPattern()
+    protected function keyReplacementPattern($key, $value)
     {
-        $escaped = preg_quote('='.config('app.key'), '/');
-        return "/^APP_KEY{$escaped}/m";
+        $escaped = preg_quote('=' . $value, '/');
+        return "/^{$key}{$escaped}/m";
     }
 }
