@@ -3,8 +3,8 @@
 namespace Nur\Kernel;
 
 use Exception;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Contracts\Foundation\Application as ApplicationContract;
+use Illuminate\Filesystem\Filesystem;
 
 class ProviderRepository
 {
@@ -32,9 +32,10 @@ class ProviderRepository
     /**
      * Create a new service repository instance.
      *
-     * @param  \Illuminate\Contracts\Foundation\Application  $app
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @param  string  $manifestPath
+     * @param \Illuminate\Contracts\Foundation\Application $app
+     * @param \Illuminate\Filesystem\Filesystem            $files
+     * @param string                                       $manifestPath
+     *
      * @return void
      */
     public function __construct(ApplicationContract $app, Filesystem $files, $manifestPath)
@@ -47,10 +48,11 @@ class ProviderRepository
     /**
      * Register the application service providers.
      *
-     * @param  array  $providers
+     * @param array $providers
+     *
      * @return void
      */
-    public function load(array $providers)
+    public function load(array $providers): void
     {
         $manifest = $this->loadManifest();
 
@@ -100,23 +102,59 @@ class ProviderRepository
     /**
      * Determine if the manifest should be compiled.
      *
-     * @param  array  $manifest
-     * @param  array  $providers
+     * @param array $manifest
+     * @param array $providers
+     *
      * @return bool
      */
-    public function shouldRecompile($manifest, $providers)
+    public function shouldRecompile($manifest, $providers): bool
     {
         return is_null($manifest) || $manifest['providers'] != $providers;
     }
 
     /**
+     * Write the service manifest file to disk.
+     *
+     * @param array $manifest
+     *
+     * @return array
+     *
+     * @throws Exception
+     */
+    public function writeManifest($manifest): array
+    {
+        if (! is_writable(dirname($this->manifestPath))) {
+            throw new Exception('The bootstrap/cache directory must be present and writable.');
+        }
+
+        $this->files->put(
+            $this->manifestPath, '<?php return ' . var_export($manifest, true) . ';'
+        );
+
+        return array_merge(['when' => []], $manifest);
+    }
+
+    /**
+     * Create a new provider instance.
+     *
+     * @param string $provider
+     *
+     * @return \Illuminate\Support\ServiceProvider
+     */
+    public function createProvider($provider)
+    {
+        return new $provider($this->app);
+    }
+
+    /**
      * Register the load events for the given provider.
      *
-     * @param  string  $provider
-     * @param  array  $events
+     * @param string $provider
+     * @param array  $events
+     *
      * @return void
      */
-    protected function registerLoadEvents($provider, array $events)
+    protected function registerLoadEvents($provider, array $events): void
     {
         if (count($events) < 1) {
             return;
@@ -130,8 +168,10 @@ class ProviderRepository
     /**
      * Compile the application service manifest file.
      *
-     * @param  array  $providers
+     * @param array $providers
+     *
      * @return array
+     * @throws
      */
     protected function compileManifest($providers)
     {
@@ -168,43 +208,12 @@ class ProviderRepository
     /**
      * Create a fresh service manifest data structure.
      *
-     * @param  array  $providers
+     * @param array $providers
+     *
      * @return array
      */
-    protected function freshManifest(array $providers)
+    protected function freshManifest(array $providers): array
     {
         return ['providers' => $providers, 'eager' => [], 'deferred' => []];
-    }
-
-    /**
-     * Write the service manifest file to disk.
-     *
-     * @param  array  $manifest
-     * @return array
-     *
-     * @throws \Exception
-     */
-    public function writeManifest($manifest)
-    {
-        if (! is_writable(dirname($this->manifestPath))) {
-            throw new Exception('The bootstrap/cache directory must be present and writable.');
-        }
-
-        $this->files->put(
-            $this->manifestPath, '<?php return '.var_export($manifest, true).';'
-        );
-
-        return array_merge(['when' => []], $manifest);
-    }
-
-    /**
-     * Create a new provider instance.
-     *
-     * @param  string  $provider
-     * @return \Illuminate\Support\ServiceProvider
-     */
-    public function createProvider($provider)
-    {
-        return new $provider($this->app);
     }
 }

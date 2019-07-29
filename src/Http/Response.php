@@ -2,11 +2,9 @@
 
 namespace Nur\Http;
 
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
-
-class Response extends SymfonyResponse
+class Response extends \Symfony\Component\HttpFoundation\Response
 {
-    /** @var bool $json */
+    /** @var bool */
     protected $json = false;
 
     /**
@@ -36,7 +34,7 @@ class Response extends SymfonyResponse
      *
      * @return Response
      */
-    public function json($data = null, int $statusCode = 200)
+    public function json($data = null, int $statusCode = 200): Response
     {
         if (is_null($data)) {
             $data = [];
@@ -56,7 +54,7 @@ class Response extends SymfonyResponse
      *
      * @return Response
      */
-    public function header($key, $value)
+    public function header($key, $value): Response
     {
         if (is_array($key) && ! empty($key)) {
             foreach ($key as $k => $v) {
@@ -74,9 +72,9 @@ class Response extends SymfonyResponse
      * @param string $view
      * @param array  $data
      *
-     * @return Response|void
+     * @return Response|null
      */
-    public function view($view, array $data = [])
+    public function view($view, array $data = []): ?Response
     {
         if (function_exists('app')) {
             $this->setContent(
@@ -86,7 +84,7 @@ class Response extends SymfonyResponse
             return $this;
         }
 
-        return;
+        return null;
     }
 
     /**
@@ -96,9 +94,9 @@ class Response extends SymfonyResponse
      * @param array  $data
      * @param array  $mergeData
      *
-     * @return Response|void
+     * @return Response|null
      */
-    public function blade($view, array $data = [], array $mergeData = [])
+    public function blade($view, array $data = [], array $mergeData = []): ?Response
     {
         if (function_exists('app')) {
             $this->setContent(
@@ -108,7 +106,7 @@ class Response extends SymfonyResponse
             return $this;
         }
 
-        return;
+        return null;
     }
 
     /**

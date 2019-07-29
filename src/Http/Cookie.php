@@ -13,7 +13,7 @@ class Cookie
      *
      * @return void
      */
-    public function set($key, $value, $time = 0)
+    public function set($key, $value, $time = 0): void
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
@@ -47,7 +47,7 @@ class Cookie
      *
      * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return isset($_COOKIE[$key]);
     }
@@ -59,7 +59,7 @@ class Cookie
      *
      * @return void
      */
-    public function delete($key)
+    public function delete($key): void
     {
         if ($this->has($key)) {
             setcookie($key, null, -1, '/');
@@ -74,7 +74,7 @@ class Cookie
      *
      * @return void
      */
-    public function destroy()
+    public function destroy(): void
     {
         foreach ($_COOKIE as $key => $value) {
             setcookie($key, null, -1, '/');

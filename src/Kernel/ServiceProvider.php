@@ -23,8 +23,8 @@ abstract class ServiceProvider
      *
      * @var array
      */
-
     public static $publishes = [];
+
     /**
      * The paths that should be published by group.
      *
@@ -51,7 +51,7 @@ abstract class ServiceProvider
      * @param  string  $group
      * @return void
      */
-    protected function publishes(array $paths, $group = null)
+    protected function publishes(array $paths, $group = null): void
     {
         $this->ensurePublishArrayInitialized($class = static::class);
         static::$publishes[$class] = array_merge(static::$publishes[$class], $paths);
@@ -66,7 +66,7 @@ abstract class ServiceProvider
      * @param  string  $class
      * @return void
      */
-    protected function ensurePublishArrayInitialized($class)
+    protected function ensurePublishArrayInitialized($class): void
     {
         if (! array_key_exists($class, static::$publishes)) {
             static::$publishes[$class] = [];
@@ -80,7 +80,7 @@ abstract class ServiceProvider
      * @param  array  $paths
      * @return void
      */
-    protected function addPublishGroup($group, $paths)
+    protected function addPublishGroup($group, $paths): void
     {
         if (! array_key_exists($group, static::$publishGroups)) {
             static::$publishGroups[$group] = [];
@@ -97,7 +97,7 @@ abstract class ServiceProvider
      * @param  string  $group
      * @return array
      */
-    public static function pathsToPublish($provider = null, $group = null)
+    public static function pathsToPublish($provider = null, $group = null): array
     {
         if (! is_null($paths = static::pathsForProviderOrGroup($provider, $group))) {
             return $paths;
@@ -135,7 +135,7 @@ abstract class ServiceProvider
      * @return array
      */
 
-    protected static function pathsForProviderAndGroup($provider, $group)
+    protected static function pathsForProviderAndGroup($provider, $group): array
     {
         if (! empty(static::$publishes[$provider]) && ! empty(static::$publishGroups[$group])) {
             return array_intersect_key(static::$publishes[$provider], static::$publishGroups[$group]);
@@ -148,7 +148,7 @@ abstract class ServiceProvider
      *
      * @return array
      */
-    public static function publishableProviders()
+    public static function publishableProviders(): array
     {
         return array_keys(static::$publishes);
     }
@@ -158,7 +158,7 @@ abstract class ServiceProvider
      *
      * @return array
      */
-    public static function publishableGroups()
+    public static function publishableGroups(): array
     {
         return array_keys(static::$publishGroups);
     }
@@ -168,7 +168,7 @@ abstract class ServiceProvider
      *
      * @return array
      */
-    public function provides()
+    public function provides(): array
     {
         return [];
     }
@@ -178,7 +178,7 @@ abstract class ServiceProvider
      *
      * @return array
      */
-    public function when()
+    public function when(): array
     {
         return [];
     }
@@ -188,7 +188,7 @@ abstract class ServiceProvider
      *
      * @return bool
      */
-    public function isDeferred()
+    public function isDeferred(): bool
     {
         return $this->defer;
     }

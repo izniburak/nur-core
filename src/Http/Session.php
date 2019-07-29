@@ -12,7 +12,7 @@ class Session
      *
      * @return void
      */
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
@@ -44,7 +44,7 @@ class Session
      *
      * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return isset($_SESSION[$key]);
     }
@@ -74,7 +74,7 @@ class Session
      *
      * @param string $key
      *
-     * @return null|string
+     * @return null|mixed
      */
     public function getFlash($key = null)
     {
@@ -99,7 +99,7 @@ class Session
      *
      * @return bool
      */
-    public function hasFlash($key)
+    public function hasFlash($key): bool
     {
         return isset($_SESSION['_nur_flash'][$key]);
     }
@@ -111,7 +111,7 @@ class Session
      *
      * @return void
      */
-    public function delete($key)
+    public function delete($key): void
     {
         if ($this->has($key)) {
             unset($_SESSION[$key]);
@@ -125,7 +125,7 @@ class Session
      *
      * @return void
      */
-    public function destroy()
+    public function destroy(): void
     {
         $_SESSION = [];
         session_destroy();
@@ -137,7 +137,7 @@ class Session
      *
      * @return string
      */
-    public function id()
+    public function id(): string
     {
         return session_id();
     }

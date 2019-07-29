@@ -3,14 +3,11 @@
 namespace Nur\Kernel;
 
 use Closure;
-use RuntimeException;
-use Nur\Container\Container;
-use Nur\Kernel\ServiceProvider;
-use Nur\Exception\ExceptionHandler;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Support\Collection;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\{Arr, Collection, Str};
+use Nur\Container\Container;
+use Nur\Exception\ExceptionHandler;
+use RuntimeException;
 use Whoops\Handler\PrettyPageHandler as WhoopsPrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
@@ -143,9 +140,15 @@ class Application extends Container
     private $docRoot = null;
 
     /**
+     * Framework base folder
+     *
+     * @var string|null
+     */
+    private $baseFolder = null;
+
+    /**
      * Create a new Illuminate application instance.
      *
-     * @param  string|null  $basePath
      * @return void
      */
     public function __construct()
@@ -170,57 +173,6 @@ class Application extends Container
         $this->registerCoreContainerAliases();
         $this->registerApplicationProviders();
         $this->registerApplicationAliases();
-    }
-
-    /**
-     * Application Initializer
-     *
-     * @return void
-     */
-    protected function init()
-    {   
-        $this->registerCoreProviders = [
-            \Nur\Providers\Event::class,
-            \Nur\Providers\Route::class,
-            \Nur\Providers\Load::class,
-            \Nur\Providers\Uri::class,
-            \Nur\Providers\Request::class,
-            \Nur\Providers\Response::class,
-            \Nur\Providers\Encryption::class,
-        ];
-
-        $this->registerCoreAliases = [
-            'Route' => \Nur\Facades\Route::class,
-        ];
-    }
-
-    /**
-     * Load application configuration files
-     *
-     * @return void
-     * @throws
-     */
-    protected function loadConfigFiles()
-    {
-        try {
-            if (file_exists($this->cachePath('config.php'))) {
-                $this->config = require $this->cachePath('config.php');
-            } else {
-                $dotenv = \Dotenv\Dotenv::create($this->root);
-                $dotenv->load();
-                foreach (glob($this->root . '/config/*.php') as $file) {
-                    $keyName = strtolower(str_replace(
-                        [$this->root . '/config/', '.php'], '', $file
-                    ));
-                    $this->config[$keyName] = require $file;
-                }
-            }
-        } catch (Exception $e) {
-            die(printf(
-                "Configuration information could not be retrieved properly.\nError Message: %s",
-                $e->getMessage()
-            ));
-        }
     }
 
     /**
@@ -266,7 +218,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function version()
+    public function version(): string
     {
         return static::VERSION;
     }
@@ -274,9 +226,9 @@ class Application extends Container
     /**
      * Get the configs of the application.
      *
-     * @return string
+     * @return array
      */
-    public function getConfig()
+    public function getConfig(): array
     {
         return $this->config;
     }
@@ -286,7 +238,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function root()
+    public function root(): string
     {
         return $this->root;
     }
@@ -296,7 +248,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function docRoot()
+    public function docRoot(): string
     {
         return $this->docRoot;
     }
@@ -306,74 +258,9 @@ class Application extends Container
      *
      * @return string
      */
-    public function baseFolder()
+    public function baseFolder(): string
     {
         return $this->baseFolder;
-    }
-
-    /**
-     * Register the basic bindings into the container.
-     *
-     * @return void
-     */
-    protected function registerBaseBindings()
-    {
-        static::setInstance($this);
-
-        $this->instance('app', $this);
-
-        $this->instance(Container::class, $this);
-
-        $this->singleton('config', function() {
-            return new \Nur\Config\Config($this->config);
-        });
-
-        $this->singleton('files', function () {
-            return new Filesystem;
-        });
-
-        $this->instance(PackageManifest::class, new PackageManifest(
-            new Filesystem, $this->basePath(), $this->getCachedPackagesPath()
-        ));
-    }
-
-    /**
-     * Register all of the base service providers.
-     *
-     * @return void
-     */
-    protected function registerBaseServiceProviders()
-    {
-        foreach ($this->registerCoreProviders as $provider) {
-            $this->register(new $provider($this));
-        }
-    }
-
-    /**
-     * Register providers of Application
-     *
-     * @return void
-     */
-    protected function registerApplicationProviders()
-    {
-        foreach ($this->config['services']['providers'] as $provider) {
-            $this->register(new $provider($this));
-        }
-    }
-
-    /**
-     * Register aliases of Application
-     *
-     * @return void
-     */
-    protected function registerApplicationAliases()
-    {
-        foreach ($this->config['services']['aliases'] as $key => $alias) {
-            $this->alias($key, $alias);
-            if (! class_exists($key)) {
-                class_alias($alias, $key);
-            }
-        }
     }
 
     /**
@@ -381,10 +268,10 @@ class Application extends Container
      *
      * @return void
      */
-    public function bootstrap()
+    public function bootstrap(): void
     {
         $this->hasBeenBootstrapped = true;
-        
+
         $this['events']->dispatch('bootstrapping', [$this]);
         $this->boot();
         $this['events']->dispatch('bootstrapped', [$this]);
@@ -393,25 +280,27 @@ class Application extends Container
     /**
      * Register a callback to run before a bootstrapper.
      *
-     * @param  string  $bootstrapper
-     * @param  \Closure  $callback
+     * @param string   $bootstrapper
+     * @param \Closure $callback
+     *
      * @return void
      */
-    public function beforeBootstrapping($bootstrapper, Closure $callback)
+    public function beforeBootstrapping($bootstrapper, Closure $callback): void
     {
-        $this['events']->listen('bootstrapping: '.$bootstrapper, $callback);
+        $this['events']->listen('bootstrapping: ' . $bootstrapper, $callback);
     }
 
-   /**
+    /**
      * Register a callback to run after a bootstrapper.
      *
-     * @param  string  $bootstrapper
-     * @param  \Closure  $callback
+     * @param string   $bootstrapper
+     * @param \Closure $callback
+     *
      * @return void
      */
-    public function afterBootstrapping($bootstrapper, Closure $callback)
+    public function afterBootstrapping($bootstrapper, Closure $callback): void
     {
-        $this['events']->listen('bootstrapped: '.$bootstrapper, $callback);
+        $this['events']->listen('bootstrapped: ' . $bootstrapper, $callback);
     }
 
     /**
@@ -419,7 +308,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function hasBeenBootstrapped()
+    public function hasBeenBootstrapped(): bool
     {
         return $this->hasBeenBootstrapped;
     }
@@ -427,10 +316,11 @@ class Application extends Container
     /**
      * Set the base path for the application.
      *
-     * @param  string  $basePath
+     * @param string $basePath
+     *
      * @return $this
      */
-    public function setBasePath($basePath)
+    public function setBasePath($basePath): Application
     {
         $this->basePath = rtrim($basePath, '\/');
 
@@ -440,65 +330,51 @@ class Application extends Container
     }
 
     /**
-     * Bind all of the application paths in the container.
-     *
-     * @return void
-     */
-    protected function bindPathsInContainer()
-    {
-        $this->instance('path', $this->path());
-        $this->instance('path.base', $this->basePath());
-        $this->instance('path.lang', $this->langPath());
-        $this->instance('path.config', $this->configPath());
-        $this->instance('path.storage', $this->storagePath());
-        $this->instance('path.database', $this->databasePath());
-        $this->instance('path.cache', $this->cachePath());
-        $this->instance('path.public', $this->publicPath());
-    }
-
-    /**
      * Get the path to the application "app" directory.
      *
-     * @param  string  $path Optionally, a path to append to the app path
+     * @param string $path Optionally, a path to append to the app path
+     *
      * @return string
      */
-    public function path($path = '')
+    public function path($path = ''): string
     {
-        return $this->root().DIRECTORY_SEPARATOR.'app'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $this->root() . DIRECTORY_SEPARATOR . 'app' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     /**
      * Get the base path of the Nur Framework installation.
      *
-     * @param  string  $path Optionally, a path to append to the base path
+     * @param string $path Optionally, a path to append to the base path
+     *
      * @return string
      */
-    public function basePath($path = '')
+    public function basePath($path = ''): string
     {
-        return $this->root().($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $this->root() . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     /**
      * Get the path to the application configuration files.
      *
-     * @param  string  $path Optionally, a path to append to the config path
+     * @param string $path Optionally, a path to append to the config path
+     *
      * @return string
      */
-    public function configPath($path = '')
+    public function configPath($path = ''): string
     {
-        return $this->root().DIRECTORY_SEPARATOR.'config'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $this->root() . DIRECTORY_SEPARATOR . 'config' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     /**
      * Get the path to the database directory.
      *
-     * @param  string $path Optionally, a path to append to the database path
+     * @param string $path Optionally, a path to append to the database path
      *
      * @return string
      */
-    public function databasePath($path = '')
+    public function databasePath($path = ''): string
     {
-        return $this->root().DIRECTORY_SEPARATOR.'database'.($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return $this->root() . DIRECTORY_SEPARATOR . 'database' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     /**
@@ -506,31 +382,31 @@ class Application extends Container
      *
      * @return string
      */
-    public function langPath()
+    public function langPath(): string
     {
-        return $this->path().DIRECTORY_SEPARATOR.'lang';
+        return $this->path() . DIRECTORY_SEPARATOR . 'lang';
     }
 
     /**
      * Get the path to the storage directory.
      *
-     * @param  string $path Optionally, a path to append to the storage path
+     * @param string $path Optionally, a path to append to the storage path
      *
      * @return string
      */
-    public function storagePath($path = '')
+    public function storagePath($path = ''): string
     {
-        return $this->root().DIRECTORY_SEPARATOR.'storage'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $this->root() . DIRECTORY_SEPARATOR . 'storage' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     /**
      * Get the path to the cache directory.
      *
-     * @param  string $path Optionally, a path to append to the cache path
+     * @param string $path Optionally, a path to append to the cache path
      *
      * @return string
      */
-    public function cachePath($path = '')
+    public function cachePath($path = ''): string
     {
         return $this->storagePath('cache') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -538,12 +414,13 @@ class Application extends Container
     /**
      * Get the path to the application public files.
      *
-     * @param  string  $path Optionally, a path to append to the public path
+     * @param string $path Optionally, a path to append to the public path
+     *
      * @return string
      */
-    public function publicPath($path = '')
+    public function publicPath($path = ''): string
     {
-        return $this->root().DIRECTORY_SEPARATOR.'public'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $this->root() . DIRECTORY_SEPARATOR . 'public' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     /**
@@ -551,7 +428,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function runningInConsole()
+    public function runningInConsole(): bool
     {
         if (isset($_ENV['APP_RUNNING_IN_CONSOLE'])) {
             return $_ENV['APP_RUNNING_IN_CONSOLE'] === 'true';
@@ -565,22 +442,23 @@ class Application extends Container
      *
      * @return void
      */
-    public function registerConfiguredProviders()
+    public function registerConfiguredProviders(): void
     {
         $providers = Collection::make($this->config['app.providers'])
-                        ->partition(function ($provider) {
-                            return Str::startsWith($provider, 'Nur\\');
-                        });
+            ->partition(function ($provider) {
+                return Str::startsWith($provider, 'Nur\\');
+            });
         $providers->splice(1, 0, [$this->make(PackageManifest::class)->providers()]);
         (new ProviderRepository($this, new Filesystem, $this->getCachedServicesPath()))
-                    ->load($providers->collapse()->toArray());
+            ->load($providers->collapse()->toArray());
     }
 
     /**
      * Register a service provider with the application.
      *
-     * @param  \Nur\Kernel\ServiceProvider|string  $provider
-     * @param  bool   $force
+     * @param \Nur\Kernel\ServiceProvider|string $provider
+     * @param bool                               $force
+     *
      * @return \Nur\Kernel\ServiceProvider
      */
     public function register($provider, $force = false)
@@ -630,7 +508,8 @@ class Application extends Container
     /**
      * Get the registered service provider instance if it exists.
      *
-     * @param  \Nur\Kernel\ServiceProvider|string  $provider
+     * @param \Nur\Kernel\ServiceProvider|string $provider
+     *
      * @return \Nur\Kernel\ServiceProvider|null
      */
     public function getProvider($provider)
@@ -641,10 +520,11 @@ class Application extends Container
     /**
      * Get the registered service provider instances if any exist.
      *
-     * @param  \Nur\Kernel\ServiceProvider|string  $provider
+     * @param \Nur\Kernel\ServiceProvider|string $provider
+     *
      * @return array
      */
-    public function getProviders($provider)
+    public function getProviders($provider): array
     {
         $name = is_string($provider) ? $provider : get_class($provider);
 
@@ -656,7 +536,8 @@ class Application extends Container
     /**
      * Resolve a service provider instance from the class name.
      *
-     * @param  string  $provider
+     * @param string $provider
+     *
      * @return \Nur\Kernel\ServiceProvider
      */
     public function resolveProvider($provider)
@@ -665,24 +546,11 @@ class Application extends Container
     }
 
     /**
-     * Mark the given provider as registered.
-     *
-     * @param  \Nur\Kernel\ServiceProvider  $provider
-     * @return void
-     */
-    protected function markAsRegistered(ServiceProvider $provider)
-    {
-        $this->serviceProviders[] = $provider;
-
-        $this->loadedProviders[get_class($provider)] = true;
-    }
-
-    /**
      * Load and boot all of the remaining deferred providers.
      *
      * @return void
      */
-    public function loadDeferredProviders()
+    public function loadDeferredProviders(): void
     {
         // We will simply spin through each of the deferred providers and register each
         // one and boot them if the application has booted. This should make each of
@@ -697,10 +565,11 @@ class Application extends Container
     /**
      * Load the provider for a deferred service.
      *
-     * @param  string  $service
+     * @param string $service
+     *
      * @return void
      */
-    public function loadDeferredProvider($service)
+    public function loadDeferredProvider($service): void
     {
         if (! isset($this->deferredServices[$service])) {
             return;
@@ -719,11 +588,12 @@ class Application extends Container
     /**
      * Register a deferred provider and service.
      *
-     * @param  string  $provider
-     * @param  string|null  $service
+     * @param string      $provider
+     * @param string|null $service
+     *
      * @return void
      */
-    public function registerDeferredProvider($provider, $service = null)
+    public function registerDeferredProvider($provider, $service = null): void
     {
         // Once the provider that provides the deferred service has been registered we
         // will remove it from our local list of the deferred services with related
@@ -746,8 +616,9 @@ class Application extends Container
      *
      * (Overriding Container::make)
      *
-     * @param  string  $abstract
-     * @param  array  $parameters
+     * @param string $abstract
+     * @param array  $parameters
+     *
      * @return mixed
      */
     public function make($abstract, array $parameters = [])
@@ -766,10 +637,11 @@ class Application extends Container
      *
      * (Overriding Container::bound)
      *
-     * @param  string  $abstract
+     * @param string $abstract
+     *
      * @return bool
      */
-    public function bound($abstract)
+    public function bound($abstract): bool
     {
         return isset($this->deferredServices[$abstract]) || parent::bound($abstract);
     }
@@ -779,7 +651,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function isBooted()
+    public function isBooted(): bool
     {
         return $this->booted;
     }
@@ -789,7 +661,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         if ($this->booted) {
             return;
@@ -810,25 +682,13 @@ class Application extends Container
     }
 
     /**
-     * Boot the given service provider.
-     *
-     * @param  \Nur\Kernel\ServiceProvider  $provider
-     * @return mixed
-     */
-    protected function bootProvider(ServiceProvider $provider)
-    {
-        if (method_exists($provider, 'boot')) {
-            return $this->call([$provider, 'boot']);
-        }
-    }
-
-    /**
      * Register a new boot listener.
      *
-     * @param  mixed  $callback
+     * @param mixed $callback
+     *
      * @return void
      */
-    public function booting($callback)
+    public function booting($callback): void
     {
         $this->bootingCallbacks[] = $callback;
     }
@@ -836,10 +696,11 @@ class Application extends Container
     /**
      * Register a new "booted" listener.
      *
-     * @param  mixed  $callback
+     * @param mixed $callback
+     *
      * @return void
      */
-    public function booted($callback)
+    public function booted($callback): void
     {
         $this->bootedCallbacks[] = $callback;
 
@@ -849,26 +710,13 @@ class Application extends Container
     }
 
     /**
-     * Call the booting callbacks for the application.
-     *
-     * @param  array  $callbacks
-     * @return void
-     */
-    protected function fireAppCallbacks(array $callbacks)
-    {
-        foreach ($callbacks as $callback) {
-            call_user_func($callback, $this);
-        }
-    }
-
-    /**
      * Get the path to the cached services.php file.
      *
      * @return string
      */
-    public function getCachedServicesPath()
+    public function getCachedServicesPath(): string
     {
-        return $this->cachePath().'/services.php';
+        return $this->cachePath() . '/services.php';
     }
 
     /**
@@ -876,9 +724,9 @@ class Application extends Container
      *
      * @return string
      */
-    public function getCachedPackagesPath()
+    public function getCachedPackagesPath(): string
     {
-        return $this->cachePath().'/packages.php';
+        return $this->cachePath() . '/packages.php';
     }
 
     /**
@@ -886,7 +734,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function configurationIsCached()
+    public function configurationIsCached(): bool
     {
         return file_exists($this->getCachedConfigPath());
     }
@@ -898,7 +746,7 @@ class Application extends Container
      */
     public function getCachedConfigPath()
     {
-        return $_ENV['APP_CONFIG_CACHE'] ?? $this->cachePath().'/config.php';
+        return $_ENV['APP_CONFIG_CACHE'] ?? $this->cachePath() . '/config.php';
     }
 
     /**
@@ -916,9 +764,9 @@ class Application extends Container
      *
      * @return string
      */
-    public function getCachedRoutesPath()
+    public function getCachedRoutesPath(): string
     {
-        return $this->cachePath().'/routes.php';
+        return $this->cachePath() . '/routes.php';
     }
 
     /**
@@ -926,18 +774,19 @@ class Application extends Container
      *
      * @return bool
      */
-    public function isDownForMaintenance()
+    public function isDownForMaintenance(): bool
     {
-        return file_exists($this->storagePath().'/app.down');
+        return file_exists($this->storagePath() . '/app.down');
     }
 
     /**
      * Register a terminating callback with the application.
      *
-     * @param  \Closure  $callback
+     * @param \Closure $callback
+     *
      * @return $this
      */
-    public function terminating(Closure $callback)
+    public function terminating(Closure $callback): Application
     {
         $this->terminatingCallbacks[] = $callback;
 
@@ -949,7 +798,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function terminate()
+    public function terminate(): void
     {
         foreach ($this->terminatingCallbacks as $terminating) {
             $this->call($terminating);
@@ -961,7 +810,7 @@ class Application extends Container
      *
      * @return array
      */
-    public function getLoadedProviders()
+    public function getLoadedProviders(): array
     {
         return $this->loadedProviders;
     }
@@ -971,7 +820,7 @@ class Application extends Container
      *
      * @return array
      */
-    public function getDeferredServices()
+    public function getDeferredServices(): array
     {
         return $this->deferredServices;
     }
@@ -979,10 +828,11 @@ class Application extends Container
     /**
      * Set the application's deferred services.
      *
-     * @param  array  $services
+     * @param array $services
+     *
      * @return void
      */
-    public function setDeferredServices(array $services)
+    public function setDeferredServices(array $services): void
     {
         $this->deferredServices = $services;
     }
@@ -990,10 +840,11 @@ class Application extends Container
     /**
      * Add an array of services to the application's deferred services.
      *
-     * @param  array  $services
+     * @param array $services
+     *
      * @return void
      */
-    public function addDeferredServices(array $services)
+    public function addDeferredServices(array $services): void
     {
         $this->deferredServices = array_merge($this->deferredServices, $services);
     }
@@ -1001,10 +852,11 @@ class Application extends Container
     /**
      * Determine if the given service is a deferred service.
      *
-     * @param  string  $service
+     * @param string $service
+     *
      * @return bool
      */
-    public function isDeferredService($service)
+    public function isDeferredService($service): bool
     {
         return isset($this->deferredServices[$service]);
     }
@@ -1012,10 +864,11 @@ class Application extends Container
     /**
      * Configure the real-time facade namespace.
      *
-     * @param  string  $namespace
+     * @param string $namespace
+     *
      * @return void
      */
-    public function provideFacades($namespace)
+    public function provideFacades($namespace): void
     {
         AliasLoader::setFacadeNamespace($namespace);
     }
@@ -1025,7 +878,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function registerCoreContainerAliases()
+    public function registerCoreContainerAliases(): void
     {
         // Prepare Facades
         Facade::clearResolvedInstances();
@@ -1044,7 +897,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function flush()
+    public function flush(): void
     {
         parent::flush();
 
@@ -1075,9 +928,9 @@ class Application extends Container
 
         $composer = json_decode(file_get_contents(base_path('composer.json')), true);
 
-        foreach ((array) data_get($composer, 'autoload.psr-4') as $namespace => $path) {
-            foreach ((array) $path as $pathChoice) {
-                if (realpath(app_path()) == realpath(base_path().'/'.$pathChoice)) {
+        foreach ((array)data_get($composer, 'autoload.psr-4') as $namespace => $path) {
+            foreach ((array)$path as $pathChoice) {
+                if (realpath(app_path()) == realpath(base_path() . '/' . $pathChoice)) {
                     return $this->namespace = $namespace;
                 }
             }
@@ -1087,11 +940,186 @@ class Application extends Container
     }
 
     /**
+     * Application Initializer
+     *
+     * @return void
+     */
+    protected function init()
+    {
+        $this->registerCoreProviders = [
+            \Nur\Providers\Event::class,
+            \Nur\Providers\Route::class,
+            \Nur\Providers\Load::class,
+            \Nur\Providers\Uri::class,
+            \Nur\Providers\Request::class,
+            \Nur\Providers\Response::class,
+            \Nur\Providers\Encryption::class,
+        ];
+
+        $this->registerCoreAliases = [
+            'Route' => \Nur\Facades\Route::class,
+        ];
+    }
+
+    /**
+     * Load application configuration files
+     *
+     * @return void
+     * @throws
+     */
+    protected function loadConfigFiles()
+    {
+        try {
+            if (file_exists($this->cachePath('config.php'))) {
+                $this->config = require $this->cachePath('config.php');
+            } else {
+                $dotenv = \Dotenv\Dotenv::create($this->root);
+                $dotenv->load();
+                foreach (glob($this->root . '/config/*.php') as $file) {
+                    $keyName = strtolower(str_replace(
+                        [$this->root . '/config/', '.php'], '', $file
+                    ));
+                    $this->config[$keyName] = require $file;
+                }
+            }
+        } catch (Exception $e) {
+            die(printf(
+                "Configuration information could not be retrieved properly.\nError Message: %s",
+                $e->getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Register the basic bindings into the container.
+     *
+     * @return void
+     */
+    protected function registerBaseBindings(): void
+    {
+        static::setInstance($this);
+
+        $this->instance('app', $this);
+
+        $this->instance(Container::class, $this);
+
+        $this->singleton('config', function () {
+            return new \Nur\Config\Config($this->config);
+        });
+
+        $this->singleton('files', function () {
+            return new Filesystem;
+        });
+
+        $this->instance(PackageManifest::class, new PackageManifest(
+            new Filesystem, $this->basePath(), $this->getCachedPackagesPath()
+        ));
+    }
+
+    /**
+     * Register all of the base service providers.
+     *
+     * @return void
+     */
+    protected function registerBaseServiceProviders(): void
+    {
+        foreach ($this->registerCoreProviders as $provider) {
+            $this->register(new $provider($this));
+        }
+    }
+
+    /**
+     * Register providers of Application
+     *
+     * @return void
+     */
+    protected function registerApplicationProviders(): void
+    {
+        foreach ($this->config['services']['providers'] as $provider) {
+            $this->register(new $provider($this));
+        }
+    }
+
+    /**
+     * Register aliases of Application
+     *
+     * @return void
+     */
+    protected function registerApplicationAliases(): void
+    {
+        foreach ($this->config['services']['aliases'] as $key => $alias) {
+            $this->alias($key, $alias);
+            if (! class_exists($key)) {
+                class_alias($alias, $key);
+            }
+        }
+    }
+
+    /**
+     * Bind all of the application paths in the container.
+     *
+     * @return void
+     */
+    protected function bindPathsInContainer(): void
+    {
+        $this->instance('path', $this->path());
+        $this->instance('path.base', $this->basePath());
+        $this->instance('path.lang', $this->langPath());
+        $this->instance('path.config', $this->configPath());
+        $this->instance('path.storage', $this->storagePath());
+        $this->instance('path.database', $this->databasePath());
+        $this->instance('path.cache', $this->cachePath());
+        $this->instance('path.public', $this->publicPath());
+    }
+
+    /**
+     * Mark the given provider as registered.
+     *
+     * @param \Nur\Kernel\ServiceProvider $provider
+     *
+     * @return void
+     */
+    protected function markAsRegistered(ServiceProvider $provider): void
+    {
+        $this->serviceProviders[] = $provider;
+
+        $this->loadedProviders[get_class($provider)] = true;
+    }
+
+    /**
+     * Boot the given service provider.
+     *
+     * @param \Nur\Kernel\ServiceProvider $provider
+     *
+     * @return mixed
+     */
+    protected function bootProvider(ServiceProvider $provider)
+    {
+        if (method_exists($provider, 'boot')) {
+            return $this->call([$provider, 'boot']);
+        }
+    }
+
+    /**
+     * Call the booting callbacks for the application.
+     *
+     * @param array $callbacks
+     *
+     * @return void
+     */
+    protected function fireAppCallbacks(array $callbacks): void
+    {
+        foreach ($callbacks as $callback) {
+            call_user_func($callback, $this);
+        }
+    }
+
+    /**
      * Whoops Initializer
      *
      * @return void
      */
-    protected function initWhoops()
+    protected function initWhoops(): void
     {
         $whoops = new WhoopsRun;
         $whoops->pushHandler(new WhoopsPrettyPageHandler);

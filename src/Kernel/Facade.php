@@ -2,6 +2,7 @@
 
 namespace Nur\Kernel;
 
+use Closure;
 use RuntimeException;
 
 abstract class Facade
@@ -31,9 +32,10 @@ abstract class Facade
      * Set Facade Application (Container)
      *
      * @param string $app
+     *
      * @return void
      */
-    public static function setApplication($app)
+    public static function setApplication($app): void
     {
         static::$app = $app;
     }
@@ -52,9 +54,10 @@ abstract class Facade
      * Clear Resolved Instance
      *
      * @param string $facadeName
+     *
      * @return void
      */
-    public static function clearResolvedInstance($facadeName)
+    public static function clearResolvedInstance($facadeName): void
     {
         unset(static::$resolvedInstance[$facadeName]);
     }
@@ -64,7 +67,7 @@ abstract class Facade
      *
      * @return void
      */
-    public static function clearResolvedInstances()
+    public static function clearResolvedInstances(): void
     {
         static::$resolvedInstance = [];
     }
@@ -72,10 +75,11 @@ abstract class Facade
     /**
      * Run a Closure when the facade has been resolved.
      *
-     * @param  \Closure  $callback
+     * @param Closure $callback
+     *
      * @return void
      */
-    public static function resolved(Closure $callback)
+    public static function resolved(Closure $callback): void
     {
         static::$app->afterResolving(static::getFacadeAccessor(), function ($service) use ($callback) {
             $callback($service);
@@ -85,10 +89,11 @@ abstract class Facade
     /**
      * Hotswap the underlying instance behind the facade.
      *
-     * @param  mixed  $instance
+     * @param mixed $instance
+     *
      * @return void
      */
-    public static function swap($instance)
+    public static function swap($instance): void
     {
         static::$resolvedInstance[static::getFacadeAccessor()] = $instance;
         if (isset(static::$app)) {
@@ -107,6 +112,39 @@ abstract class Facade
     }
 
     /**
+     * Call Methods in Application Object
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
+    public static function __callStatic($method, $parameters)
+    {
+        $accessor = strtolower(static::getFacadeAccessor());
+        $provider = static::resolveInstance(strtolower($accessor));
+
+        if (! array_key_exists($accessor, static::$createdInstances)) {
+            static::$createdInstances[$accessor] = $provider;
+        }
+
+        return call_user_func_array([static::$createdInstances[$accessor], $method], $parameters);
+    }
+
+    /**
+     * Call Methods in Application Object
+     *
+     * @param string $method
+     * @param array  $parameters
+     *
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        return self::__callStatic($method, $parameters);
+    }
+
+    /**
      * Get the registered name of the component.
      *
      * @return string
@@ -122,6 +160,7 @@ abstract class Facade
      * Resolved Instance
      *
      * @param string $facadeName
+     *
      * @return string
      */
     protected static function resolveInstance($facadeName)
@@ -135,36 +174,5 @@ abstract class Facade
         }
 
         return static::$resolvedInstance[$facadeName] = static::$app->get($facadeName);
-    }
-
-    /**
-     * Call Methods in Application Object
-     *
-     * @param string $method
-     * @param array  $parameters
-     * @return mixed
-     */
-    public static function __callStatic($method, $parameters)
-    {
-        $accessor = strtolower(static::getFacadeAccessor());
-        $provider = static::resolveInstance(strtolower($accessor));
-
-        if (!array_key_exists($accessor, static::$createdInstances)) {
-            static::$createdInstances[$accessor] = $provider;
-        }
-
-        return call_user_func_array([static::$createdInstances[$accessor], $method], $parameters);
-    }
-
-    /**
-     * Call Methods in Application Object
-     *
-     * @param string $method
-     * @param array  $parameters
-     * @return mixed
-     */
-    public function __call($method, $parameters)
-    {
-        return self::__callStatic($method, $parameters);
     }
 }

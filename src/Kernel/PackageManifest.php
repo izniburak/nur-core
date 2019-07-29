@@ -45,9 +45,10 @@ class PackageManifest
     /**
      * Create a new package manifest instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @param  string  $basePath
-     * @param  string  $manifestPath
+     * @param \Illuminate\Filesystem\Filesystem $files
+     * @param string                            $basePath
+     * @param string                            $manifestPath
+     *
      * @return void
      */
     public function __construct(Filesystem $files, $basePath, $manifestPath)
@@ -55,7 +56,7 @@ class PackageManifest
         $this->files = $files;
         $this->basePath = $basePath;
         $this->manifestPath = $manifestPath;
-        $this->vendorPath = $basePath.'/vendor';
+        $this->vendorPath = $basePath . '/vendor';
     }
 
     /**
@@ -63,10 +64,10 @@ class PackageManifest
      *
      * @return array
      */
-    public function providers()
+    public function providers(): array
     {
         return collect($this->getManifest())->flatMap(function ($configuration) {
-            return (array) ($configuration['providers'] ?? []);
+            return (array)($configuration['providers'] ?? []);
         })->filter()->all();
     }
 
@@ -75,11 +76,36 @@ class PackageManifest
      *
      * @return array
      */
-    public function aliases()
+    public function aliases(): array
     {
         return collect($this->getManifest())->flatMap(function ($configuration) {
-            return (array) ($configuration['aliases'] ?? []);
+            return (array)($configuration['aliases'] ?? []);
         })->filter()->all();
+    }
+
+    /**
+     * Build the manifest and write it to disk.
+     *
+     * @return void
+     * @throws
+     */
+    public function build()
+    {
+        $packages = [];
+
+        if ($this->files->exists($path = $this->vendorPath . '/composer/installed.json')) {
+            $packages = json_decode($this->files->get($path), true);
+        }
+
+        $ignoreAll = in_array('*', $ignore = $this->packagesToIgnore());
+
+        $this->write(collect($packages)->mapWithKeys(function ($package) {
+            return [$this->format($package['name']) => $package['extra']['nur'] ?? []];
+        })->each(function ($configuration) use (&$ignore) {
+            $ignore = array_merge($ignore, $configuration['dont-discover'] ?? []);
+        })->reject(function ($configuration, $package) use ($ignore, $ignoreAll) {
+            return $ignoreAll || in_array($package, $ignore);
+        })->filter()->all());
     }
 
     /**
@@ -104,38 +130,15 @@ class PackageManifest
     }
 
     /**
-     * Build the manifest and write it to disk.
-     *
-     * @return void
-     */
-    public function build()
-    {
-        $packages = [];
-
-        if ($this->files->exists($path = $this->vendorPath.'/composer/installed.json')) {
-            $packages = json_decode($this->files->get($path), true);
-        }
-
-        $ignoreAll = in_array('*', $ignore = $this->packagesToIgnore());
-
-        $this->write(collect($packages)->mapWithKeys(function ($package) {
-            return [$this->format($package['name']) => $package['extra']['nur'] ?? []];
-        })->each(function ($configuration) use (&$ignore) {
-            $ignore = array_merge($ignore, $configuration['dont-discover'] ?? []);
-        })->reject(function ($configuration, $package) use ($ignore, $ignoreAll) {
-            return $ignoreAll || in_array($package, $ignore);
-        })->filter()->all());
-    }
-
-    /**
      * Format the given package name.
      *
-     * @param  string  $package
+     * @param string $package
+     *
      * @return string
      */
-    protected function format($package)
+    protected function format($package): string
     {
-        return str_replace($this->vendorPath.'/', '', $package);
+        return str_replace($this->vendorPath . '/', '', $package);
     }
 
     /**
@@ -143,33 +146,34 @@ class PackageManifest
      *
      * @return array
      */
-    protected function packagesToIgnore()
+    protected function packagesToIgnore(): array
     {
-        if (! file_exists($this->basePath.'/composer.json')) {
+        if (! file_exists($this->basePath . '/composer.json')) {
             return [];
         }
 
         return json_decode(file_get_contents(
-            $this->basePath.'/composer.json'
-        ), true)['extra']['nur']['dont-discover'] ?? [];
+                $this->basePath . '/composer.json'
+            ), true)['extra']['nur']['dont-discover'] ?? [];
     }
 
     /**
      * Write the given manifest array to disk.
      *
-     * @param  array  $manifest
+     * @param array $manifest
+     *
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    protected function write(array $manifest)
+    protected function write(array $manifest): void
     {
         if (! is_writable(dirname($this->manifestPath))) {
-            throw new Exception('The '.dirname($this->manifestPath).' directory must be present and writable.');
+            throw new Exception('The ' . dirname($this->manifestPath) . ' directory must be present and writable.');
         }
 
         $this->files->replace(
-            $this->manifestPath, '<?php return '.var_export($manifest, true).';'
+            $this->manifestPath, '<?php return ' . var_export($manifest, true) . ';'
         );
     }
 }
