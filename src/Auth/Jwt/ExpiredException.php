@@ -2,7 +2,7 @@
 
 namespace Nur\Auth\Jwt;
 
-class ExpiredException extends \UnexpectedValueException
+class ExpiredException extends \Firebase\JWT\ExpiredException
 {
 
 }

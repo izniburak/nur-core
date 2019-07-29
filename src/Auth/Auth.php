@@ -164,9 +164,9 @@ class Auth
     /**
      * Get JWT Instance
      *
-     * @return Jwt\Jwt
+     * @return \Nur\Auth\Jwt\Jwt
      */
-    public function jwt()
+    public function jwt(): \Nur\Auth\Jwt\Jwt
     {
         return resolve('jwt');
     }
@@ -209,7 +209,7 @@ class Auth
      *
      * @return void
      */
-    private function checkAuthProvider()
+    private function checkAuthProvider(): void
     {
         $auth = config('auth');
         if ($auth['driver'] === 'eloquent') {

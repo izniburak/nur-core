@@ -2,7 +2,7 @@
 
 namespace Nur\Auth\Jwt;
 
-class SignatureInvalidException extends \UnexpectedValueException
+class SignatureInvalidException extends \Firebase\JWT\SignatureInvalidException
 {
 
 }
