@@ -2,8 +2,6 @@
 
 namespace Nur\Router;
 
-use Nur\Exception\ExceptionHandler;
-
 class Route
 {
     /**
