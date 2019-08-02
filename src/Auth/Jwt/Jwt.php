@@ -121,13 +121,15 @@ class Jwt implements JwtInterface
     }
 
     /**
+     * Check JWT Token and Validate User
+     *
      * @return bool|\stdClass
      * @throws JwtException
      */
-    public function user()
+    public function check()
     {
         if ($this->user !== null) {
-            return $this->user;
+            return true;
         }
 
         if ($token = request()->bearerToken()) {
@@ -139,10 +141,21 @@ class Jwt implements JwtInterface
 
             $credential = json_decode(json_encode($user->data), true);
             if (auth()->validate($credential)) {
-                return $this->user = auth()->user();
+                $this->user = auth()->user();
+                return true;
             }
         }
 
         throw new JwtException("JWT Token required");
+    }
+
+    /**
+     * Get JWT Authenticated User
+     *
+     * @return \stdClass|null
+     */
+    public function user()
+    {
+        return $this->user;
     }
 }
