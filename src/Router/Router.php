@@ -21,12 +21,35 @@ class Router extends RouterProvider
     /**
      * RouterCommand class
      *
-     * @param string $message
      *
      * @return RouterCommand
      */
-    public function routerCommand($message = '')
+    public function routerCommand()
     {
-        return new RouterCommand($message);
+        return RouterCommand::getInstance($this->baseFolder, $this->paths, $this->namespaces);
+    }
+
+    /**
+     * @param $controller
+     *
+     * @return \Buki\Router\RouterException|mixed
+     */
+    protected function resolveClass($controller)
+    {
+        if (strstr($controller, '\\')) {
+            return ($controller);
+        }
+
+        return (str_replace(['.', '/'], ['\\'], $this->namespaces['controllers'] . $controller));
+    }
+
+    /**
+     * Display all Routes.
+     *
+     * @return void
+     */
+    public function getList()
+    {
+        dd($this->getRoutes());
     }
 }

@@ -17,4 +17,20 @@ class RouterCommand extends RouterCommandProvider
     {
         return new RouterException($message);
     }
+
+    /**
+     * Resolve Controller or Middleware class.
+     *
+     * @param $class
+     * @param $path
+     * @param $namespace
+     *
+     * @return object
+     * @throws
+     */
+    protected function resolveClass($class, $path, $namespace)
+    {
+        $class = $namespace . str_replace('/', '\\', $class);
+        return resolve($class);
+    }
 }
