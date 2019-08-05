@@ -162,12 +162,8 @@ class Application extends Container
             '/'
         );
 
-        $this->setBasePath($this->root);
-
         $this->init();
-
-        $this->loadConfigFiles();
-
+        $this->bindPathsInContainer();
         $this->registerBaseBindings();
         $this->registerBaseServiceProviders();
         $this->registerCoreContainerAliases();
@@ -209,6 +205,17 @@ class Application extends Container
             $this->bootstrap();
         }
 
+        // Run Application
+        $this->run();
+    }
+
+    /**
+     * Run Application
+     *
+     * @return void
+     */
+    public function run(): void
+    {
         require $this->path('routes.php');
         $this->app['route']->run();
     }
@@ -323,8 +330,6 @@ class Application extends Container
     public function setBasePath($basePath): Application
     {
         $this->basePath = rtrim($basePath, '\/');
-
-        $this->bindPathsInContainer();
 
         return $this;
     }
@@ -1003,6 +1008,7 @@ class Application extends Container
 
         $this->instance(Container::class, $this);
 
+        $this->loadConfigFiles();
         $this->singleton('config', function () {
             return new \Nur\Config\Config($this->config);
         });
@@ -1062,6 +1068,7 @@ class Application extends Container
      */
     protected function bindPathsInContainer(): void
     {
+        $this->setBasePath($this->root);
         $this->instance('path', $this->path());
         $this->instance('path.base', $this->basePath());
         $this->instance('path.lang', $this->langPath());
