@@ -33,4 +33,15 @@ class RouterCommand extends RouterCommandProvider
         $class = $namespace . str_replace('/', '\\', $class);
         return resolve($class);
     }
+
+    /**
+     * @param $function
+     * @param $params
+     *
+     * @return mixed
+     */
+    protected function runMethodWithParams($function, $params)
+    {
+        return app()->call($function, (!is_null($params) ? $params : []));
+    }
 }
