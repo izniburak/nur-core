@@ -167,11 +167,12 @@ if (! function_exists('auth')) {
      */
     function auth($user = null)
     {
+        $auth = app(\Nur\Auth\Auth::class);
         if (is_null($user)) {
-            return app('auth');
+            return $auth;
         }
 
-        return app('auth')->login($user);
+        return app($auth)->login($user);
     }
 }
 
@@ -525,13 +526,14 @@ if (! function_exists('request')) {
      */
     function request($key = null, $default = null)
     {
+        $request = app(\Nur\Http\Request::class);
         if (is_null($key)) {
-            return app('request');
+            return $request;
         }
         if (is_array($key)) {
-            return app('request')->only($key);
+            return $request->only($key);
         }
-        $value = app('request')->__get($key);
+        $value = $request->__get($key);
         return is_null($value) ? value($default) : $value;
     }
 }
@@ -548,11 +550,12 @@ if (! function_exists('response')) {
      */
     function response($content = '', $status = 200, array $headers = [])
     {
+        $response = app(\Nur\Http\Response::class);
         if (func_num_args() === 0) {
-            return app('response');
+            return $response;
         }
 
-        return app('response')->create($content, $status, $headers);
+        return $response->create($content, $status, $headers);
     }
 }
 

@@ -21,6 +21,6 @@ class Auth extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('auth', \Nur\Auth\Auth::class);
+        $this->app->singleton(\Nur\Auth\Auth::class, \Nur\Auth\Auth::class);
     }
 }

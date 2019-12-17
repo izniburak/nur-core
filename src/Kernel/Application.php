@@ -3,12 +3,12 @@
 namespace Nur\Kernel;
 
 use Closure;
+use Exception;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\{Arr, Collection, Str};
+use Illuminate\Support\{Arr, Collection, Env, Str};
 use Nur\Container\Container;
 use Nur\Exception\ExceptionHandler;
 use RuntimeException;
-use Whoops\Handler\PrettyPageHandler as WhoopsPrettyPageHandler;
 use Whoops\Run as WhoopsRun;
 
 class Application extends Container
@@ -18,7 +18,7 @@ class Application extends Container
      *
      * @var string
      */
-    const VERSION = '1.58.0';
+    const VERSION = '2.0.0';
 
     /**
      * The base path for the Nur Framework installation.
@@ -197,7 +197,7 @@ class Application extends Container
                 die('The application environment is not set correctly.');
         }
 
-        if (file_exists(storage_path('app.down'))) {
+        if ($this->isDownForMaintenance()) {
             throw new ExceptionHandler('The system is under maintenance.', 'We will be back very soon.');
         }
 
@@ -435,8 +435,8 @@ class Application extends Container
      */
     public function runningInConsole(): bool
     {
-        if (isset($_ENV['APP_RUNNING_IN_CONSOLE'])) {
-            return $_ENV['APP_RUNNING_IN_CONSOLE'] === 'true';
+        if (Env::get('APP_RUNNING_IN_CONSOLE') !== null) {
+            return Env::get('APP_RUNNING_IN_CONSOLE') === true;
         }
 
         return php_sapi_name() === 'cli' || php_sapi_name() === 'phpdbg';
@@ -446,6 +446,7 @@ class Application extends Container
      * Register all of the configured providers.
      *
      * @return void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function registerConfiguredProviders(): void
     {
@@ -503,7 +504,7 @@ class Application extends Container
         // If the application has already booted, we will call this boot method on
         // the provider class so it has an opportunity to do its boot logic and
         // will be ready for any usage by this developer's application logic.
-        if ($this->booted) {
+        if ($this->isBooted()) {
             $this->bootProvider($provider);
         }
 
@@ -576,7 +577,7 @@ class Application extends Container
      */
     public function loadDeferredProvider($service): void
     {
-        if (! isset($this->deferredServices[$service])) {
+        if (! $this->isDeferredService($service)) {
             return;
         }
 
@@ -609,7 +610,7 @@ class Application extends Container
 
         $this->register($instance = new $provider($this));
 
-        if (! $this->booted) {
+        if (! $this->isBooted()) {
             $this->booting(function () use ($instance) {
                 $this->bootProvider($instance);
             });
@@ -625,12 +626,13 @@ class Application extends Container
      * @param array  $parameters
      *
      * @return mixed
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function make($abstract, array $parameters = [])
     {
         $abstract = $this->getAlias($abstract);
 
-        if (isset($this->deferredServices[$abstract]) && ! isset($this->instances[$abstract])) {
+        if ($this->isDeferredService($abstract) && ! isset($this->instances[$abstract])) {
             $this->loadDeferredProvider($abstract);
         }
 
@@ -648,7 +650,7 @@ class Application extends Container
      */
     public function bound($abstract): bool
     {
-        return isset($this->deferredServices[$abstract]) || parent::bound($abstract);
+        return $this->isDeferredService($abstract) || parent::bound($abstract);
     }
 
     /**
@@ -668,7 +670,7 @@ class Application extends Container
      */
     public function boot(): void
     {
-        if ($this->booted) {
+        if ($this->isBooted()) {
             return;
         }
 
@@ -741,7 +743,7 @@ class Application extends Container
      */
     public function configurationIsCached(): bool
     {
-        return file_exists($this->getCachedConfigPath());
+        return $this['files']->exists($this->getCachedConfigPath());
     }
 
     /**
@@ -751,7 +753,7 @@ class Application extends Container
      */
     public function getCachedConfigPath()
     {
-        return $_ENV['APP_CONFIG_CACHE'] ?? $this->cachePath() . '/config.php';
+        return Env::get('APP_CONFIG_CACHE', $this->cachePath() . '/config.php');
     }
 
     /**
@@ -781,7 +783,7 @@ class Application extends Container
      */
     public function isDownForMaintenance(): bool
     {
-        return file_exists($this->storagePath() . '/app.down');
+        return $this['files']->exists($this->storagePath() . '/app.down');
     }
 
     /**
@@ -945,6 +947,25 @@ class Application extends Container
     }
 
     /**
+     * Determine if application is in local environment.
+     *
+     * @return bool
+     */
+    public function isLocal()
+    {
+        return $this['env'] === 'local';
+    }
+    /**
+     * Determine if application is in production environment.
+     *
+     * @return bool
+     */
+    public function isProduction()
+    {
+        return $this['env'] === 'production';
+    }
+
+    /**
      * Application Initializer
      *
      * @return void
@@ -1098,7 +1119,7 @@ class Application extends Container
      *
      * @param \Nur\Kernel\ServiceProvider $provider
      *
-     * @return mixed
+     * @return mixed|void
      */
     protected function bootProvider(ServiceProvider $provider)
     {
@@ -1129,7 +1150,8 @@ class Application extends Container
     protected function initWhoops(): void
     {
         $whoops = new WhoopsRun;
-        $whoops->pushHandler(new WhoopsPrettyPageHandler);
+        $whoops->prependHandler(new \Whoops\Handler\PrettyPageHandler);
+        $whoops->prependHandler(new \Whoops\Handler\JsonResponseHandler);
         $whoops->register();
     }
 }

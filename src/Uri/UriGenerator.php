@@ -21,7 +21,7 @@ class UriGenerator
      */
     function __construct()
     {
-        $this->request = resolve('request');
+        $this->request = resolve(\Nur\Http\Request::class);
         $this->base = BASE_FOLDER;
 
         $this->url = $this->request->server('HTTP_HOST') . '/' . $this->base . '/';
