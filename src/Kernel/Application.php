@@ -271,6 +271,40 @@ class Application extends Container
     }
 
     /**
+     * Get the current application locale.
+     *
+     * @return string
+     */
+    public function getLocale(): string
+    {
+        return $this['config']->get('app.locale');
+    }
+
+    /**
+     * Set the current application locale.
+     *
+     * @param  string  $locale
+     * @return void
+     */
+    public function setLocale($locale): void
+    {
+        $this['config']->set('app.locale', $locale);
+
+        $this['translator']->setLocale($locale);
+    }
+
+    /**
+     * Determine if application locale is the given locale.
+     *
+     * @param  string  $locale
+     * @return bool
+     */
+    public function isLocale($locale): bool
+    {
+        return $this->getLocale() == $locale;
+    }
+
+    /**
      * Run the given array of bootstrap classes.
      *
      * @return void
@@ -389,7 +423,7 @@ class Application extends Container
      */
     public function langPath(): string
     {
-        return $this->path() . DIRECTORY_SEPARATOR . 'lang';
+        return $this->path() . DIRECTORY_SEPARATOR . 'Langs';
     }
 
     /**

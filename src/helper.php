@@ -8,7 +8,7 @@
  * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
  */
 
-use Nur\Container\Container;
+use Nur\Container\Container as Container;
 
 if (! function_exists('app')) {
     /**
@@ -17,7 +17,8 @@ if (! function_exists('app')) {
      * @param string $abstract
      * @param array  $parameters
      *
-     * @return mixed|\Nur\Kernel\Kernel
+     * @return mixed|\Nur\Container\Container
+     * @throws
      */
     function app($abstract = null, array $parameters = [])
     {
@@ -40,15 +41,19 @@ if (! function_exists('config')) {
      */
     function config($key = null, $default = null)
     {
+        /**
+         * @var $config \Nur\Config\Config
+         */
+        $config = app('config');
         if (func_num_args() === 0) {
-            return app('config');
+            return $config;
         }
 
         if (is_array($key)) {
-            return app('config')->set($key);
+            return $config->set($key);
         }
 
-        return app('config')->get($key, $default);
+        return $config->get($key, $default);
     }
 }
 
@@ -119,7 +124,7 @@ if (! function_exists('blade')) {
      * @param array  $data
      * @param array  $mergeData
      *
-     * @return string
+     * @return \Nur\Http\Response|string
      */
     function blade($view, array $data = [], array $mergeData = [])
     {
@@ -134,7 +139,7 @@ if (! function_exists('view')) {
      * @param string $name
      * @param array  $data
      *
-     * @return string
+     * @return \Nur\Http\Response|string
      */
     function view($name, array $data = [])
     {
@@ -318,6 +323,7 @@ if (! function_exists('hasher')) {
      * @param array  $options
      *
      * @return string|\Nur\Hash\Hash
+     * @throws
      */
     function hasher($value = null, $options = [])
     {
@@ -546,7 +552,7 @@ if (! function_exists('response')) {
      * @param int               $status
      * @param array             $headers
      *
-     * @return \Nur\Http\Response
+     * @return \Nur\Http\Response|string
      */
     function response($content = '', $status = 200, array $headers = [])
     {
@@ -564,12 +570,65 @@ if (! function_exists('resolve')) {
      * Resolve a service from the container.
      *
      * @param string $name
+     * @param array  $parameters
      *
      * @return mixed
      */
-    function resolve(string $name)
+    function resolve(string $name, array $parameters = [])
     {
-        return app($name);
+        return app($name, $parameters);
+    }
+}
+
+if (! function_exists('trans')) {
+    /**
+     * Translate the given message.
+     *
+     * @param  string|null  $key
+     * @param  array  $replace
+     * @param  string|null  $locale
+     * @return \Nur\Translation\Translator|string|array|null
+     */
+    function trans($key = null, $replace = [], $locale = null)
+    {
+        if (is_null($key)) {
+            return app('translator');
+        }
+        return app('translator')->get($key, $replace, $locale);
+    }
+}
+
+if (! function_exists('trans_choice')) {
+    /**
+     * Translates the given message based on a count.
+     *
+     * @param  string  $key
+     * @param  \Countable|int|array  $number
+     * @param  array  $replace
+     * @param  string|null  $locale
+     * @return string
+     */
+    function trans_choice($key, $number, array $replace = [], $locale = null)
+    {
+        return app('translator')->choice($key, $number, $replace, $locale);
+    }
+}
+
+if (! function_exists('__')) {
+    /**
+     * Translate the given message.
+     *
+     * @param  string|null  $key
+     * @param  array  $replace
+     * @param  string|null  $locale
+     * @return string|array|null
+     */
+    function __($key = null, $replace = [], $locale = null)
+    {
+        if (is_null($key)) {
+            return $key;
+        }
+        return trans($key, $replace, $locale);
     }
 }
 
@@ -600,13 +659,23 @@ if (! function_exists('e')) {
      *
      * @return string
      */
-    function e(string $value, $doubleEncode = true)
+    function e(string $value, $doubleEncode = true): string
     {
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
     }
 }
 
 if (! function_exists('paginationLinks')) {
+    /**
+     * Pagination links for records.
+     *
+     * @param $records
+     * @param $link
+     * @param array $settings
+     * @param bool $simple
+     *
+     * @return string|void
+     */
     function paginationLinks($records, $link = '', array $settings = [], $simple = false)
     {
         if (is_null($records) || empty($records)) {
