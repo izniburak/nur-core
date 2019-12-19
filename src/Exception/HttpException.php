@@ -18,9 +18,11 @@ class HttpException extends \RuntimeException
      * @var array
      */
     protected $errorMessages = [
+        400 => ['title' => 'Bad Request', 'message' => 'Sorry, your request is invalid.'],
         401 => ['title' => 'Unauthorized', 'message' => 'Sorry, you are not authorized to access this page.'],
         403 => ['title' => 'Forbidden', 'message' => 'Sorry, you are forbidden from accessing this page.'],
         404 => ['title' => 'Page Not Found', 'message' => 'Sorry, the page you are looking for could not be found.'],
+        405 => ['title' => 'Method Not Allowed', 'message' => 'Sorry, your request method is not allowed.'],
         419 => ['title' => 'Page Expired', 'message' => 'Sorry, your session has expired. Please refresh and try again.'],
         429 => ['title' => 'Too Many Requests', 'message' => 'Sorry, you are making too many requests to our servers.'],
         500 => ['title' => 'Service Error', 'message' => 'Whoops, something went wrong on our servers.'],
@@ -70,14 +72,14 @@ class HttpException extends \RuntimeException
         }
 
         $title = $title ?? 'System Error';
-        $message = $message ?? 'Whoops, something went wrong on system.';
+        $message = $message ?? 'Whoops, something went wrong on the system.';
 
         if (request()->headers->get('content-type') === 'application/json') {
             echo response()->json([
                 'success' => false,
                 'error' => $message,
             ], $statusCode);
-            return;
+            return false;
         }
 
         return require __DIR__ . '/views/index.php';

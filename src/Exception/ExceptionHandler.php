@@ -11,14 +11,17 @@ class ExceptionHandler extends Exception
      *
      * @param string $title
      * @param string $message
+     * @param int    $code
      *
      * @return mixed
-     * @throws Exception
      */
-    public function __construct($title, $message)
-    {
+    public function __construct(
+        $title = 'System Error',
+        $message = 'Whoops, something went wrong on the system.',
+        $code = 1
+    ) {
         if (config('app.env') !== 'prod') {
-            throw new Exception(strip_tags($title . ' - ' . $message), 1);
+            return parent::__construct(strip_tags($title . ' - ' . $message), $code);
         }
 
         return require __DIR__ . '/views/index.php';

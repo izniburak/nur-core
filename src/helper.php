@@ -14,10 +14,10 @@ if (! function_exists('app')) {
     /**
      * Get the available container instance.
      *
-     * @param string $abstract
-     * @param array  $parameters
+     * @param string|null $abstract
+     * @param array       $parameters
      *
-     * @return mixed|\Nur\Container\Container
+     * @return mixed|\Nur\Kernel\Application
      * @throws
      */
     function app($abstract = null, array $parameters = [])
@@ -25,6 +25,7 @@ if (! function_exists('app')) {
         if (is_null($abstract)) {
             return Container::getInstance();
         }
+
         return Container::getInstance()->make($abstract, $parameters);
     }
 }

@@ -39,6 +39,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
         if (is_null($data)) {
             $data = [];
         }
+
         $this->setContent(json_encode($data));
         $this->setStatusCode($statusCode);
         $this->json = true;
@@ -76,15 +77,11 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      */
     public function view($view, array $data = []): ?Response
     {
-        if (function_exists('app')) {
-            $this->setContent(
-                app('load')->view($view, $data)
-            );
+        $this->setContent(
+            app('load')->view($view, $data)
+        );
 
-            return $this;
-        }
-
-        return null;
+        return $this;
     }
 
     /**
@@ -95,18 +92,15 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      * @param array  $mergeData
      *
      * @return Response|null
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function blade($view, array $data = [], array $mergeData = []): ?Response
     {
-        if (function_exists('app')) {
-            $this->setContent(
-                app('view')->make($view, $data, $mergeData)->render()
-            );
+        $this->setContent(
+            app('view')->make($view, $data, $mergeData)->render()
+        );
 
-            return $this;
-        }
-
-        return null;
+        return $this;
     }
 
     /**
