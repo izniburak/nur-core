@@ -47,14 +47,18 @@ class ControllerCommand extends Command
 
 namespace App\Controllers;
 
+use Nur\Http\{Request, Response};
+
 class $controller extends Controller
 {
     /**
      * Main method for this controller.
      *
-     * @return \Nur\Http\Response|string
+     * @param Request \$request
+     *
+     * @return Response|string
      */
-    public function main()
+    public function main(Request \$request): Response
     {
         //
     }

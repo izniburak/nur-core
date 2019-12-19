@@ -49,7 +49,7 @@ class ModelCommand extends Command
     {
         $model = ucfirst($name);
         $table = 'protected $table = \''.$tableName.'\';';
-        $timestamps = 'public $timestamps = false;';
+        $timestamps = 'public $timestamps = true;';
         $contents = <<<PHP
 <?php
 

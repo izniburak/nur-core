@@ -47,14 +47,16 @@ class ResourceCommand extends Command
 
 namespace App\Controllers;
 
+use Nur\Http\{Request, Response};
+
 class $controller extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Nur\Http\Response|string
+     * @return Response|string
      */
-    public function main()
+    public function main(): Response
     {
         //
     }
@@ -62,9 +64,9 @@ class $controller extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Nur\Http\Response|string
+     * @return Response|string
      */
-    public function getCreate()
+    public function getCreate(): Response
     {
         //
     }
@@ -72,9 +74,11 @@ class $controller extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Nur\Http\Response
+     * @param Request \$request
+     *
+     * @return Response|string
      */
-    public function postStore()
+    public function postStore(Request \$request): Response
     {
         //
     }
@@ -83,9 +87,10 @@ class $controller extends Controller
      * Display the specified resource.
      *
      * @param int \$id
-     * @return \Nur\Http\Response|string
+     *                
+     * @return Response|string
      */
-    public function getShow(\$id)
+    public function getShow(int \$id): Response
     {
         //
     }
@@ -94,9 +99,10 @@ class $controller extends Controller
      * Show the form for editing the specified resource.
      *
      * @param int \$id
-     * @return \Nur\Http\Response|string
+     *                
+     * @return Response|string
      */
-    public function getEdit(\$id)
+    public function getEdit(int \$id): Response
     {
         //
     }
@@ -104,10 +110,12 @@ class $controller extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param int \$id
-     * @return \Nur\Http\Response
+     * @param Request \$request
+     * @param int     \$id
+     *                
+     * @return Response
      */
-    public function putUpdate(\$id)
+    public function putUpdate(Request \$request, int \$id): Response
     {
         //
     }
@@ -116,9 +124,10 @@ class $controller extends Controller
      * Remove the specified resource from storage.
      *
      * @param int \$id
-     * @return \Nur\Http\Response
+     *                
+     * @return Response
      */
-    public function deleteDestroy(\$id)
+    public function deleteDestroy(\$id): Response
     {
         //
     }

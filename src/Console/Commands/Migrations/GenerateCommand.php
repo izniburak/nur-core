@@ -77,8 +77,9 @@ class $className extends Migration
         {$schema}->schema->create('{$tableName}', function(Blueprint $blueprint) {
             {$blueprint}->increments('id');
             
+            // your columns...
+            
             {$blueprint}->timestamps();
-            {$blueprint}->enum('status', [0, 1]);
         });
     }
 
