@@ -16,7 +16,7 @@ class Event
      * @return void
      * @throws ExceptionHandler
      */
-    public function trigger($event, array $params = [], $method = 'handle')
+    public function trigger($event, array $params = [], $method = 'handle'): void
     {
         $listeners = config('services.listeners');
         $event = $listeners[$event];
@@ -38,7 +38,7 @@ class Event
      * @return void
      * @throws ExceptionHandler
      */
-    private function validateAndRun($listener, $params, $method)
+    private function validateAndRun($listener, $params, $method): void
     {
         if (! class_exists($listener)) {
             throw new ExceptionHandler('Event class not found.', $listener);

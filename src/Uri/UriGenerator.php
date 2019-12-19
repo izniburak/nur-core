@@ -2,6 +2,8 @@
 
 namespace Nur\Uri;
 
+use Nur\Http\Request;
+
 class UriGenerator
 {
     protected $base = null;
@@ -10,22 +12,22 @@ class UriGenerator
     protected $cachedHttps = false;
 
     /**
-     * @var \Nur\Http\Request
+     * @var Request
      */
     protected $request;
 
     /**
      * Create URI class values.
      *
-     * @return string | null
+     * @return string|null
      */
     function __construct()
     {
-        $this->request = resolve(\Nur\Http\Request::class);
+        $this->request = resolve(Request::class);
         $this->base = BASE_FOLDER;
 
         $this->url = $this->request->server('HTTP_HOST') . '/' . $this->base . '/';
-        if (!in_array($this->request->server('HTTPS'), [null, 'off', 'false']) ||
+        if (! in_array($this->request->server('HTTPS'), [null, 'off', 'false']) ||
             $this->request->server('SERVER_PORT') == 443 || config('app.https') === true) {
             $this->cachedHttps = true;
         }
@@ -41,7 +43,7 @@ class UriGenerator
      *
      * @return string
      */
-    public function base($data = null, $secure = false)
+    public function base($data = null, $secure = false): string
     {
         $data = (! is_null($data)) ? $this->url . $data : $this->url . '/';
         return $this->getUrl($data, $secure);
@@ -55,7 +57,7 @@ class UriGenerator
      *
      * @return string
      */
-    public function admin($data = null, $secure = false)
+    public function admin($data = null, $secure = false): string
     {
         $data = (! is_null($data))
             ? $this->url . '/' . ADMIN_FOLDER . '/' . $data
@@ -72,7 +74,7 @@ class UriGenerator
      *
      * @return string
      */
-    public function route($name, array $params = null, $secure = false)
+    public function route($name, array $params = null, $secure = false): string
     {
         $routes = file_exists(cache_path('routes.php'))
             ? require cache_path('routes.php')
@@ -116,7 +118,7 @@ class UriGenerator
      *
      * @return string
      */
-    public function assets($data = null, $secure = false)
+    public function assets($data = null, $secure = false): string
     {
         $data = (! is_null($data))
             ? $this->url . '/' . ASSETS_FOLDER . '/' . $data
@@ -131,9 +133,9 @@ class UriGenerator
      * @param int    $statusCode
      * @param bool   $secure
      *
-     * @return null
+     * @return void
      */
-    public function redirect($data = null, int $statusCode = 301, $secure = false)
+    public function redirect($data = null, int $statusCode = 301, $secure = false): void
     {
         if (substr($data, 0, 4) === 'http' || substr($data, 0, 5) === 'https') {
             header('Location: ' . $data, true, $statusCode);
@@ -142,15 +144,15 @@ class UriGenerator
             header('Location: ' . $this->getUrl($data, $secure), true, $statusCode);
         }
 
-        die();
+        die;
     }
 
     /**
      * Get active URI.
      *
-     * @return string | null
+     * @return string
      */
-    public function current()
+    public function current(): string
     {
         return $this->scheme() . $this->request->server('HTTP_HOST') . $this->request->server('REQUEST_URI');
     }
@@ -160,7 +162,7 @@ class UriGenerator
      *
      * @param int $num
      *
-     * @return string | null
+     * @return array|string|null
      */
     public function segment($num = null)
     {
@@ -168,13 +170,16 @@ class UriGenerator
             return null;
         }
 
+        $uri = $this->replace(str_replace($this->base, '', $this->request->server('REQUEST_URI')));
+        $segments = array_filter(explode('/', $uri), function ($segment) {
+            return !empty($segment);
+        });
+
         if (! is_null($num)) {
-            $uri = $this->replace(str_replace($this->base, '', $this->request->server('REQUEST_URI')));
-            $uriA = explode('/', $uri);
-            return (isset($uriA[$num]) ? reset(explode('?', $uriA[$num])) : null);
+            return (isset($segments[$num]) ? reset(explode('?', $segments[$num])) : null);
         }
 
-        return null;
+        return $segments;
     }
 
     /**
@@ -185,7 +190,7 @@ class UriGenerator
      *
      * @return string
      */
-    protected function getUrl($data, $secure)
+    protected function getUrl($data, $secure): string
     {
         $this->https = $secure;
         return $this->scheme() . $this->replace($data);
@@ -196,7 +201,7 @@ class UriGenerator
      *
      * @return string
      */
-    protected function scheme()
+    protected function scheme(): string
     {
         if ($this->cachedHttps === true) {
             $this->https = true;
@@ -210,9 +215,9 @@ class UriGenerator
      *
      * @param string $data
      *
-     * @return string | null
+     * @return string|null
      */
-    private function replace($data)
+    private function replace($data): ?string
     {
         return str_replace(['///', '//'], '/', $data);
     }

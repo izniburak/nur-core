@@ -7,14 +7,14 @@ class Route
     /**
      * Class instance variable
      *
-     * @var Nur\Router\Router
+     * @var Router
      */
     private static $instance = null;
 
     /**
      * Get class instance
      *
-     * @return Nur\Router\Router
+     * @return Router
      * @throws
      */
     public function __construct()
