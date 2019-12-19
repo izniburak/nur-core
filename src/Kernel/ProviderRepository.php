@@ -3,7 +3,6 @@
 namespace Nur\Kernel;
 
 use Exception;
-use Illuminate\Contracts\Foundation\Application as ApplicationContract;
 use Illuminate\Filesystem\Filesystem;
 
 class ProviderRepository
@@ -11,7 +10,7 @@ class ProviderRepository
     /**
      * The application implementation.
      *
-     * @var \Illuminate\Contracts\Foundation\Application
+     * @var Application
      */
     protected $app;
 
@@ -32,13 +31,13 @@ class ProviderRepository
     /**
      * Create a new service repository instance.
      *
-     * @param \Illuminate\Contracts\Foundation\Application $app
-     * @param \Illuminate\Filesystem\Filesystem            $files
-     * @param string                                       $manifestPath
+     * @param Application                       $app
+     * @param \Illuminate\Filesystem\Filesystem $files
+     * @param string                            $manifestPath
      *
      * @return void
      */
-    public function __construct(ApplicationContract $app, Filesystem $files, $manifestPath)
+    public function __construct(Application $app, Filesystem $files, $manifestPath)
     {
         $this->app = $app;
         $this->files = $files;

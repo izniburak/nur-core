@@ -105,6 +105,20 @@ class Application extends Container
     protected $namespace;
 
     /**
+     * The environment file to load during bootstrapping.
+     *
+     * @var string
+     */
+    protected $environmentFile = '.env';
+
+    /**
+     * The custom environment path defined by the developer.
+     *
+     * @var string
+     */
+    protected $environmentPath;
+
+    /**
      * Framework core providers
      *
      * @var array
@@ -147,7 +161,7 @@ class Application extends Container
     private $baseFolder = null;
 
     /**
-     * Create a new Illuminate application instance.
+     * Create a new Nur application instance.
      *
      * @return void
      */
@@ -283,7 +297,8 @@ class Application extends Container
     /**
      * Set the current application locale.
      *
-     * @param  string  $locale
+     * @param string $locale
+     *
      * @return void
      */
     public function setLocale($locale): void
@@ -296,12 +311,13 @@ class Application extends Container
     /**
      * Determine if application locale is the given locale.
      *
-     * @param  string  $locale
+     * @param string $locale
+     *
      * @return bool
      */
     public function isLocale($locale): bool
     {
-        return $this->getLocale() == $locale;
+        return $this->getLocale() === $locale;
     }
 
     /**
@@ -361,7 +377,7 @@ class Application extends Container
      *
      * @return $this
      */
-    public function setBasePath($basePath): Application
+    public function setBasePath($basePath): Container
     {
         $this->basePath = rtrim($basePath, '\/');
 
@@ -989,6 +1005,7 @@ class Application extends Container
     {
         return $this['env'] === 'local';
     }
+
     /**
      * Determine if application is in production environment.
      *
@@ -997,6 +1014,115 @@ class Application extends Container
     public function isProduction()
     {
         return $this['env'] === 'production';
+    }
+
+    /**
+     * Get the path to the environment file directory.
+     *
+     * @return string
+     */
+    public function environmentPath(): string
+    {
+        return $this->environmentPath ?: $this->basePath;
+    }
+
+    /**
+     * Get or check the current application environment.
+     *
+     * @param string|array $environments
+     *
+     * @return string|bool
+     */
+    public function environment(...$environments)
+    {
+        if (count($environments) > 0) {
+            $patterns = is_array($environments[0]) ? $environments[0] : $environments;
+
+            return Str::is($patterns, $this['env']);
+        }
+
+        return $this['env'];
+    }
+
+    /**
+     * Run the given array of bootstrap classes.
+     *
+     * @param string[] $bootstrappers
+     *
+     * @return void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function bootstrapWith(array $bootstrappers): void
+    {
+        $this->hasBeenBootstrapped = true;
+
+        foreach ($bootstrappers as $bootstrapper) {
+            $this['events']->dispatch('bootstrapping: ' . $bootstrapper, [$this]);
+
+            $this->make($bootstrapper)->bootstrap($this);
+
+            $this['events']->dispatch('bootstrapped: ' . $bootstrapper, [$this]);
+        }
+    }
+
+    /**
+     * Detect the application's current environment.
+     *
+     * @param \Closure $callback
+     *
+     * @return string
+     */
+    public function detectEnvironment(Closure $callback): string
+    {
+        $args = $_SERVER['argv'] ?? null;
+
+        return $this['env'] = (new EnvironmentDetector)->detect($callback, $args);
+    }
+
+    /**
+     * Get the environment file the application is using.
+     *
+     * @return string
+     */
+    public function environmentFile(): string
+    {
+        return $this->environmentFile ?: '.env';
+    }
+
+    /**
+     * Get the fully qualified path to the environment file.
+     *
+     * @return string
+     */
+    public function environmentFilePath(): string
+    {
+        return $this->environmentPath() . DIRECTORY_SEPARATOR . $this->environmentFile();
+    }
+
+    /**
+     * Set the environment file to be loaded during bootstrapping.
+     *
+     * @param string $file
+     *
+     * @return $this
+     */
+    public function loadEnvironmentFrom($file): Application
+    {
+        $this->environmentFile = $file;
+
+        return $this;
+    }
+
+    /**
+     * Determine if middleware has been disabled for the application.
+     *
+     * @return bool
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function shouldSkipMiddleware(): bool
+    {
+        return $this->bound('middleware.disable')
+            && $this->make('middleware.disable') === true;
     }
 
     /**
@@ -1184,8 +1310,11 @@ class Application extends Container
     protected function initWhoops(): void
     {
         $whoops = new WhoopsRun;
-        $whoops->prependHandler(new \Whoops\Handler\PrettyPageHandler);
-        $whoops->prependHandler(new \Whoops\Handler\JsonResponseHandler);
+        if (request()->headers->get('content-type') === 'application/json') {
+            $whoops->prependHandler(new \Whoops\Handler\JsonResponseHandler);
+        } else {
+            $whoops->prependHandler(new \Whoops\Handler\PrettyPageHandler);
+        }
         $whoops->register();
     }
 }
