@@ -117,6 +117,7 @@ class Request extends SymfonyRequest
                 return false;
             }
         }
+
         return true;
     }
 
@@ -133,10 +134,12 @@ class Request extends SymfonyRequest
         if (! $keys) {
             return $input;
         }
+
         $results = [];
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
             Arr::set($results, $key, Arr::get($input, $key));
         }
+
         return $results;
     }
 
@@ -178,9 +181,11 @@ class Request extends SymfonyRequest
         if (! isset($this->json)) {
             $this->json = new ParameterBag((array)json_decode($this->getContent(), true));
         }
+
         if (is_null($key)) {
             return $this->json;
         }
+
         return data_get($this->json->all(), $key, $default);
     }
 
@@ -228,6 +233,7 @@ class Request extends SymfonyRequest
                 return true;
             }
         }
+
         return false;
     }
 
@@ -246,6 +252,7 @@ class Request extends SymfonyRequest
                 return false;
             }
         }
+
         return true;
     }
 
@@ -277,6 +284,7 @@ class Request extends SymfonyRequest
                 Arr::set($results, $key, $value);
             }
         }
+
         return $results;
     }
 
@@ -292,6 +300,7 @@ class Request extends SymfonyRequest
         $keys = is_array($keys) ? $keys : func_get_args();
         $results = $this->all();
         Arr::forget($results, $keys);
+
         return $results;
     }
 
@@ -345,11 +354,13 @@ class Request extends SymfonyRequest
         if (! is_array($files = $this->file($key))) {
             $files = [$files];
         }
+
         foreach ($files as $file) {
             if ($this->isValidFile($file)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -396,6 +407,7 @@ class Request extends SymfonyRequest
     public function fullUrlWithQuery(array $query): string
     {
         $question = $this->getBaseUrl() . $this->getPathInfo() == '/' ? '/?' : '?';
+
         return count($this->query()) > 0
             ? $this->url() . $question . http_build_query(array_merge($this->query(), $query))
             : $this->fullUrl() . $question . http_build_query($query);
@@ -433,6 +445,7 @@ class Request extends SymfonyRequest
     {
         $query = $this->getQueryString();
         $question = $this->getBaseUrl() . $this->getPathInfo() == '/' ? '/?' : '?';
+
         return $query ? $this->url() . $question . $query : $this->url();
     }
 
@@ -457,6 +470,7 @@ class Request extends SymfonyRequest
     public function segments(): array
     {
         $segments = explode('/', $this->decodedPath());
+
         return array_values(array_filter($segments, function ($value) {
             return $value !== '';
         }));
@@ -480,6 +494,7 @@ class Request extends SymfonyRequest
     public function path(): string
     {
         $pattern = trim($this->getPathInfo(), '/');
+
         return $pattern == '' ? '/' : $pattern;
     }
 
@@ -546,6 +561,7 @@ class Request extends SymfonyRequest
     public function replace(array $input): \Nur\Http\Request
     {
         $this->getInputSource()->replace($input);
+
         return $this;
     }
 
@@ -640,6 +656,7 @@ class Request extends SymfonyRequest
     public function acceptsAnyContentType(): bool
     {
         $acceptable = $this->getAcceptableContentTypes();
+
         return count($acceptable) === 0 || (
                 isset($acceptable[0]) && ($acceptable[0] === '*/*' || $acceptable[0] === '*')
             );
@@ -653,6 +670,7 @@ class Request extends SymfonyRequest
     public function wantsJson(): bool
     {
         $acceptable = $this->getAcceptableContentTypes();
+
         return isset($acceptable[0]) && Str::contains($acceptable[0], ['/json', '+json']);
     }
 
@@ -663,7 +681,7 @@ class Request extends SymfonyRequest
      *
      * @param string|array $contentTypes
      *
-     * @return string|null
+     * @return string|null|void
      */
     public function prefers($contentTypes): ?string
     {
@@ -673,11 +691,13 @@ class Request extends SymfonyRequest
             if (in_array($accept, ['*/*', '*'])) {
                 return $contentTypes[0];
             }
+
             foreach ($contentTypes as $contentType) {
                 $type = $contentType;
                 if (! is_null($mimeType = $this->getMimeType($contentType))) {
                     $type = $mimeType;
                 }
+
                 if ($this->matchesType($type, $accept) || $accept === strtok($type, '/') . '/*') {
                     return $contentType;
                 }
@@ -698,7 +718,9 @@ class Request extends SymfonyRequest
         if ($actual === $type) {
             return true;
         }
+
         $split = explode('/', $actual);
+
         return isset($split[1]) && preg_match('#' . preg_quote($split[0], '#') . '/.+\+' . preg_quote($split[1],
                     '#') . '#', $type);
     }
@@ -726,17 +748,20 @@ class Request extends SymfonyRequest
         if (count($accepts) === 0) {
             return true;
         }
+
         $types = (array)$contentTypes;
         foreach ($accepts as $accept) {
             if ($accept === '*/*' || $accept === '*') {
                 return true;
             }
+
             foreach ($types as $type) {
                 if ($this->matchesType($accept, $type) || $accept === strtok($type, '/') . '/*') {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
@@ -764,6 +789,7 @@ class Request extends SymfonyRequest
                 return $format;
             }
         }
+
         return $default;
     }
 
@@ -779,9 +805,8 @@ class Request extends SymfonyRequest
     {
         $this->validation->rules($rules);
         $data = $data ?? $this->all();
-        return $this->validation->isValid($data)
-            ? $data
-            : $this->validation->errors();
+
+        return $this->validation->isValid($data) ? $data : $this->validation->errors();
     }
 
     /**
@@ -798,6 +823,7 @@ class Request extends SymfonyRequest
         if (is_null($key)) {
             return $this->$source->all();
         }
+
         return $this->$source->get($key, $default);
     }
 
@@ -825,6 +851,7 @@ class Request extends SymfonyRequest
     protected function isEmptyString($key): bool
     {
         $value = $this->input($key);
+
         return ! is_bool($value) && ! is_array($value) && trim((string)$value) === '';
     }
 

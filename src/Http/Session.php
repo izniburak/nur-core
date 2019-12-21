@@ -7,8 +7,8 @@ class Session
     /**
      * Set session method.
      *
-     * @param string $key
-     * @param mixed  $value
+     * @param array|string $key
+     * @param mixed        $value
      *
      * @return void
      */
@@ -21,20 +21,18 @@ class Session
         } else {
             $_SESSION[$key] = $value;
         }
-
-        return;
     }
 
     /**
      * Get session method.
      *
-     * @param string $key
+     * @param string|null $key
      *
      * @return null|mixed
      */
     public function get($key = null)
     {
-        return (is_null($key) ? $_SESSION : ($this->has($key) ? $_SESSION[$key] : null));
+        return is_null($key) ? $_SESSION : ($this->has($key) ? $_SESSION[$key] : null);
     }
 
     /**
@@ -53,7 +51,7 @@ class Session
      * Setting Flash Message
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      * @param string $redirect
      *
      * @return bool
@@ -72,7 +70,7 @@ class Session
     /**
      * Getting Flash Message
      *
-     * @param string $key
+     * @param string|null $key
      *
      * @return null|mixed
      */
@@ -116,8 +114,6 @@ class Session
         if ($this->has($key)) {
             unset($_SESSION[$key]);
         }
-
-        return;
     }
 
     /**
@@ -129,7 +125,6 @@ class Session
     {
         $_SESSION = [];
         session_destroy();
-        return;
     }
 
     /**

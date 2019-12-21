@@ -62,8 +62,10 @@ class Encrypter implements EncrypterContract
     /**
      * Create a new encryption key for the given cipher.
      *
-     * @param  string  $cipher
+     * @param string $cipher
+     *
      * @return string
+     * @throws \Exception
      */
     public static function generateKey($cipher)
     {
@@ -73,11 +75,13 @@ class Encrypter implements EncrypterContract
     /**
      * Encrypt the given value.
      *
-     * @param  mixed  $value
-     * @param  bool  $serialize
+     * @param mixed $value
+     * @param bool  $serialize
+     *
      * @return string
      *
      * @throws \Illuminate\Contracts\Encryption\EncryptException
+     * @throws \Exception
      */
     public function encrypt($value, $serialize = true)
     {
@@ -112,8 +116,10 @@ class Encrypter implements EncrypterContract
     /**
      * Encrypt a string without serialization.
      *
-     * @param  string  $value
+     * @param string $value
+     *
      * @return string
+     * @throws \Exception
      */
     public function encryptString($value)
     {
@@ -213,8 +219,10 @@ class Encrypter implements EncrypterContract
     /**
      * Determine if the MAC for the given payload is valid.
      *
-     * @param  array  $payload
+     * @param array $payload
+     *
      * @return bool
+     * @throws \Exception
      */
     protected function validMac(array $payload)
     {

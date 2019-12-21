@@ -7,9 +7,9 @@ class Cookie
     /**
      * Set cookie method.
      *
-     * @param string  $key
-     * @param string  $value
-     * @param integer $time
+     * @param array|string $key
+     * @param string       $value
+     * @param integer      $time
      *
      * @return void
      */
@@ -24,20 +24,18 @@ class Cookie
             setcookie($key, $value, ($time == 0 ? 0 : time() + $time), '/');
             $_COOKIE[$key] = $value;
         }
-
-        return;
     }
 
     /**
      * Get cookie method.
      *
-     * @param string $key
+     * @param string|null $key
      *
      * @return null|mixed
      */
     public function get($key = null)
     {
-        return (is_null($key) ? $_COOKIE : ($this->has($key) ? $_COOKIE[$key] : null));
+        return is_null($key) ? $_COOKIE : ($this->has($key) ? $_COOKIE[$key] : null);
     }
 
     /**
@@ -65,8 +63,6 @@ class Cookie
             setcookie($key, null, -1, '/');
             unset($_COOKIE[$key]);
         }
-
-        return;
     }
 
     /**
@@ -80,7 +76,5 @@ class Cookie
             setcookie($key, null, -1, '/');
             unset($_COOKIE[$key]);
         }
-
-        return;
     }
 }

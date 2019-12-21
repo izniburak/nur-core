@@ -55,7 +55,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      *
      * @return Response
      */
-    public function header($key, $value): Response
+    public function header($key, string $value): Response
     {
         if (is_array($key) && ! empty($key)) {
             foreach ($key as $k => $v) {
@@ -64,6 +64,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
         } elseif (is_string($key) && ! empty($key)) {
             $this->headers->set($key, $value);
         }
+
         return $this;
     }
 
@@ -75,7 +76,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      *
      * @return Response|null
      */
-    public function view($view, array $data = []): ?Response
+    public function view(string $view, array $data = []): ?Response
     {
         $this->setContent(
             app('load')->view($view, $data)
@@ -94,7 +95,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      * @return Response|null
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function blade($view, array $data = [], array $mergeData = []): ?Response
+    public function blade(string $view, array $data = [], array $mergeData = []): ?Response
     {
         $this->setContent(
             app('view')->make($view, $data, $mergeData)->render()
