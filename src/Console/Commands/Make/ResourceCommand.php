@@ -127,7 +127,7 @@ class $controller extends Controller
      *                
      * @return Response
      */
-    public function deleteDestroy(\$id): Response
+    public function deleteDestroy(int \$id): Response
     {
         //
     }

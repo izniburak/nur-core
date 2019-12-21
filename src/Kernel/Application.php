@@ -11,6 +11,12 @@ use Nur\Exception\ExceptionHandler;
 use RuntimeException;
 use Whoops\Run as WhoopsRun;
 
+/**
+ * Class Application
+ * Implemented from Laravel Framework
+ *
+ * @package Nur\Kernel
+ */
 class Application extends Container
 {
     /**
@@ -193,7 +199,7 @@ class Application extends Container
      * @return void
      * @throws ExceptionHandler
      */
-    public function start($env)
+    public function start(string $env)
     {
         switch ($env) {
             case 'dev':
@@ -301,7 +307,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function setLocale($locale): void
+    public function setLocale(string $locale): void
     {
         $this['config']->set('app.locale', $locale);
 
@@ -315,7 +321,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function isLocale($locale): bool
+    public function isLocale(string $locale): bool
     {
         return $this->getLocale() === $locale;
     }
@@ -512,10 +518,10 @@ class Application extends Container
     /**
      * Register a service provider with the application.
      *
-     * @param \Nur\Kernel\ServiceProvider|string $provider
-     * @param bool                               $force
+     * @param ServiceProvider|string $provider
+     * @param bool                   $force
      *
-     * @return \Nur\Kernel\ServiceProvider
+     * @return ServiceProvider
      */
     public function register($provider, $force = false)
     {
@@ -564,9 +570,9 @@ class Application extends Container
     /**
      * Get the registered service provider instance if it exists.
      *
-     * @param \Nur\Kernel\ServiceProvider|string $provider
+     * @param ServiceProvider|string $provider
      *
-     * @return \Nur\Kernel\ServiceProvider|null
+     * @return ServiceProvider|null
      */
     public function getProvider($provider)
     {
@@ -576,7 +582,7 @@ class Application extends Container
     /**
      * Get the registered service provider instances if any exist.
      *
-     * @param \Nur\Kernel\ServiceProvider|string $provider
+     * @param ServiceProvider|string $provider
      *
      * @return array
      */
@@ -594,9 +600,9 @@ class Application extends Container
      *
      * @param string $provider
      *
-     * @return \Nur\Kernel\ServiceProvider
+     * @return ServiceProvider
      */
-    public function resolveProvider($provider)
+    public function resolveProvider($provider): ServiceProvider
     {
         return new $provider($this);
     }
@@ -803,7 +809,7 @@ class Application extends Container
      */
     public function getCachedConfigPath()
     {
-        return Env::get('APP_CONFIG_CACHE', $this->cachePath() . '/config.php');
+        return $this->cachePath() . '/config.php';
     }
 
     /**

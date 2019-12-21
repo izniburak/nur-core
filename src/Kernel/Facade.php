@@ -10,7 +10,7 @@ abstract class Facade
     /**
      * Application List in Service Provider
      *
-     * @var array
+     * @var Application
      */
     protected static $app;
 
@@ -43,9 +43,9 @@ abstract class Facade
     /**
      * Get the application instance behind the facade.
      *
-     * @return \Nur\Kernel\Application
+     * @return Application
      */
-    public static function getFacadeApplication()
+    public static function getFacadeApplication(): Application
     {
         return static::$app;
     }
@@ -108,7 +108,7 @@ abstract class Facade
      */
     public static function getFacadeRoot()
     {
-        return static::resolveFacadeInstance(static::getFacadeAccessor());
+        return static::resolveInstance(static::getFacadeAccessor());
     }
 
     /**
@@ -159,20 +159,22 @@ abstract class Facade
     /**
      * Resolved Instance
      *
-     * @param string $facadeName
+     * @param object|string $name
      *
-     * @return string
+     * @return mixed|void
      */
-    protected static function resolveInstance($facadeName)
+    protected static function resolveInstance($name)
     {
-        if (is_object($facadeName)) {
-            return $facadeName;
+        if (is_object($name)) {
+            return $name;
         }
 
-        if (isset(static::$resolvedInstance[$facadeName])) {
-            return static::$resolvedInstance[$facadeName];
+        if (isset(static::$resolvedInstance[$name])) {
+            return static::$resolvedInstance[$name];
         }
 
-        return static::$resolvedInstance[$facadeName] = static::$app->get($facadeName);
+        if (static::$app) {
+            return static::$resolvedInstance[$name] = static::$app[$name];
+        }
     }
 }
