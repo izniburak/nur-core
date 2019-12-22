@@ -28,11 +28,10 @@ interface HashInterface
      *
      * @param  string $value
      * @param  string $hashedValue
-     * @param  array  $options
      *
      * @return bool
      */
-    public function check($value, $hashedValue, array $options = []);
+    public function check($value, $hashedValue);
 
     /**
      * Check if the given hash has been hashed using the given options.

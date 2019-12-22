@@ -14,7 +14,7 @@ class Load
      *
      * @return mixed
      *
-     * @throws
+     * @throws ExceptionHandler
      */
     public function view($name, array $data = [])
     {
@@ -35,7 +35,7 @@ class Load
      * @param string $directory
      * @return mixed
      *
-     * @throws
+     * @throws ExceptionHandler
      */
     public function helper($name, $directory = 'Helpers')
     {

@@ -7,7 +7,7 @@ abstract class AbstractHash
     /**
      * Get information about the given hashed value.
      *
-     * @param  string $hashedValue
+     * @param string $hashedValue
      *
      * @return array
      */
@@ -19,12 +19,12 @@ abstract class AbstractHash
     /**
      * Check the given plain value against a hash.
      *
-     * @param  string $value
-     * @param  string $hashedValue
+     * @param string $value
+     * @param string $hashedValue
      *
      * @return bool
      */
-    public function check($value, $hashedValue, array $options = [])
+    public function check($value, $hashedValue)
     {
         if (strlen($hashedValue) === 0) {
             return false;

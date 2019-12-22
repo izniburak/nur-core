@@ -36,12 +36,12 @@ class Encrypter implements EncrypterContract
     {
         $key = (string) $key;
 
-        if (static::supported($key, $cipher)) {
-            $this->key = $key;
-            $this->cipher = $cipher;
-        } else {
+        if (! static::supported($key, $cipher)) {
             throw new RuntimeException('The only supported ciphers are AES-128-CBC and AES-256-CBC with the correct key lengths.');
         }
+
+        $this->key = $key;
+        $this->cipher = $cipher;
     }
 
     /**
@@ -80,7 +80,7 @@ class Encrypter implements EncrypterContract
      *
      * @return string
      *
-     * @throws \Illuminate\Contracts\Encryption\EncryptException
+     * @throws EncryptException
      * @throws \Exception
      */
     public function encrypt($value, $serialize = true)
@@ -129,11 +129,13 @@ class Encrypter implements EncrypterContract
     /**
      * Decrypt the given value.
      *
-     * @param  mixed  $payload
-     * @param  bool  $unserialize
+     * @param mixed $payload
+     * @param bool  $unserialize
+     *
      * @return mixed
      *
-     * @throws \Illuminate\Contracts\Encryption\DecryptException
+     * @throws DecryptException
+     * @throws \Exception
      */
     public function decrypt($payload, $unserialize = true)
     {
@@ -158,8 +160,10 @@ class Encrypter implements EncrypterContract
     /**
      * Decrypt the given string without unserialization.
      *
-     * @param  string  $payload
+     * @param string $payload
+     *
      * @return string
+     * @throws \Exception
      */
     public function decryptString($payload)
     {
@@ -173,7 +177,7 @@ class Encrypter implements EncrypterContract
      * @param  mixed  $value
      * @return string
      */
-    protected function hash($iv, $value)
+    protected function hash($iv, $value): string
     {
         return hash_hmac('sha256', $iv.$value, $this->key);
     }
@@ -181,10 +185,12 @@ class Encrypter implements EncrypterContract
     /**
      * Get the JSON array from the given payload.
      *
-     * @param  string  $payload
+     * @param string $payload
+     *
      * @return array
      *
-     * @throws \Illuminate\Contracts\Encryption\DecryptException
+     * @throws DecryptException
+     * @throws \Exception
      */
     protected function getJsonPayload($payload)
     {
@@ -210,7 +216,7 @@ class Encrypter implements EncrypterContract
      * @param  mixed  $payload
      * @return bool
      */
-    protected function validPayload($payload)
+    protected function validPayload($payload): bool
     {
         return is_array($payload) && isset($payload['iv'], $payload['value'], $payload['mac']) &&
                strlen(base64_decode($payload['iv'], true)) === openssl_cipher_iv_length($this->cipher);
@@ -224,7 +230,7 @@ class Encrypter implements EncrypterContract
      * @return bool
      * @throws \Exception
      */
-    protected function validMac(array $payload)
+    protected function validMac(array $payload): bool
     {
         $calculated = $this->calculateMac($payload, $bytes = random_bytes(16));
 
@@ -252,7 +258,7 @@ class Encrypter implements EncrypterContract
      *
      * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
