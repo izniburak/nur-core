@@ -11,7 +11,7 @@ class Eloquent
     /**
      * Class instance
      *
-     * @var void
+     * @var null|Eloquent
      */
     protected static $instance = null;
 
@@ -25,7 +25,7 @@ class Eloquent
     /**
      * Schema
      *
-     * @var Schema
+     * @var \Illuminate\Database\Schema\Builder
      */
     protected static $schema = null;
 
@@ -72,7 +72,7 @@ class Eloquent
     /**
      * Get Eloquent Capsule.
      *
-     * @return object
+     * @return Capsule
      */
     public static function getCapsule()
     {
@@ -82,7 +82,7 @@ class Eloquent
     /**
      * Get Eloquent Schema.
      *
-     * @return object
+     * @return \Illuminate\Database\Schema\Builder
      */
     public static function getSchema()
     {

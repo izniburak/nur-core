@@ -6,6 +6,9 @@ use Phpmig\Migration\Migration as BaseMigration;
 
 class Migration extends BaseMigration
 {
+    /**
+     * @var
+     */
     protected $schema;
 
     /**

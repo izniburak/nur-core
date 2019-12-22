@@ -4,7 +4,7 @@ namespace Nur\Facades;
 
 use Nur\Kernel\Facade;
 
-class Db extends Facade
+class DB extends Facade
 {
     /**
      * Get the registered name of the component.
