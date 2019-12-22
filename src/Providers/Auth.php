@@ -22,5 +22,9 @@ class Auth extends ServiceProvider
     public function register()
     {
         $this->app->singleton(\Nur\Auth\Auth::class, \Nur\Auth\Auth::class);
+
+        if ($this->app->get('config')['auth']['jwt']['enabled'] === true) {
+            $this->app->singleton('jwt', \Nur\Auth\Jwt\Jwt::class);
+        }
     }
 }
