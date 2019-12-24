@@ -2,11 +2,11 @@
 
 namespace Nur\Console\Commands\Database;
 
+use Nur\Database\Model;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Nur\Database\Model;
 
 class SeedCommand extends Command
 {
@@ -14,37 +14,37 @@ class SeedCommand extends Command
     {
         $this
             ->setName('db:seed')
-            ->addOption('--class', '-c', InputOption::VALUE_OPTIONAL, 'The class name of the root seeder.')
-            ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL, 'Force to re-create database file.')
+            ->addOption('--class', '-c', InputOption::VALUE_OPTIONAL,
+                'The class name of the root seeder. (Default: DatabaseSeeder)')
+            ->addOption('--force', '-f', InputOption::VALUE_OPTIONAL,
+                'Force to re-create database file.')
             ->setDescription('Seed the database with records.')
             ->setHelp("Seed the database with records.");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->hasParameterOption('--class') === false) {
-            foreach (glob(database_path("seeds/*.php")) as $file) {
-                $class = explode('.', end(explode('/', $file)))[0];
-                $this->executeSeeder($class, $file);
-                $output->writeln('<info>+Success!</info> Database seeding completed successfully. ['.$class.']');
-            }
+        $className = $input->hasParameterOption('--class')
+            ? $input->getOption('class')
+            : 'DatabaseSeeder';
 
-            return;
-        }
+        $this->executeSeeder($className);
 
-        $class = $input->getOption('class');
-        $classFile = database_path("seeds/{$class}.php");
-        $this->executeSeeder($class, $classFile);
+        $output->writeln('<info>+Success!</info> Database seeding completed successfully.');
     }
 
-    private function executeSeeder($class, $classFile)
+    /**
+     * @param string $class
+     *
+     * @return void
+     * @throws
+     */
+    private function executeSeeder($class)
     {
-        if (file_exists($classFile) && !class_exists($class)) {
-            require $classFile;
-        }
+        $seeder = app()->make($class);
 
-        Model::unguarded(function() use ($class) {
-            app()->make($class)->setContainer(app())->__invoke();
+        Model::unguarded(function () use ($seeder) {
+            $seeder->setContainer(app())->__invoke();
         });
     }
 }

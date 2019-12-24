@@ -24,38 +24,22 @@ abstract class Seeder extends DatabaseSeeder
     /**
      * Seed the given connection from the given path.
      *
-     * @param array|string $class
-     * @param bool         $silent
-     *
+     * @param  array|string  $class
+     * @param  bool  $silent
      * @return $this
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function call($class, $silent = false)
     {
         $classes = Arr::wrap($class);
+
         foreach ($classes as $class) {
-            $seed = $this->resolve($class);
-            Model::unguarded(function () use ($seed) {
-                $seed->setContainer(app())->__invoke();
-            });
+            $seeder = $this->resolve($class);
+            if ($silent === false && isset($this->console)) {
+                $this->console->writeln('<info>Seeding:</info> '.get_class($seeder));
+            }
+            $seeder->__invoke();
         }
 
         return $this;
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return DatabaseSeeder|mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    protected function resolve($class)
-    {
-        if (! class_exists($class)) {
-            $classFile = database_path("seeds/{$class}.php");
-            require $classFile;
-        }
-
-        return app()->make($class);
     }
 }
