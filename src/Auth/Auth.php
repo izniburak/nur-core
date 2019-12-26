@@ -2,7 +2,7 @@
 
 namespace Nur\Auth;
 
-use Symfony\Component\HttpFoundation\Response;
+use Nur\Http\Response;
 
 class Auth
 {
@@ -27,18 +27,12 @@ class Auth
     private $primaryKey;
 
     /**
-     * @var mixed|\Nur\Http\Session
-     */
-    private $session;
-
-    /**
      * Auth constructor.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->session = session();
         $this->checkAuthProvider();
 
         if ($id = $this->id()) {
@@ -74,7 +68,7 @@ class Auth
     public function login($user, $remember = false)
     {
         if ($user) {
-            $this->session->set($this->sessionId, $user->{$this->primaryKey});
+            session()->set($this->sessionId, $user->{$this->primaryKey});
             return true;
         }
 
@@ -118,7 +112,7 @@ class Auth
      */
     public function logout()
     {
-        $this->session->delete($this->sessionId);
+        session()->delete($this->sessionId);
     }
 
     /**
@@ -128,7 +122,7 @@ class Auth
      */
     public function check()
     {
-        return $this->session->has($this->sessionId);
+        return session()->has($this->sessionId);
     }
 
     /**
@@ -144,7 +138,7 @@ class Auth
     /**
      * Get the currently authenticated user
      *
-     * @return bool
+     * @return mixed
      */
     public function user()
     {
@@ -154,11 +148,11 @@ class Auth
     /**
      * Get the currently authenticated user's ID
      *
-     * @return bool
+     * @return mixed
      */
     public function id()
     {
-        return $this->check() ? $this->session->get($this->sessionId) : null;
+        return $this->check() ? session()->get($this->sessionId) : null;
     }
 
     /**
@@ -218,7 +212,7 @@ class Auth
             return;
         }
 
-        $this->model = app(\Nur\Database\Builder::class)->table($auth['table']);
+        $this->model = app('builder')->table($auth['table']);
         $this->primaryKey = $auth['primary_key'];
     }
 }
