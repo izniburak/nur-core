@@ -2,6 +2,8 @@
 
 namespace Nur\Auth;
 
+use Nur\Auth\Jwt\Jwt;
+use Nur\Database\Model;
 use Nur\Http\Response;
 
 class Auth
@@ -60,8 +62,8 @@ class Auth
     /**
      * Login the user with the given user
      *
-     * @param \Nur\Database\Model $user
-     * @param bool                $remember
+     * @param Model $user
+     * @param bool  $remember
      *
      * @return bool
      */
@@ -158,9 +160,9 @@ class Auth
     /**
      * Get JWT Instance
      *
-     * @return \Nur\Auth\Jwt\Jwt
+     * @return Jwt
      */
-    public function jwt(): \Nur\Auth\Jwt\Jwt
+    public function jwt(): Jwt
     {
         return resolve('jwt');
     }
