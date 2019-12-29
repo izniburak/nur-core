@@ -370,7 +370,7 @@ class Request extends SymfonyRequest
      * @param string $key
      * @param mixed  $default
      *
-     * @return \Illuminate\Http\UploadedFile|array|null
+     * @return array|null
      */
     public function file($key = null, $default = null)
     {
@@ -499,6 +499,57 @@ class Request extends SymfonyRequest
     }
 
     /**
+     * Determine if the current request URI matches a pattern.
+     *
+     * @param mixed ...$patterns
+     *
+     * @return bool
+     */
+    public function is(...$patterns): bool
+    {
+        $path = $this->decodedPath();
+
+        foreach ($patterns as $pattern) {
+            if (Str::is($pattern, $path)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if the current request URL and query string matches a pattern.
+     *
+     * @param mixed ...$patterns
+     *
+     * @return bool
+     */
+    public function fullUrlIs(...$patterns): bool
+    {
+        $url = $this->fullUrl();
+
+        foreach ($patterns as $pattern) {
+            if (Str::is($pattern, $url)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine if the request is the result of an prefetch call.
+     *
+     * @return bool
+     */
+    public function prefetch(): bool
+    {
+        return strcasecmp($this->server->get('HTTP_X_MOZ'), 'prefetch') === 0 ||
+            strcasecmp($this->headers->get('Purpose'), 'prefetch') === 0;
+    }
+
+    /**
      * Determine if the request is over HTTPS.
      *
      * @return bool
@@ -543,11 +594,12 @@ class Request extends SymfonyRequest
      *
      * @param array $input
      *
-     * @return \Nur\Http\Request
+     * @return $this
      */
-    public function merge(array $input): \Nur\Http\Request
+    public function merge(array $input): self
     {
         $this->getInputSource()->add($input);
+
         return $this;
     }
 
@@ -556,9 +608,9 @@ class Request extends SymfonyRequest
      *
      * @param array $input
      *
-     * @return \Nur\Http\Request
+     * @return $this
      */
-    public function replace(array $input): \Nur\Http\Request
+    public function replace(array $input): self
     {
         $this->getInputSource()->replace($input);
 
