@@ -96,6 +96,7 @@ abstract class Facade
     public static function swap($instance): void
     {
         static::$resolvedInstance[static::getFacadeAccessor()] = $instance;
+
         if (isset(static::$app)) {
             static::$app->instance(static::getFacadeAccessor(), $instance);
         }

@@ -34,7 +34,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return bool
      */
-    public function has($key)
+    public function has($key): bool
     {
         return Arr::has($this->items, $key);
     }
@@ -63,7 +63,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return array
      */
-    public function getMany($keys)
+    public function getMany($keys): array
     {
         $config = [];
 
@@ -86,7 +86,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return void
      */
-    public function set($key, $value = null)
+    public function set($key, $value = null): void
     {
         $keys = is_array($key) ? $key : [$key => $value];
 
@@ -103,7 +103,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return void
      */
-    public function prepend($key, $value)
+    public function prepend($key, $value): void
     {
         $array = $this->get($key);
 
@@ -120,7 +120,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return void
      */
-    public function push($key, $value)
+    public function push($key, $value): void
     {
         $array = $this->get($key);
 
@@ -134,7 +134,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return array
      */
-    public function all()
+    public function all(): array
     {
         return $this->items;
     }
@@ -146,7 +146,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return bool
      */
-    public function offsetExists($key)
+    public function offsetExists($key): bool
     {
         return $this->has($key);
     }
@@ -171,7 +171,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return void
      */
-    public function offsetSet($key, $value)
+    public function offsetSet($key, $value): void
     {
         $this->set($key, $value);
     }
@@ -183,7 +183,7 @@ class Config implements ArrayAccess, ConfigContract
      *
      * @return void
      */
-    public function offsetUnset($key)
+    public function offsetUnset($key): void
     {
         $this->set($key, null);
     }

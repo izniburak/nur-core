@@ -1149,7 +1149,10 @@ class Application extends Container
         ];
 
         $this->registerCoreAliases = [
-            'Route' => \Nur\Facades\Route::class,
+            'Route'     => \Nur\Facades\Route::class,
+            'Request'   => \Nur\Facades\Request::class,
+            'Response'  => \Nur\Facades\Response::class,
+            'Uri'       => \Nur\Facades\Uri::class,
         ];
     }
 

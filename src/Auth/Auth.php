@@ -50,7 +50,7 @@ class Auth
      *
      * @return bool
      */
-    public function attempt(array $credentials, $remember = false)
+    public function attempt(array $credentials, $remember = false): bool
     {
         if ($this->validate($credentials)) {
             return $this->login($this->user, $remember);
@@ -67,7 +67,7 @@ class Auth
      *
      * @return bool
      */
-    public function login($user, $remember = false)
+    public function login($user, $remember = false): bool
     {
         if ($user) {
             session()->set($this->sessionId, $user->{$this->primaryKey});
@@ -85,7 +85,7 @@ class Auth
      *
      * @return bool
      */
-    public function loginUsingId($id, $remember = false)
+    public function loginUsingId($id, $remember = false): bool
     {
         return $this->attempt([$this->primaryKey => $id], $remember);
     }
@@ -97,7 +97,7 @@ class Auth
      *
      * @return bool
      */
-    public function validate(array $credentials)
+    public function validate(array $credentials): bool
     {
         if ($user = $this->model->where($credentials)->first()) {
             $this->user = $user;
@@ -112,7 +112,7 @@ class Auth
      *
      * @return void
      */
-    public function logout()
+    public function logout(): void
     {
         session()->delete($this->sessionId);
     }
@@ -122,7 +122,7 @@ class Auth
      *
      * @return bool
      */
-    public function check()
+    public function check(): bool
     {
         return session()->has($this->sessionId);
     }
@@ -132,7 +132,7 @@ class Auth
      *
      * @return bool
      */
-    public function guest()
+    public function guest(): bool
     {
         return ! $this->check();
     }
