@@ -20,7 +20,7 @@ class Log
      *
      * @return void
      */
-    public function emergency($message)
+    public function emergency($message): void
     {
         $this->log('emergency', $message);
     }
@@ -32,7 +32,7 @@ class Log
      *
      * @return void
      */
-    public function alert($message)
+    public function alert($message): void
     {
         $this->log('alert', $message);
     }
@@ -44,7 +44,7 @@ class Log
      *
      * @return void
      */
-    public function critical($message)
+    public function critical($message): void
     {
         $this->log('critical', $message);
     }
@@ -56,7 +56,7 @@ class Log
      *
      * @return void
      */
-    public function error($message)
+    public function error($message): void
     {
         $this->log('error', $message);
     }
@@ -68,7 +68,7 @@ class Log
      *
      * @return void
      */
-    public function warning($message)
+    public function warning($message): void
     {
         $this->log('warning', $message);
     }
@@ -80,7 +80,7 @@ class Log
      *
      * @return void
      */
-    public function notice($message)
+    public function notice($message): void
     {
         $this->log('notice', $message);
     }
@@ -92,7 +92,7 @@ class Log
      *
      * @return void
      */
-    public function info($message)
+    public function info($message): void
     {
         $this->log('info', $message);
     }
@@ -104,7 +104,7 @@ class Log
      *
      * @return void
      */
-    public function debug($message)
+    public function debug($message): void
     {
         $this->log('debug', $message);
     }
@@ -118,14 +118,15 @@ class Log
      * @return void
      * @throws
      */
-    protected function log($level, $message)
+    protected function log($level, $message): void
     {
         if (is_array($message) || is_object($message)) {
             $message = print_r($message, true);
         }
 
-        $text = '[' . date($this->timeFormat,
-                time()) . '] - [' . strtoupper($level) . '] - [' . request()->ip() . '] --> ' . $message;
+        $text = '[' . date($this->timeFormat, time()) . '] - ['
+                . strtoupper($level) . '] - [' . request()->ip() . '] --> ' . $message;
+
         $this->save($text);
     }
 
@@ -137,7 +138,7 @@ class Log
      * @return void
      * @throws
      */
-    protected function save($text)
+    protected function save($text): void
     {
         $fileName = 'log_' . date('Y-m-d') . '.log';
         $file = fopen(storage_path('log' . DIRECTORY_SEPARATOR . $fileName), 'a');

@@ -126,6 +126,7 @@ if (! function_exists('blade')) {
      * @param array  $mergeData
      *
      * @return \Nur\Http\Response|string
+     * @throws
      */
     function blade($view, array $data = [], array $mergeData = [])
     {
@@ -248,7 +249,7 @@ if (! function_exists('redirect')) {
      */
     function redirect($url = null, $statusCode = 301, $secure = false)
     {
-        return uri()->redirect($url, $statusCode, $secure);
+        uri()->redirect($url, $statusCode, $secure);
     }
 }
 

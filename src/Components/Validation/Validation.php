@@ -53,7 +53,7 @@ class Validation
      *
      * @return void
      */
-    public function rules(Array $rules)
+    public function rules(array $rules): void
     {
         foreach ($rules as $key => $value) {
             $this->rule(
@@ -75,11 +75,11 @@ class Validation
      *
      * @return void
      */
-    public function rule($field, $label, $rules, array $text = [])
+    public function rule($field, $label, $rules, array $text = []): void
     {
         $this->labels[$field] = $label;
         $this->rules[$field] = $rules;
-        $this->texts[$field] = (! empty($text) ? $text : null);
+        $this->texts[$field] = ! empty($text) ? $text : null;
     }
 
     /**
@@ -87,13 +87,16 @@ class Validation
      *
      * @param array $data
      *
-     * @return boolean
+     * @return bool
      */
-    public function isValid(array $data = [])
+    public function isValid(array $data = []): bool
     {
         if (empty($data)) {
-            $data = request()->method() == 'GET' ? request()->get() : request()->all();
+            $data = request()->method() == 'GET'
+                ? request()->get()
+                : request()->all();
         }
+
         $this->data = $data;
 
         foreach ($this->rules as $key => $value) {
@@ -134,6 +137,7 @@ class Validation
         foreach ($data as $key => $value) {
             $data[$key] = filter_var($value, FILTER_SANITIZE_STRING);
         }
+
         return $data;
     }
 
@@ -142,7 +146,7 @@ class Validation
      *
      * @return array
      */
-    public function errors()
+    public function errors(): array
     {
         return $this->errors;
     }
@@ -156,10 +160,12 @@ class Validation
      *
      * @return void
      */
-    protected function errorMessage($filter, $field, $params = null)
+    protected function errorMessage($filter, $field, $params = null): void
     {
-        $text = (isset($this->texts[$field][$filter]) && ! is_null($this->texts[$field][$filter])
-            ? $this->texts[$field][$filter] : $this->msg);
+        $text = isset($this->texts[$field][$filter]) && ! is_null($this->texts[$field][$filter])
+            ? $this->texts[$field][$filter]
+            : $this->msg;
+
         $text = str_replace([':label:', ':value:'], '%s', $text);
 
         if (! isset($this->data[$field])) {
@@ -186,9 +192,9 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function required($data)
+    protected function required($data): bool
     {
         return (! empty($data) && ! is_null($data) && $data !== '');
     }
@@ -198,9 +204,9 @@ class Validation
      *
      * @param int $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function numeric($data)
+    protected function numeric($data): bool
     {
         return (is_numeric($data));
     }
@@ -210,9 +216,9 @@ class Validation
      *
      * @param string $email
      *
-     * @return boolean
+     * @return bool
      */
-    protected function email($email)
+    protected function email($email): bool
     {
         return (filter_var($email, FILTER_VALIDATE_EMAIL));
     }
@@ -223,9 +229,9 @@ class Validation
      * @param string $data
      * @param int    $length
      *
-     * @return boolean
+     * @return bool
      */
-    protected function min_len($data, $length)
+    protected function min_len($data, $length): bool
     {
         return (strlen($data) >= $length);
     }
@@ -236,11 +242,11 @@ class Validation
      * @param string $data
      * @param int    $length
      *
-     * @return boolean
+     * @return bool
      */
-    protected function max_len($data, $length)
+    protected function max_len($data, $length): bool
     {
-        return (strlen($data) <= $length);
+        return strlen($data) <= $length;
     }
 
     /**
@@ -249,11 +255,11 @@ class Validation
      * @param string $data
      * @param int    $length
      *
-     * @return boolean
+     * @return bool
      */
-    protected function exact_len($data, $length)
+    protected function exact_len($data, $length): bool
     {
-        return (strlen($data) == $length);
+        return strlen($data) == $length;
     }
 
     /**
@@ -261,12 +267,13 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function alpha($data)
+    protected function alpha($data): bool
     {
-        return (preg_match('/^[a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
-            ? true : ctype_alpha($data));
+        return preg_match('/^[a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
+            ? true
+            : ctype_alpha($data);
     }
 
     /**
@@ -274,12 +281,13 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function alpha_num($data)
+    protected function alpha_num($data): bool
     {
-        return (preg_match('/^[0-9a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
-            ? true : ctype_alnum($data));
+        return preg_match('/^[0-9a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
+            ? true
+            : ctype_alnum($data);
     }
 
     /**
@@ -287,9 +295,9 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function alpha_dash($data)
+    protected function alpha_dash($data): bool
     {
         return ! (! preg_match("/^([A-Za-z0-9_-])+$/i", $data));
     }
@@ -299,9 +307,9 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function alpha_space($data)
+    protected function alpha_space($data): bool
     {
         return ! (! preg_match("/^([A-Za-z0-9- ])+$/i", $data));
     }
@@ -311,9 +319,9 @@ class Validation
      *
      * @param int $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function integer($data)
+    protected function integer($data): bool
     {
         return ! (! preg_match("/^([0-9])+$/i", $data));
     }
@@ -323,9 +331,9 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function boolean($data)
+    protected function boolean($data): bool
     {
         return ($data === true || $data === false);
     }
@@ -335,11 +343,11 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function float($data)
+    protected function float($data): bool
     {
-        return (! preg_match("/^([0-9\.])+$/i", $data)) ? false : true;
+        return ! preg_match("/^([0-9\.])+$/i", $data) ? false : true;
     }
 
     /**
@@ -347,11 +355,11 @@ class Validation
      *
      * @param string $url
      *
-     * @return boolean
+     * @return bool
      */
-    protected function valid_url($url)
+    protected function valid_url($url): bool
     {
-        return (filter_var($url, FILTER_VALIDATE_URL));
+        return filter_var($url, FILTER_VALIDATE_URL);
     }
 
     /**
@@ -359,11 +367,11 @@ class Validation
      *
      * @param string $ip
      *
-     * @return boolean
+     * @return bool
      */
-    protected function valid_ip($ip)
+    protected function valid_ip($ip): bool
     {
-        return (filter_var($ip, FILTER_VALIDATE_IP));
+        return filter_var($ip, FILTER_VALIDATE_IP);
     }
 
     /**
@@ -371,11 +379,11 @@ class Validation
      *
      * @param string $ip
      *
-     * @return boolean
+     * @return bool
      */
-    protected function valid_ipv4($ip)
+    protected function valid_ipv4($ip): bool
     {
-        return (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4));
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
     }
 
     /**
@@ -383,11 +391,11 @@ class Validation
      *
      * @param string $ip
      *
-     * @return boolean
+     * @return bool
      */
-    protected function valid_ipv6($ip)
+    protected function valid_ipv6($ip): bool
     {
-        return (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6));
+        return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
     }
 
     /**
@@ -395,20 +403,20 @@ class Validation
      *
      * @param string $data
      *
-     * @return boolean
+     * @return bool
      */
-    protected function valid_cc($data)
+    protected function valid_cc($data): bool
     {
         $number = preg_replace('/\D/', '', $data);
         if (function_exists('mb_strlen')) {
-            $number_length = mb_strlen($number);
+            $numberLength = mb_strlen($number);
         } else {
-            $number_length = strlen($number);
+            $numberLength = strlen($number);
         }
 
-        $parity = $number_length % 2;
+        $parity = $numberLength % 2;
         $total = 0;
-        for ($i = 0; $i < $number_length; $i++) {
+        for ($i = 0; $i < $numberLength; $i++) {
             $digit = $number[$i];
 
             if ($i % 2 == $parity) {
@@ -431,11 +439,11 @@ class Validation
      * @param string $data
      * @param string $part
      *
-     * @return boolean
+     * @return bool
      */
-    protected function contains($data, $part)
+    protected function contains($data, $part): bool
     {
-        return (strpos($data, $part) !== false);
+        return strpos($data, $part) !== false;
     }
 
     /**
@@ -444,11 +452,11 @@ class Validation
      * @param int $data
      * @param int $min
      *
-     * @return boolean
+     * @return bool
      */
-    protected function min_numeric($data, $min)
+    protected function min_numeric($data, $min): bool
     {
-        return (is_numeric($data) && is_numeric($min) && $data >= $min);
+        return is_numeric($data) && is_numeric($min) && $data >= $min;
     }
 
     /**
@@ -457,11 +465,11 @@ class Validation
      * @param int $data
      * @param int $max
      *
-     * @return boolean
+     * @return bool
      */
-    protected function max_numeric($data, $max)
+    protected function max_numeric($data, $max): bool
     {
-        return (is_numeric($data) && is_numeric($max) && $data <= $max);
+        return is_numeric($data) && is_numeric($max) && $data <= $max;
     }
 
     /**
@@ -472,8 +480,8 @@ class Validation
      *
      * @return bool
      */
-    protected function matches($data, $field)
+    protected function matches($data, $field): bool
     {
-        return ($data == $field);
+        return $data == $field;
     }
 }
