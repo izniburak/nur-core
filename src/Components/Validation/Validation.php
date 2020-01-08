@@ -208,7 +208,7 @@ class Validation
      */
     protected function numeric($data): bool
     {
-        return (is_numeric($data));
+        return is_numeric($data);
     }
 
     /**
@@ -220,7 +220,7 @@ class Validation
      */
     protected function email($email): bool
     {
-        return (filter_var($email, FILTER_VALIDATE_EMAIL));
+        return filter_var($email, FILTER_VALIDATE_EMAIL);
     }
 
     /**

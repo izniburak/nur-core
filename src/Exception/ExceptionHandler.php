@@ -20,7 +20,7 @@ class ExceptionHandler extends Exception
         $message = 'Whoops, something went wrong on the system.',
         $code = 1
     ) {
-        if (config('app.env') !== 'prod') {
+        if (!app()->isProduction()) {
             return parent::__construct(strip_tags($title . ' - ' . $message), $code);
         }
 

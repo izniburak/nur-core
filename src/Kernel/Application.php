@@ -10,6 +10,7 @@ use Nur\Container\Container;
 use Nur\Exception\ExceptionHandler;
 use RuntimeException;
 use Whoops\Run as WhoopsRun;
+use Dotenv\Dotenv;
 
 /**
  * Class Application
@@ -202,13 +203,13 @@ class Application extends Container
     public function start(string $env)
     {
         switch ($env) {
-            case 'dev':
+            case 'local':
                 ini_set('display_errors', 1);
                 error_reporting(1);
                 $this->initWhoops();
                 break;
             case 'test':
-            case 'prod':
+            case 'production':
                 ini_set('display_errors', 0);
                 error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
                 break;
@@ -1009,7 +1010,7 @@ class Application extends Container
      */
     public function isLocal()
     {
-        return $this['env'] === 'local';
+        return APP_ENV === 'local';
     }
 
     /**
@@ -1019,7 +1020,7 @@ class Application extends Container
      */
     public function isProduction()
     {
-        return $this['env'] === 'production';
+        return APP_ENV === 'production';
     }
 
     /**
@@ -1168,8 +1169,8 @@ class Application extends Container
             if (file_exists($this->cachePath('config.php'))) {
                 $this->config = require $this->cachePath('config.php');
             } else {
-                $dotenv = \Dotenv\Dotenv::create($this->root);
-                $dotenv->load();
+                $env = Dotenv::createImmutable($this->root);
+                $env->load();
                 foreach (glob($this->root . '/config/*.php') as $file) {
                     $keyName = strtolower(str_replace(
                         [$this->root . '/config/', '.php'], '', $file

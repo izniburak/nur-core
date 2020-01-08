@@ -50,7 +50,7 @@ class HttpException extends \RuntimeException
 
         http_response_code($statusCode);
 
-        if (config('app.env') !== 'prod') {
+        if (!app()->isProduction()) {
             $message = is_array($messageText) ? implode(' - ', $messageText) : $messageText;
             return parent::__construct($message, $code, $previous);
         }

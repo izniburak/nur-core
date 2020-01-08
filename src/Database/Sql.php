@@ -9,7 +9,7 @@ class Sql extends PdoxProvider
     /**
      * Class constructor
      *
-     * @return Buki\Pdox
+     * @return PdoxProvider
      */
     public function __construct()
     {
@@ -19,7 +19,7 @@ class Sql extends PdoxProvider
             $activeDb['database'] = database_path($activeDb['database']);
         }
         $activeDb['cachedir'] = cache_path('sql');
-        $activeDb['debug'] = APP_ENV === 'dev';
+        $activeDb['debug'] = app()->isLocal();
         return parent::__construct($activeDb);
     }
 
