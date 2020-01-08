@@ -1169,7 +1169,7 @@ class Application extends Container
             if (file_exists($this->cachePath('config.php'))) {
                 $this->config = require $this->cachePath('config.php');
             } else {
-                $env = Dotenv::createImmutable($this->root);
+                $env = Dotenv::create($this->root);
                 $env->load();
                 foreach (glob($this->root . '/config/*.php') as $file) {
                     $keyName = strtolower(str_replace(
