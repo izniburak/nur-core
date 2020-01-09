@@ -7,7 +7,7 @@ abstract class ServiceProvider
     /**
      * The application instance.
      *
-     * @var \Nur\Container\Container
+     * @var \Nur\Kernel\Application
      */
     protected $app;
 

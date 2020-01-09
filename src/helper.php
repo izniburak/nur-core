@@ -37,7 +37,7 @@ if (! function_exists('config')) {
      * @param string|null $key
      * @param string|null $default
      *
-     * @return mixed
+     * @return mixed|void
      * @throws
      */
     function config($key = null, $default = null)
@@ -51,7 +51,8 @@ if (! function_exists('config')) {
         }
 
         if (is_array($key)) {
-            return $config->set($key);
+            $config->set($key);
+            return;
         }
 
         return $config->get($key, $default);
@@ -273,7 +274,7 @@ if (! function_exists('http')) {
 
 if (! function_exists('event')) {
     /**
-     * Event trigger for Listeners.
+     * Event trigger for Events.
      *
      * @param string $event
      * @param array  $params
@@ -283,7 +284,7 @@ if (! function_exists('event')) {
      */
     function event($event, array $params = [], $method = 'handle')
     {
-        return app('listener')->trigger($event, $params, $method);
+        return app(\Nur\Event\Event::class)->trigger($event, $params, $method);
     }
 }
 
@@ -579,6 +580,19 @@ if (! function_exists('resolve')) {
     function resolve(string $name, array $parameters = [])
     {
         return app($name, $parameters);
+    }
+}
+
+if (! function_exists('now')) {
+    /**
+     * Create a new Carbon instance for the current time.
+     *
+     * @param  \DateTimeZone|string|null $tz
+     * @return \Illuminate\Support\Carbon
+     */
+    function now($tz = null)
+    {
+        return \Nur\Facades\Date::now($tz);
     }
 }
 

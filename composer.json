@@ -33,9 +33,11 @@
     "illuminate/view": "^6.10",
     "illuminate/events": "^6.10",
     "illuminate/translation": "^6.10",
+    "illuminate/cache": "^6.10",
     "symfony/console": "^4.3",
     "symfony/http-foundation": "^4.3",
     "symfony/var-dumper": "^4.3",
+    "symfony/cache": "^4.3",
     "ramsey/uuid": "^3.9",
     "vlucas/phpdotenv": "^3.3",
     "firebase/php-jwt": "^5.0"
