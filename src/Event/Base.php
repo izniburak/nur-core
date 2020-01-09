@@ -2,7 +2,7 @@
 
 namespace Nur\Event;
 
-abstract class Listener
+abstract class Base
 {
     /**
      * Listener constructor.

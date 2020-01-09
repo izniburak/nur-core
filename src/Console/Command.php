@@ -5,12 +5,12 @@ namespace Nur\Console;
 class Command
 {
     /**
-     * @var Console
+     * @var \Symfony\Component\Console\Application
      */
     protected $app;
 
     /**
-     * @var Application
+     * @var \Nur\Kernel\Application
      */
     protected $nur;
 
@@ -33,7 +33,7 @@ class Command
         'Nur\Console\Commands\Make\ModelCommand',
         'Nur\Console\Commands\Make\MiddlewareCommand',
         'Nur\Console\Commands\Make\ResourceCommand',
-        'Nur\Console\Commands\Make\ListenerCommand',
+        'Nur\Console\Commands\Make\EventCommand',
         'Nur\Console\Commands\Make\SeederCommand',
 
         'Nur\Console\Commands\Database\CreateCommand',
@@ -95,6 +95,7 @@ class Command
      * Run console commands.
      *
      * @return void
+     * @throws \Exception
      */
     public function run()
     {

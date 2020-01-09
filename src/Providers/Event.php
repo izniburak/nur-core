@@ -5,6 +5,7 @@ namespace Nur\Providers;
 use Nur\Kernel\ServiceProvider;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Contracts\Queue\Factory as QueueFactoryContract;
+use Nur\Event\Event as NurEvent;
 
 class Event extends ServiceProvider
 {
@@ -20,5 +21,8 @@ class Event extends ServiceProvider
                 return $app->make(QueueFactoryContract::class);
             });
         });
+
+        // Register Event-Listener Component of Nur
+        $this->app->singleton(NurEvent::class, NurEvent::class);
     }
 }

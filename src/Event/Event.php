@@ -16,13 +16,13 @@ class Event
      * @return void
      * @throws ExceptionHandler
      */
-    public function trigger($event, array $params = [], $method = 'handle'): void
+    public function trigger(string $event, array $params = [], $method = 'handle'): void
     {
-        $listeners = config('services.listeners');
-        $event = $listeners[$event];
+        $events = config('events');
+        $event = $events[$event];
         if (is_array($event)) {
-            foreach ($event as $listener) {
-                $this->validateAndRun($listener, $params, $method);
+            foreach ($event as $e) {
+                $this->validateAndRun($e, $params, $method);
             }
             return;
         }
@@ -31,23 +31,23 @@ class Event
     }
 
     /**
-     * @param $listener
+     * @param $event
      * @param $params
      * @param $method
      *
      * @return void
      * @throws ExceptionHandler
      */
-    private function validateAndRun($listener, $params, $method): void
+    private function validateAndRun($event, $params, $method): void
     {
-        if (! class_exists($listener)) {
-            throw new ExceptionHandler('Event class not found.', $listener);
+        if (! class_exists($event)) {
+            throw new ExceptionHandler('Event class not found.', $event);
         }
 
-        if (! method_exists($listener, $method)) {
-            throw new ExceptionHandler('Method not found in Event class.', $listener . '::' . $method . '()');
+        if (! method_exists($event, $method)) {
+            throw new ExceptionHandler('Method not found in Event class.', $event . '::' . $method . '()');
         }
 
-        call_user_func_array([new $listener, $method], $params);
+        call_user_func_array([new $event, $method], $params);
     }
 }
