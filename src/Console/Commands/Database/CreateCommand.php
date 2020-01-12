@@ -2,7 +2,7 @@
 
 namespace Nur\Console\Commands\Database;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -26,18 +26,18 @@ class CreateCommand extends Command
         $name = $input->getArgument('name');
 
         $databaseType = $input->hasParameterOption('--type') ? $input->getOption('type') : 'sqlite';
-        $file = database_path($name.'.'.$databaseType);
-        if (! file_exists($file)) {
+        $file = database_path($name . '.' . $databaseType);
+        if (!file_exists($file)) {
             touch($file);
-            return $output->writeln('<info>+Success!</info> "'.$name.'" '.$databaseType.' database created.');
+            return $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database created.');
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             touch($file);
-            return $output->writeln('<info>+Success!</info> "'.$name.'" '.$databaseType.' database re-created.');
+            return $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database re-created.');
         }
 
-        return $output->writeln('<error>-Error!</error> Database already exists! ('.$name.'.'.$databaseType.')');
+        return $output->writeln('<error>-Error!</error> Database already exists! (' . $name . '.' . $databaseType . ')');
     }
 }

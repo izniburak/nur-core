@@ -2,10 +2,10 @@
 
 namespace Nur\Console\Commands\Database;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\Table;
 
 class ListCommand extends Command
 {
@@ -18,7 +18,7 @@ class ListCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dir = $mask = database_path().'/';
+        $dir = $mask = database_path() . '/';
         $mask = $dir . '*.sqlite*';
         $dbList = glob($mask);
 
@@ -26,8 +26,8 @@ class ListCommand extends Command
             $rows = [];
             foreach ($dbList as $file) {
                 $filename = explode('.', str_replace($dir, '', $file));
-                    unset($filename[count($filename)-1]);
-                    $filename = implode('.', $filename);
+                unset($filename[count($filename) - 1]);
+                $filename = implode('.', $filename);
                 $mb = false;
                 $filesize = (filesize($file) / 1024);
                 if ($filesize > 1024) {

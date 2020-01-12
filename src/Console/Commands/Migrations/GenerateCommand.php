@@ -2,12 +2,11 @@
 
 namespace Nur\Console\Commands\Migrations;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Config\FileLocator;
-use Nur\Console\Commands\Migrations\AbstractCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateCommand extends AbstractCommand
 {
@@ -19,16 +18,16 @@ class GenerateCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('generate')
-             ->addArgument('name', InputArgument::REQUIRED, 'The name for the migration')
-             ->addOption('--table', '-t', InputOption::VALUE_OPTIONAL, 'Migration Table name (Default: null)')
-             ->setDescription('Generate a new migration')
-             ->setHelp(<<<EOT
+            ->addArgument('name', InputArgument::REQUIRED, 'The name for the migration')
+            ->addOption('--table', '-t', InputOption::VALUE_OPTIONAL, 'Migration Table name (Default: null)')
+            ->setDescription('Generate a new migration')
+            ->setHelp(<<<EOT
 The <info>generate</info> command creates a new migration with the name and path specified
 
 <info>migration:generate TestMigration</info>
 
 EOT
-        );
+            );
     }
 
     /**
@@ -37,13 +36,13 @@ EOT
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->bootstrap($input, $output);
-        $tableName = $input->hasParameterOption('--table') !== false 
-            ? $input->getOption('table') 
+        $tableName = $input->hasParameterOption('--table') !== false
+            ? $input->getOption('table')
             : '';
 
         $path = $this->container['phpmig.migrations_path'];
-        $locator = new FileLocator(array());
-        $path    = $locator->locate($path, base_path(), $first = true);
+        $locator = new FileLocator([]);
+        $path = $locator->locate($path, base_path(), $first = true);
 
         if (!is_writeable($path)) {
             throw new \InvalidArgumentException(sprintf(
@@ -54,7 +53,7 @@ EOT
 
         $path = realpath($path);
         $migrationName = $this->transMigName($input->getArgument('name'));
-        $basename  = date('YmdHis') . '_' . $migrationName . '.php';
+        $basename = date('YmdHis') . '_' . $migrationName . '.php';
         $path = $path . DIRECTORY_SEPARATOR . $basename;
         if (file_exists($path)) {
             throw new \InvalidArgumentException(sprintf('The file "%s" already exists', $path));
@@ -97,7 +96,8 @@ PHP;
 
         $output->writeln(
             '<info>+Success!</info> ' .
-            '"'.str_replace([getcwd(), 'database', 'migrations', '/', '\\', '.php'], '', $path).'" migration generated.'
+            '"' . str_replace([getcwd(), 'database', 'migrations', '/', '\\', '.php'], '',
+                $path) . '" migration generated.'
         );
 
         return;

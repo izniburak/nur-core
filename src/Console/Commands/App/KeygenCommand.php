@@ -2,8 +2,8 @@
 
 namespace Nur\Console\Commands\App;
 
+use Nur\Console\Command;
 use Nur\Encryption\Encrypter;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -57,7 +57,7 @@ class KeygenCommand extends Command
         // Next, we will replace the application key in the environment file so it is
         // automatically setup for this developer. This key gets generated using a
         // secure random byte generator and is later base64 encoded for storage.
-        if (! $this->setKeyInEnvironmentFile('APP_KEY', $key, config('app.key'), $input, $output)) {
+        if (!$this->setKeyInEnvironmentFile('APP_KEY', $key, config('app.key'), $input, $output)) {
             return;
         }
 
@@ -83,7 +83,7 @@ class KeygenCommand extends Command
         // Next, we will replace the application key in the environment file so it is
         // automatically setup for this developer. This key gets generated using a
         // secure random byte generator and is later base64 encoded for storage.
-        if (! $this->setKeyInEnvironmentFile('JWT_SECRET', $key, config('auth.jwt.secret'), $input, $output)) {
+        if (!$this->setKeyInEnvironmentFile('JWT_SECRET', $key, config('auth.jwt.secret'), $input, $output)) {
             return;
         }
 
@@ -118,7 +118,7 @@ class KeygenCommand extends Command
     {
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion("{$key} key will re-generate. Are you sure?: ", false);
-        if (strlen($currentValue) !== 0 && (! $helper->ask($input, $output, $question))) {
+        if (strlen($currentValue) !== 0 && (!$helper->ask($input, $output, $question))) {
             return false;
         }
 

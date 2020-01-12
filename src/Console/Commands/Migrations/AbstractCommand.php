@@ -2,29 +2,15 @@
 
 namespace Nur\Console\Commands\Migrations;
 
+use Nur\Console\Command;
 use Phpmig\Adapter\AdapterInterface;
 use Phpmig\Migration\Migration;
 use Phpmig\Migration\Migrator;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * This file is part of phpmig
- *
- * Copyright (c) 2011 Dave Marshall <dave.marshall@atstsolutuions.co.uk>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-/**
- * Abstract command, contains bootstrapping info
- *
- * @author      Dave Marshall <david.marshall@atstsolutions.co.uk>
- */
 abstract class AbstractCommand extends Command
 {
     /**
@@ -45,7 +31,97 @@ abstract class AbstractCommand extends Command
     /**
      * @var array
      */
-    protected $migrations = array();
+    protected $migrations = [];
+
+    /**
+     * Get bootstrap
+     *
+     * @return string
+     */
+    public function getBootstrap()
+    {
+        return $this->bootstrap;
+    }
+
+    /**
+     * Set bootstrap
+     *
+     * @return AbstractCommand
+     * @var string
+     */
+    public function setBootstrap($bootstrap)
+    {
+        $this->bootstrap = $bootstrap;
+        return $this;
+    }
+
+    /**
+     * Get migrations
+     *
+     * @return array
+     */
+    public function getMigrations()
+    {
+        return $this->migrations;
+    }
+
+    /**
+     * Set migrations
+     *
+     * @param array $migrations
+     *
+     * @return AbstractCommand
+     */
+    public function setMigrations(array $migrations)
+    {
+        $this->migrations = $migrations;
+        return $this;
+    }
+
+    /**
+     * Get container
+     *
+     * @return \ArrayAccess
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * Set container
+     *
+     * @return AbstractCommand
+     * @var \ArrayAccess
+     */
+    public function setContainer(\ArrayAccess $container)
+    {
+        $this->container = $container;
+        return $this;
+    }
+
+    /**
+     * Get Adapter
+     *
+     * @return AdapterInterface
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
+
+    /**
+     * Set adapter
+     *
+     * @param AdapterInterface $adapter
+     *
+     * @return AbstractCommand
+     */
+    public function setAdapter(AdapterInterface $adapter)
+    {
+        $this->adapter = $adapter;
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
@@ -76,6 +152,7 @@ abstract class AbstractCommand extends Command
 
     /**
      * @param string $filename
+     *
      * @return array|string
      */
     protected function findBootstrapFile($filename)
@@ -84,9 +161,10 @@ abstract class AbstractCommand extends Command
             $filename = base_path('/vendor/izniburak/nur-core/src/Database/Migration/MigrationRegister.php');
         }
 
-        $locator = new FileLocator(array(
-            config_path(), base_path()
-        ));
+        $locator = new FileLocator([
+            config_path(),
+            base_path(),
+        ]);
 
         return $locator->locate($filename);
     }
@@ -113,7 +191,8 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
+     *
      * @return AdapterInterface
      * @throws \RuntimeException
      */
@@ -158,6 +237,8 @@ abstract class AbstractCommand extends Command
     /**
      * @param InputInterface  $input
      * @param OutputInterface $output
+     *
+     * @return array
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
@@ -170,7 +251,7 @@ abstract class AbstractCommand extends Command
             throw new \RuntimeException($this->getBootstrap() . ' must return container with array at phpmig.migrations or migrations default path at phpmig.migrations_path or migrations default path at phpmig.sets');
         }
 
-        $migrations = array();
+        $migrations = [];
         if (isset($container['phpmig.migrations'])) {
             if (!is_array($container['phpmig.migrations'])) {
                 throw new \RuntimeException($this->getBootstrap() . ' phpmig.migrations must be an array.');
@@ -196,16 +277,18 @@ abstract class AbstractCommand extends Command
         }
         $migrations = array_unique($migrations);
 
-        $versions = array();
-        $names = array();
+        $versions = [];
+        $names = [];
         foreach ($migrations as $path) {
             if (!preg_match('/^[0-9]+/', basename($path), $matches)) {
-                throw new \InvalidArgumentException(sprintf('The file "%s" does not have a valid migration filename', $path));
+                throw new \InvalidArgumentException(sprintf('The file "%s" does not have a valid migration filename',
+                    $path));
             }
 
             $version = $matches[0];
             if (isset($versions[$version])) {
-                throw new \InvalidArgumentException(sprintf('Duplicate migration, "%s" has the same version as "%s"', $path, $versions[$version]->getName()));
+                throw new \InvalidArgumentException(sprintf('Duplicate migration, "%s" has the same version as "%s"',
+                    $path, $versions[$version]->getName()));
             }
 
             $migrationName = preg_replace('/^[0-9]+_/', '', basename($path));
@@ -266,6 +349,7 @@ abstract class AbstractCommand extends Command
 
     /**
      * @param OutputInterface $output
+     *
      * @return mixed
      */
     protected function bootstrapMigrator(OutputInterface $output)
@@ -274,99 +358,13 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * Set bootstrap
-     *
-     * @var string
-     * @return AbstractCommand
-     */
-    public function setBootstrap($bootstrap)
-    {
-        $this->bootstrap = $bootstrap;
-        return $this;
-    }
-
-    /**
-     * Get bootstrap
-     *
-     * @return string
-     */
-    public function getBootstrap()
-    {
-        return $this->bootstrap;
-    }
-
-    /**
-     * Set migrations
-     *
-     * @param array $migrations
-     * @return AbstractCommand
-     */
-    public function setMigrations(array $migrations)
-    {
-        $this->migrations = $migrations;
-        return $this;
-    }
-
-    /**
-     * Get migrations
-     *
-     * @return array
-     */
-    public function getMigrations()
-    {
-        return $this->migrations;
-    }
-
-    /**
-     * Set container
-     *
-     * @var \ArrayAccess
-     * @return AbstractCommand
-     */
-    public function setContainer(\ArrayAccess $container)
-    {
-        $this->container = $container;
-        return $this;
-    }
-
-    /**
-     * Get container
-     *
-     * @return \ArrayAccess
-     */
-    public function getContainer()
-    {
-        return $this->container;
-    }
-
-    /**
-     * Set adapter
-     *
-     * @param AdapterInterface $adapter
-     * @return AbstractCommand
-     */
-    public function setAdapter(AdapterInterface $adapter)
-    {
-        $this->adapter = $adapter;
-        return $this;
-    }
-
-    /**
-     * Get Adapter
-     *
-     * @return AdapterInterface
-     */
-    public function getAdapter()
-    {
-        return $this->adapter;
-    }
-
-    /**
      * transform create_table_user to CreateTableUser
+     *
      * @param $migrationName
+     *
      * @return string
      */
-    protected function migrationToClassName( $migrationName )
+    protected function migrationToClassName($migrationName)
     {
         $class = str_replace('_', ' ', $migrationName);
         $class = ucwords($class);
@@ -384,6 +382,7 @@ abstract class AbstractCommand extends Command
 
     /**
      * @param $className
+     *
      * @return bool
      * @see http://php.net/manual/en/language.oop5.basic.php#language.oop5.basic.class
      */

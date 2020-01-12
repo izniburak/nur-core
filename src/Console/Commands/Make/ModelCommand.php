@@ -2,7 +2,7 @@
 
 namespace Nur\Console\Commands\Make;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,8 +30,8 @@ class ModelCommand extends Command
             $table = $input->getOption('table');
         }
 
-        $file = app_path('Models/'.$name.'.php');
-        if (! file_exists($file)) {
+        $file = app_path('Models/' . $name . '.php');
+        if (!file_exists($file)) {
             $this->createNewFile($file, $name, $table);
             return $output->writeln('<info>+Success!</info> "' . ($name) . '" model created.');
         }
@@ -48,7 +48,7 @@ class ModelCommand extends Command
     private function createNewFile($file, $name, $tableName = '')
     {
         $model = ucfirst($name);
-        $table = 'protected $table = \''.$tableName.'\';';
+        $table = 'protected $table = \'' . $tableName . '\';';
         $timestamps = 'public $timestamps = true;';
         $contents = <<<PHP
 <?php

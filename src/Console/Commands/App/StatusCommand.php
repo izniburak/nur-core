@@ -2,7 +2,7 @@
 
 namespace Nur\Console\Commands\App;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,7 +17,7 @@ class StatusCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if (! file_exists(storage_path('app.down'))) {
+        if (!file_exists(storage_path('app.down'))) {
             return $output->writeln("Nur Application's running.");
         }
 

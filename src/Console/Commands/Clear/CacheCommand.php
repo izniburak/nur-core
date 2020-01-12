@@ -2,7 +2,7 @@
 
 namespace Nur\Console\Commands\Clear;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -23,7 +23,7 @@ class CacheCommand extends Command
         foreach ($folders as $key => $value) {
             $files = $path . '/' . $key;
             foreach (glob($files . '/*.*') as $file) {
-                if (! stristr($file, 'index.html')) {
+                if (!stristr($file, 'index.html')) {
                     if (unlink($file)) {
                         $count++;
                     }

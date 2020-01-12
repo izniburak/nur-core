@@ -2,10 +2,9 @@
 
 namespace Nur\Console\Commands\Remove;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ControllerCommand extends Command
@@ -22,13 +21,13 @@ class ControllerCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $file = app_path('Controllers/'.$name.'.php');
+        $file = app_path('Controllers/' . $name . '.php');
 
         if (file_exists($file)) {
             unlink($file);
-            return $output->writeln('<info>+Success!</info> "'.$name.'" controller removed.');
+            return $output->writeln('<info>+Success!</info> "' . $name . '" controller removed.');
         }
 
-        return $output->writeln('<error>-Error!</error> Controller not found! ('.$name.')');
+        return $output->writeln('<error>-Error!</error> Controller not found! (' . $name . ')');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Nur\Console\Commands\Clear;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -20,7 +20,7 @@ class LogCommand extends Command
         $path = storage_path('log');
         $count = 0;
         foreach (glob($path . '/' . '*.*') as $file) {
-            if (! stristr($file, 'index.html')) {
+            if (!stristr($file, 'index.html')) {
                 if (unlink($file)) {
                     $count++;
                 }

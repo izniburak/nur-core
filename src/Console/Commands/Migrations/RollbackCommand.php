@@ -1,12 +1,10 @@
 <?php
- 
+
 namespace Nur\Console\Commands\Migrations;
 
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Config\FileLocator;
-use Nur\Console\Commands\Migrations\AbstractCommand;
 
 class RollbackCommand extends AbstractCommand
 {
@@ -18,16 +16,16 @@ class RollbackCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('rollback')
-             ->addOption('--target', '-t', InputArgument::OPTIONAL, 'The version number to rollback to')
-             ->setDescription('Rollback last, or to a specific migration')
-             ->setHelp(<<<EOT
+            ->addOption('--target', '-t', InputArgument::OPTIONAL, 'The version number to rollback to')
+            ->setDescription('Rollback last, or to a specific migration')
+            ->setHelp(<<<EOT
 The <info>rollback</info> command reverts the last migration, or optionally up to a specific version
 
 <info>migration:rollback</info>
-<info>migration:rollback -t 20111018185412</info>
+<info>migration:rollback -t 20191018185412</info>
 
 EOT
-        );
+            );
     }
 
     /**
@@ -38,7 +36,7 @@ EOT
         $this->bootstrap($input, $output);
 
         $migrations = $this->getMigrations();
-        $versions   = $this->getAdapter()->fetchAll();
+        $versions = $this->getAdapter()->fetchAll();
 
         $version = $input->getOption('target');
 
@@ -75,7 +73,7 @@ EOT
         // Revert the migration(s)
         $container = $this->getContainer();
         krsort($migrations);
-        foreach($migrations as $migration) {
+        foreach ($migrations as $migration) {
             if ($migration->getVersion() <= $version) {
                 break;
             }

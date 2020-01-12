@@ -2,7 +2,7 @@
 
 namespace Nur\Console\Commands\Database;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,12 +25,12 @@ class RemoveCommand extends Command
         $name = $input->getArgument('name');
 
         $databaseType = $input->hasParameterOption('--type') ? $input->getOption('type') : 'sqlite';
-        $file = database_path($name.'.'.$databaseType);
+        $file = database_path($name . '.' . $databaseType);
         if (file_exists($file)) {
             unlink($file);
-            return $output->writeln('<info>+Success!</info> "'.$name.'" '.$databaseType.' database removed.');
+            return $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database removed.');
         }
 
-        return $output->writeln('<error>-Error!</error> Database not found! ('.$name.'.'.$databaseType.')');
+        return $output->writeln('<error>-Error!</error> Database not found! (' . $name . '.' . $databaseType . ')');
     }
 }

@@ -1,12 +1,10 @@
 <?php
- 
+
 namespace Nur\Console\Commands\Migrations;
 
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Config\FileLocator;
-use Nur\Console\Commands\Migrations\AbstractCommand;
 
 class MigrateCommand extends AbstractCommand
 {
@@ -18,16 +16,16 @@ class MigrateCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('migrate')
-             ->addOption('--target', '-t', InputArgument::OPTIONAL, 'The version number to migrate to')
-             ->setDescription('Run all migrations')
-             ->setHelp(<<<EOT
+            ->addOption('--target', '-t', InputArgument::OPTIONAL, 'The version number to migrate to')
+            ->setDescription('Run all migrations')
+            ->setHelp(<<<EOT
 The <info>migrate</info> command runs all available migrations, optionally up to a specific version
 
 <info>migration:migrate</info>
 <info>migration:migrate -t 20111018185412</info>
 
 EOT
-        );
+            );
     }
 
     /**
@@ -37,9 +35,9 @@ EOT
     {
         $this->bootstrap($input, $output);
 
-        $container  = $this->getContainer();
+        $container = $this->getContainer();
         $migrations = $this->getMigrations();
-        $versions   = $this->getAdapter()->fetchAll();
+        $versions = $this->getAdapter()->fetchAll();
 
         $version = $input->getOption('target');
 
@@ -72,7 +70,7 @@ EOT
              * Run downs first
              */
             krsort($migrations);
-            foreach($migrations as $migration) {
+            foreach ($migrations as $migration) {
                 if ($migration->getVersion() <= $version) {
                     break;
                 }
@@ -84,7 +82,7 @@ EOT
         }
 
         ksort($migrations);
-        foreach($migrations as $migration) {
+        foreach ($migrations as $migration) {
             if ($migration->getVersion() > $version) {
                 break;
             }

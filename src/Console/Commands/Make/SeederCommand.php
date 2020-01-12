@@ -2,7 +2,7 @@
 
 namespace Nur\Console\Commands\Make;
 
-use Symfony\Component\Console\Command\Command;
+use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -23,20 +23,20 @@ class SeederCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
-        $file = database_path('seeds/'.$name.'.php');
+        $file = database_path('seeds/' . $name . '.php');
 
-        if (! file_exists($file)) {
+        if (!file_exists($file)) {
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "'.$name.'" seeder created.');
+            return $output->writeln('<info>+Success!</info> "' . $name . '" seeder created.');
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "'.$name.'" seeder re-created.');
+            return $output->writeln('<info>+Success!</info> "' . $name . '" seeder re-created.');
         }
 
-        return $output->writeln('<error>-Error!</error> Seeder already exists! ('.$name.')');
+        return $output->writeln('<error>-Error!</error> Seeder already exists! (' . $name . ')');
     }
 
     private function createNewFile($file, $name)
