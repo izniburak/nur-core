@@ -56,12 +56,16 @@ class Validation
     public function rules(array $rules): void
     {
         foreach ($rules as $key => $value) {
-            $this->rule(
-                $key,
-                $value['label'],
-                $value['rules'],
-                isset($value['text']) && ! empty($value['text']) ? $value['text'] : []
-            );
+            if (is_array($value)) {
+                $this->rule(
+                    $key,
+                    isset($value['label']) && !empty($value['label']) ? $value['label'] : $key,
+                    $value['rules'],
+                    isset($value['messages']) && !empty($value['messages']) ? $value['messages'] : []
+                );
+            } else {
+                $this->rule($key, $key, $value);
+            }
         }
     }
 
@@ -79,7 +83,7 @@ class Validation
     {
         $this->labels[$field] = $label;
         $this->rules[$field] = $rules;
-        $this->texts[$field] = ! empty($text) ? $text : null;
+        $this->texts[$field] = !empty($text) ? $text : null;
     }
 
     /**
@@ -130,7 +134,7 @@ class Validation
      */
     public function sanitize($data)
     {
-        if (! is_array($data)) {
+        if (!is_array($data)) {
             return filter_var(trim($data), FILTER_SANITIZE_STRING);
         }
 
@@ -162,15 +166,15 @@ class Validation
      */
     protected function errorMessage($filter, $field, $params = null): void
     {
-        $text = isset($this->texts[$field][$filter]) && ! is_null($this->texts[$field][$filter])
+        $text = isset($this->texts[$field][$filter]) && !is_null($this->texts[$field][$filter])
             ? $this->texts[$field][$filter]
             : $this->msg;
 
         $text = str_replace([':label:', ':value:'], '%s', $text);
 
-        if (! isset($this->data[$field])) {
+        if (!isset($this->data[$field])) {
             $this->errors[] = sprintf($text, $this->labels[$field], $params);
-        } elseif (! is_null($params)) {
+        } elseif (!is_null($params)) {
             if ($filter == 'matches') {
                 if ($this->matches($this->data[$field], $this->data[$params]) === false) {
                     $this->errors[] = sprintf($text, $this->labels[$field], $params);
@@ -196,7 +200,7 @@ class Validation
      */
     protected function required($data): bool
     {
-        return (! empty($data) && ! is_null($data) && $data !== '');
+        return (!empty($data) && !is_null($data) && $data !== '');
     }
 
     /**
@@ -299,7 +303,7 @@ class Validation
      */
     protected function alpha_dash($data): bool
     {
-        return ! (! preg_match("/^([A-Za-z0-9_-])+$/i", $data));
+        return !(!preg_match("/^([A-Za-z0-9_-])+$/i", $data));
     }
 
     /**
@@ -311,7 +315,7 @@ class Validation
      */
     protected function alpha_space($data): bool
     {
-        return ! (! preg_match("/^([A-Za-z0-9- ])+$/i", $data));
+        return !(!preg_match("/^([A-Za-z0-9- ])+$/i", $data));
     }
 
     /**
@@ -323,7 +327,7 @@ class Validation
      */
     protected function integer($data): bool
     {
-        return ! (! preg_match("/^([0-9])+$/i", $data));
+        return !(!preg_match("/^([0-9])+$/i", $data));
     }
 
     /**
@@ -347,7 +351,7 @@ class Validation
      */
     protected function float($data): bool
     {
-        return ! preg_match("/^([0-9\.])+$/i", $data) ? false : true;
+        return !preg_match("/^([0-9\.])+$/i", $data) ? false : true;
     }
 
     /**

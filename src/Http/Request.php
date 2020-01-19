@@ -851,14 +851,24 @@ class Request extends SymfonyRequest
      * @param array      $rules
      * @param array|null $data
      *
-     * @return array
+     * @return array|bool
      */
-    public function validation(array $rules, array $data = null): array
+    public function validate(array $rules, array $data = null)
     {
         $this->validation->rules($rules);
         $data = $data ?? $this->all();
 
-        return $this->validation->isValid($data) ? $data : $this->validation->errors();
+        return $this->validation->isValid($data) ? $data : false;
+    }
+
+    /**
+     * Request validation errors
+     *
+     * @return array
+     */
+    public function errors(): array
+    {
+        return $this->validation->errors();
     }
 
     /**

@@ -113,6 +113,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
             $this->headers->set('Content-Type', 'application/json; charset=' . $this->getCharset());
         }
 
-        return $this->send();
+        // return $this->send();
+        return $this->sendHeaders()->getContent();
     }
 }
