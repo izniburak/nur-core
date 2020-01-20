@@ -94,7 +94,7 @@ class Application
     {
         // Create application commands
         foreach ($this->commandList as $key => $value) {
-            $this->app->add(new $value);
+            $this->app->add(new $value($this->nur));
         }
 
         // Create migration commands
@@ -102,14 +102,14 @@ class Application
             /**
              * @var \Symfony\Component\Console\Command\Command $newCommand
              */
-            $newCommand = new $command;
+            $newCommand = new $command($this->nur);
             $newCommand->setName("migration:" . $newCommand->getName());
             $this->app->add($newCommand);
         }
 
         // Create custom application commands provided by user
         foreach ($this->commands as $key => $value) {
-            $this->app->add(new $value);
+            $this->app->add(new $value($this->nur));
         }
     }
 

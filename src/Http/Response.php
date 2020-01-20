@@ -57,11 +57,11 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      */
     public function header($key, string $value): Response
     {
-        if (is_array($key) && ! empty($key)) {
+        if (is_array($key) && !empty($key)) {
             foreach ($key as $k => $v) {
                 $this->headers->set($k, $v);
             }
-        } elseif (is_string($key) && ! empty($key)) {
+        } elseif (is_string($key) && !empty($key)) {
             $this->headers->set($key, $value);
         }
 

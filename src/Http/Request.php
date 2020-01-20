@@ -1,7 +1,5 @@
 <?php
 
-/** Adapted from \Illuminate\Http\Request class. */
-
 namespace Nur\Http;
 
 use Illuminate\Support\{Arr, Str, Traits\Macroable};
@@ -9,6 +7,12 @@ use SplFileInfo;
 use stdClass;
 use Symfony\Component\HttpFoundation\{ParameterBag, Request as SymfonyRequest};
 
+/**
+ * Class Request
+ * Adapted from \Illuminate\Http\Request class on Laravel.
+ *
+ * @package Nur\Http
+ */
 class Request extends SymfonyRequest
 {
     use Macroable;
@@ -58,7 +62,7 @@ class Request extends SymfonyRequest
      */
     public function hasHeader($key): bool
     {
-        return ! is_null($this->header($key));
+        return !is_null($this->header($key));
     }
 
     /**
@@ -113,7 +117,7 @@ class Request extends SymfonyRequest
         $keys = is_array($key) ? $key : func_get_args();
         $input = $this->all();
         foreach ($keys as $value) {
-            if (! Arr::has($input, $value)) {
+            if (!Arr::has($input, $value)) {
                 return false;
             }
         }
@@ -131,7 +135,7 @@ class Request extends SymfonyRequest
     public function all($keys = null): array
     {
         $input = array_replace_recursive($this->input(), $this->allFiles());
-        if (! $keys) {
+        if (!$keys) {
             return $input;
         }
 
@@ -178,7 +182,7 @@ class Request extends SymfonyRequest
      */
     public function json($key = null, $default = null)
     {
-        if (! isset($this->json)) {
+        if (!isset($this->json)) {
             $this->json = new ParameterBag((array)json_decode($this->getContent(), true));
         }
 
@@ -326,7 +330,7 @@ class Request extends SymfonyRequest
      */
     public function hasCookie($key): bool
     {
-        return ! is_null($this->cookie($key));
+        return !is_null($this->cookie($key));
     }
 
     /**
@@ -351,7 +355,7 @@ class Request extends SymfonyRequest
      */
     public function hasFile($key): bool
     {
-        if (! is_array($files = $this->file($key))) {
+        if (!is_array($files = $this->file($key))) {
             $files = [$files];
         }
 
@@ -651,7 +655,7 @@ class Request extends SymfonyRequest
      */
     public function __isset($key)
     {
-        return ! is_null($this->__get($key));
+        return !is_null($this->__get($key));
     }
 
     /**
@@ -677,7 +681,7 @@ class Request extends SymfonyRequest
      */
     public function expectsJson(): bool
     {
-        return ($this->ajax() && ! $this->pjax() && $this->acceptsAnyContentType()) || $this->wantsJson();
+        return ($this->ajax() && !$this->pjax() && $this->acceptsAnyContentType()) || $this->wantsJson();
     }
 
     /**
@@ -726,8 +730,6 @@ class Request extends SymfonyRequest
         return isset($acceptable[0]) && Str::contains($acceptable[0], ['/json', '+json']);
     }
 
-    /** Illuminate\Http\Concerns\InteractsWithContentTypes; */
-
     /**
      * Return the most suitable content type from the given array based on content negotiation.
      *
@@ -746,7 +748,7 @@ class Request extends SymfonyRequest
 
             foreach ($contentTypes as $contentType) {
                 $type = $contentType;
-                if (! is_null($mimeType = $this->getMimeType($contentType))) {
+                if (!is_null($mimeType = $this->getMimeType($contentType))) {
                     $type = $mimeType;
                 }
 
@@ -914,7 +916,7 @@ class Request extends SymfonyRequest
     {
         $value = $this->input($key);
 
-        return ! is_bool($value) && ! is_array($value) && trim((string)$value) === '';
+        return !is_bool($value) && !is_array($value) && trim((string)$value) === '';
     }
 
     /**
