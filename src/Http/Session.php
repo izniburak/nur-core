@@ -12,7 +12,7 @@ class Session
      *
      * @return void
      */
-    public function set($key, $value): void
+    public function set($key, $value = null): void
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {

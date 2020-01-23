@@ -51,11 +51,11 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      * Add custom header data in Response
      *
      * @param array|string $key
-     * @param string       $value
+     * @param string|null  $value
      *
      * @return Response
      */
-    public function header($key, string $value): Response
+    public function header($key, string $value = null): Response
     {
         if (is_array($key) && !empty($key)) {
             foreach ($key as $k => $v) {

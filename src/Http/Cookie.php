@@ -13,7 +13,7 @@ class Cookie
      *
      * @return void
      */
-    public function set($key, $value, $time = 0): void
+    public function set($key, $value = null, $time = 0): void
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
