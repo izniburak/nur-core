@@ -20,15 +20,13 @@ class ServeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $host = $input->hasParameterOption('--host');
-        $host = ($host !== false ? $input->getOption('host') : '127.0.0.1');
-        $port = $input->hasParameterOption('--port');
-        $port = ($port !== false ? $input->getOption('port') : '8000');
+        $host = $input->hasParameterOption('--host') !== false ? $input->getOption('host') : '127.0.0.1';
+        $port = $input->hasParameterOption('--port') !== false ? $input->getOption('port') : '8000';
 
         $output->writeln(
-            "<info>Nur Application's started on PHP Development Server (http://" . $host . ":" . $port . "/)" . "\n" .
-            "Press Ctrl-C to Quit.</info>" . "\n"
+            "<info>Nur Application's started on built-in PHP web server ({$host}:{$port})" . PHP_EOL .
+            "Press Ctrl-C to Quit.</info>" . PHP_EOL
         );
-        passthru('php -S ' . $host . ':' . $port);
+        passthru("php -S {$host}:{$port} server.php");
     }
 }

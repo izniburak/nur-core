@@ -168,17 +168,24 @@ class Application extends Container
     private $baseFolder = null;
 
     /**
+     * Public folder
+     *
+     * @var string
+     */
+    private $publicFolder = 'public';
+
+    /**
      * Create a new Nur application instance.
      *
      * @return void
      */
     public function __construct()
     {
-        $this->root = realpath(getcwd());
+        $this->root = str_replace("/{$this->publicFolder}", '', realpath(getcwd()));
         $this->docRoot = realpath($_SERVER['DOCUMENT_ROOT']);
         $this->baseFolder = trim(
             str_replace(
-                '\\', '/', str_replace($this->docRoot, '', $this->root) . '/'
+                ['\\', "/{$this->publicFolder}"], ['/', ''], str_replace($this->docRoot, '', $this->root) . '/'
             ),
             '/'
         );
