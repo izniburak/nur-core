@@ -5,6 +5,13 @@ namespace Nur\Kernel;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 
+/**
+ * Class ProviderRepository
+ * Adapted from Laravel Framework
+ * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/ProviderRepository.php
+ *
+ * @package Nur\Kernel
+ */
 class ProviderRepository
 {
     /**

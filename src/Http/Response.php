@@ -2,6 +2,12 @@
 
 namespace Nur\Http;
 
+/**
+ * Class Response
+ * Adapted from symfony/http-foundation package
+ *
+ * @package Nur\Http
+ */
 class Response extends \Symfony\Component\HttpFoundation\Response
 {
     /** @var bool */

@@ -2,6 +2,13 @@
 
 namespace Nur\Hash;
 
+/**
+ * Class AbstractHash
+ * Adapted from Laravel Framework
+ * @see https://github.com/laravel/framework/tree/6.x/src/Illuminate/Hashing
+ *
+ * @package Nur\Hash
+ */
 abstract class AbstractHash
 {
     /**

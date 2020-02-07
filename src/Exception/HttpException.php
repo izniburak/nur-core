@@ -2,6 +2,12 @@
 
 namespace Nur\Exception;
 
+/**
+ * Class HttpException
+ * Adapted from Laravel Framework in order to use HTTP Exceptions
+ *
+ * @package Nur\Exception
+ */
 class HttpException extends \RuntimeException
 {
     /**

@@ -2,6 +2,12 @@
 
 namespace Nur\Exception;
 
+/**
+ * Class BadRequestHttpException
+ * Adapted from Laravel Framework in order to use HTTP Exceptions
+ *
+ * @package Nur\Exception
+ */
 class BadRequestHttpException extends HttpException
 {
     /**

@@ -2,6 +2,12 @@
 
 namespace Nur\Exception;
 
+/**
+ * Class MethodNotAllowedHttpException
+ * Adapted from Laravel Framework in order to use HTTP Exceptions
+ *
+ * @package Nur\Exception
+ */
 class MethodNotAllowedHttpException extends HttpException
 {
     /**

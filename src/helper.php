@@ -1,11 +1,11 @@
 <?php
 /**
- * nur - a simple framework for PHP Developers
  *
- * @author   izni burak demirtaş (@izniburak) <izniburak@gmail.com>
- * @web      <http://burakdemirtas.org>
- * @url      <https://github.com/izniburak/nur>
- * @license  The MIT License (MIT) - <http://opensource.org/licenses/MIT>
+ * Some of these helpers adapted from helpers of Laravel Framework
+ * You can check out those helpers.
+ *
+ * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Support/helpers.php
+ * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/helpers.php
  */
 
 use Nur\Container\Container as Container;

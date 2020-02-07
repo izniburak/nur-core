@@ -7,7 +7,8 @@ use Illuminate\Support\Str;
 
 /**
  * Class EnvironmentDetector
- * Implemented from Laravel
+ * Implemented from Laravel Framework
+ * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/EnvironmentDetector.php
  *
  * @package Nur\Kernel
  */

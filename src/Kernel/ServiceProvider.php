@@ -2,6 +2,13 @@
 
 namespace Nur\Kernel;
 
+/**
+ * Class ServiceProvider
+ * Adapted from Laravel Framework in order to use some methods.
+ * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Support/ServiceProvider.php
+ *
+ * @package Nur\Kernel
+ */
 abstract class ServiceProvider
 {
     /**

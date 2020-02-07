@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\SMTP;
 /**
  * Class Mail
  * Adapted from PHPMailer.
- * for details: https://github.com/PHPMailer/PHPMailer
+ * @see https://github.com/PHPMailer/PHPMailer
  *
  * @package Nur\Mail
  */

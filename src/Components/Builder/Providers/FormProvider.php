@@ -6,6 +6,13 @@ use DateTime;
 use Nur\Components\Builder\Html;
 use Nur\Uri\Uri;
 
+/**
+ * Class FormProvider
+ * Adapted from LaravelCollective/html
+ * @see https://github.com/LaravelCollective/html
+ *
+ * @package Nur\Components\Builder\Providers
+ */
 class FormProvider
 {
     /**
@@ -940,7 +947,7 @@ class FormProvider
      */
     protected function getAppendage($method)
     {
-        list($method, $appendage) = [strtoupper($method), ''];
+        [$method, $appendage] = [strtoupper($method), ''];
 
         // If the HTTP method is in this list of spoofed methods, we will attach the
         // method spoofer hidden input to the form. This allows us to use regular

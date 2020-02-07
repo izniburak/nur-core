@@ -4,6 +4,13 @@ namespace Nur\Components\Builder\Providers;
 
 use Nur\Uri\Uri;
 
+/**
+ * Class HtmlProvider
+ * Adapted from LaravelCollective/html
+ * @see https://github.com/LaravelCollective/html
+ *
+ * @package Nur\Components\Builder\Providers
+ */
 class HtmlProvider
 {
     /**

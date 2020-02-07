@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\{ParameterBag, Request as SymfonyRequest};
 /**
  * Class Request
  * Adapted from \Illuminate\Http\Request class on Laravel.
+ * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Http/Request.php
  *
  * @package Nur\Http
  */

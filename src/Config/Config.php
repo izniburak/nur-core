@@ -6,6 +6,13 @@ use ArrayAccess;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Support\Arr;
 
+/**
+ * Class Config
+ * Adapted from illuminate/config packages of Laravel
+ * @see https://github.com/laravel/framework/tree/6.x/src/Illuminate/Config
+ *
+ * @package Nur\Config
+ */
 class Config implements ArrayAccess, ConfigContract
 {
     /**
@@ -69,7 +76,7 @@ class Config implements ArrayAccess, ConfigContract
 
         foreach ($keys as $key => $default) {
             if (is_numeric($key)) {
-                list($key, $default) = [$default, null];
+                [$key, $default] = [$default, null];
             }
 
             $config[$key] = Arr::get($this->items, $key, $default);

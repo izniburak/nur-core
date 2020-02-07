@@ -6,6 +6,13 @@ use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Events\Dispatcher;
 
+/**
+ * Class Eloquent
+ * Adapted from illuminate/database package of Laravel
+ * @see https://github.com/laravel/framework/tree/6.x/src/Illuminate/Database
+ *
+ * @package Nur\Database
+ */
 class Eloquent
 {
     /**

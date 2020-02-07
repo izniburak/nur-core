@@ -4,6 +4,13 @@ namespace Nur\Hash;
 
 use RuntimeException;
 
+/**
+ * Class Argon2IdHash
+ * Adapted from Laravel Framework
+ * @see https://github.com/laravel/framework/tree/6.x/src/Illuminate/Hashing
+ *
+ * @package Nur\Hash
+ */
 class Argon2IdHash extends ArgonHash
 {
     /**
