@@ -29,20 +29,13 @@ abstract class Facade
     protected static $resolvedInstance;
 
     /**
-     * Created instances of objects in Facade
-     *
-     * @var array
-     */
-    protected static $createdInstances = [];
-
-    /**
      * Set Facade Application (Container)
      *
      * @param string $app
      *
      * @return void
      */
-    public static function setApplication($app): void
+    public static function setFacadeApplication($app): void
     {
         static::$app = $app;
     }
@@ -60,13 +53,13 @@ abstract class Facade
     /**
      * Clear Resolved Instance
      *
-     * @param string $facadeName
+     * @param string $name
      *
      * @return void
      */
-    public static function clearResolvedInstance($facadeName): void
+    public static function clearResolvedInstance($name): void
     {
-        unset(static::$resolvedInstance[$facadeName]);
+        unset(static::$resolvedInstance[$name]);
     }
 
     /**
@@ -88,7 +81,13 @@ abstract class Facade
      */
     public static function resolved(Closure $callback): void
     {
-        static::$app->afterResolving(static::getFacadeAccessor(), function ($service) use ($callback) {
+        $accessor = static::getFacadeAccessor();
+
+        if (static::$app->resolved($accessor) === true) {
+            $callback(static::getFacadeRoot());
+        }
+
+        static::$app->afterResolving($accessor, function ($service) use ($callback) {
             $callback($service);
         });
     }
@@ -116,40 +115,39 @@ abstract class Facade
      */
     public static function getFacadeRoot()
     {
-        return static::resolveInstance(static::getFacadeAccessor());
+        return static::resolveFacadeInstance(static::getFacadeAccessor());
     }
 
     /**
      * Call Methods in Application Object
      *
      * @param string $method
-     * @param array  $parameters
+     * @param array  $args
      *
      * @return mixed
      */
-    public static function __callStatic($method, $parameters)
+    public static function __callStatic($method, $args)
     {
-        $accessor = strtolower(static::getFacadeAccessor());
-        $provider = static::resolveInstance(strtolower($accessor));
+        $instance = static::getFacadeRoot();
 
-        if (! array_key_exists($accessor, static::$createdInstances)) {
-            static::$createdInstances[$accessor] = $provider;
+        if (! $instance) {
+            throw new RuntimeException('A facade root has not been set.');
         }
 
-        return call_user_func_array([static::$createdInstances[$accessor], $method], $parameters);
+        return $instance->$method(...$args);
     }
 
     /**
      * Call Methods in Application Object
      *
      * @param string $method
-     * @param array  $parameters
+     * @param array  $args
      *
      * @return mixed
      */
-    public function __call($method, $parameters)
+    public function __call($method, $args)
     {
-        return self::__callStatic($method, $parameters);
+        return self::__callStatic($method, $args);
     }
 
     /**
@@ -171,7 +169,7 @@ abstract class Facade
      *
      * @return mixed|void
      */
-    protected static function resolveInstance($name)
+    protected static function resolveFacadeInstance($name)
     {
         if (is_object($name)) {
             return $name;

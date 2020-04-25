@@ -26,7 +26,7 @@ class Application extends Container
      *
      * @var string
      */
-    const VERSION = '2.0.0';
+    const VERSION = '2.1.0';
 
     /**
      * The base path for the Nur Framework installation.
@@ -192,7 +192,7 @@ class Application extends Container
         );
 
         $this->init();
-        $this->bindPathsInContainer();
+        $this->setBasePath($this->root);
         $this->registerBaseBindings();
         $this->registerBaseServiceProviders();
         $this->registerCoreContainerAliases();
@@ -395,6 +395,8 @@ class Application extends Container
     public function setBasePath($basePath): Container
     {
         $this->basePath = rtrim($basePath, '\/');
+
+        $this->bindPathsInContainer();
 
         return $this;
     }
@@ -695,13 +697,39 @@ class Application extends Container
      */
     public function make($abstract, array $parameters = [])
     {
-        $abstract = $this->getAlias($abstract);
+        $this->loadDeferredProviderIfNeeded($abstract = $this->getAlias($abstract));
 
+        return parent::make($abstract, $parameters);
+    }
+
+    /**
+     * Resolve the given type from the container.
+     *
+     * @param string $abstract
+     * @param array  $parameters
+     * @param bool   $raiseEvents
+     *
+     * @return mixed
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    protected function resolve($abstract, $parameters = [], $raiseEvents = true)
+    {
+        $this->loadDeferredProviderIfNeeded($abstract = $this->getAlias($abstract));
+
+        return parent::resolve($abstract, $parameters, $raiseEvents);
+    }
+
+    /**
+     * Load the deferred provider if the given type is a deferred service and the instance has not been loaded.
+     *
+     * @param  string  $abstract
+     * @return void
+     */
+    protected function loadDeferredProviderIfNeeded($abstract)
+    {
         if ($this->isDeferredService($abstract) && ! isset($this->instances[$abstract])) {
             $this->loadDeferredProvider($abstract);
         }
-
-        return parent::make($abstract, $parameters);
     }
 
     /**
@@ -826,7 +854,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function routesAreCached()
+    public function routesAreCached(): bool
     {
         return $this['files']->exists($this->getCachedRoutesPath());
     }
@@ -954,7 +982,7 @@ class Application extends Container
     {
         // Prepare Facades
         Facade::clearResolvedInstances();
-        Facade::setApplication($this);
+        Facade::setFacadeApplication($this);
 
         foreach ($this->registerCoreAliases as $key => $alias) {
             $this->alias($key, $alias);
@@ -981,6 +1009,7 @@ class Application extends Container
         $this->reboundCallbacks = [];
         $this->serviceProviders = [];
         $this->resolvingCallbacks = [];
+        $this->terminatingCallbacks = [];
         $this->afterResolvingCallbacks = [];
         $this->globalResolvingCallbacks = [];
     }
@@ -1267,7 +1296,6 @@ class Application extends Container
      */
     protected function bindPathsInContainer(): void
     {
-        $this->setBasePath($this->root);
         $this->instance('path', $this->path());
         $this->instance('path.base', $this->basePath());
         $this->instance('path.lang', $this->langPath());
@@ -1316,7 +1344,7 @@ class Application extends Container
     protected function fireAppCallbacks(array $callbacks): void
     {
         foreach ($callbacks as $callback) {
-            call_user_func($callback, $this);
+            $callback($this);
         }
     }
 
