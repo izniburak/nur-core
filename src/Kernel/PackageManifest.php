@@ -8,7 +8,8 @@ use Illuminate\Filesystem\Filesystem;
 /**
  * Class PackageManifest
  * Adapted from Laravel Framework
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/PackageManifest.php
+ *
+ * @see     https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/PackageManifest.php
  *
  * @package Nur\Kernel
  */
@@ -70,23 +71,36 @@ class PackageManifest
      * Get all of the service provider class names for all packages.
      *
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function providers(): array
+    public function providers()
     {
-        return collect($this->getManifest())->flatMap(function ($configuration) {
-            return (array)($configuration['providers'] ?? []);
-        })->filter()->all();
+        return $this->config('providers');
     }
 
     /**
      * Get all of the aliases for all packages.
      *
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function aliases(): array
+    public function aliases()
     {
-        return collect($this->getManifest())->flatMap(function ($configuration) {
-            return (array)($configuration['aliases'] ?? []);
+        return $this->config('aliases');
+    }
+
+    /**
+     * Get all of the values for all packages for the given configuration name.
+     *
+     * @param string $key
+     *
+     * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    public function config($key)
+    {
+        return collect($this->getManifest())->flatMap(function ($configuration) use ($key) {
+            return (array)($configuration[$key] ?? []);
         })->filter()->all();
     }
 
@@ -94,14 +108,16 @@ class PackageManifest
      * Build the manifest and write it to disk.
      *
      * @return void
-     * @throws
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function build()
     {
         $packages = [];
 
         if ($this->files->exists($path = $this->vendorPath . '/composer/installed.json')) {
-            $packages = json_decode($this->files->get($path), true);
+            $installed = json_decode($this->files->get($path), true);
+
+            $packages = $installed['packages'] ?? $installed;
         }
 
         $ignoreAll = in_array('*', $ignore = $this->packagesToIgnore());
@@ -119,14 +135,15 @@ class PackageManifest
      * Get the current package manifest.
      *
      * @return array
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getManifest()
     {
-        if (! is_null($this->manifest)) {
+        if (!is_null($this->manifest)) {
             return $this->manifest;
         }
 
-        if (! file_exists($this->manifestPath)) {
+        if (!file_exists($this->manifestPath)) {
             $this->build();
         }
 
@@ -143,7 +160,7 @@ class PackageManifest
      *
      * @return string
      */
-    protected function format($package): string
+    protected function format($package)
     {
         return str_replace($this->vendorPath . '/', '', $package);
     }
@@ -153,9 +170,9 @@ class PackageManifest
      *
      * @return array
      */
-    protected function packagesToIgnore(): array
+    protected function packagesToIgnore()
     {
-        if (! file_exists($this->basePath . '/composer.json')) {
+        if (!file_exists($this->basePath . '/composer.json')) {
             return [];
         }
 
@@ -171,11 +188,11 @@ class PackageManifest
      *
      * @return void
      *
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function write(array $manifest): void
+    protected function write(array $manifest)
     {
-        if (! is_writable(dirname($this->manifestPath))) {
+        if (!is_writable(dirname($this->manifestPath))) {
             throw new Exception('The ' . dirname($this->manifestPath) . ' directory must be present and writable.');
         }
 

@@ -55,14 +55,16 @@ abstract class ServiceProvider
      * Register paths to be published by the publish command.
      *
      * @param  array  $paths
-     * @param  string  $group
+     * @param  mixed  $groups
      * @return void
      */
-    protected function publishes(array $paths, $group = null): void
+    protected function publishes(array $paths, $groups = null)
     {
         $this->ensurePublishArrayInitialized($class = static::class);
+
         static::$publishes[$class] = array_merge(static::$publishes[$class], $paths);
-        if ($group) {
+
+        foreach ((array) $groups as $group) {
             $this->addPublishGroup($group, $paths);
         }
     }
@@ -87,11 +89,12 @@ abstract class ServiceProvider
      * @param  array  $paths
      * @return void
      */
-    protected function addPublishGroup($group, $paths): void
+    protected function addPublishGroup($group, $paths)
     {
         if (! array_key_exists($group, static::$publishGroups)) {
             static::$publishGroups[$group] = [];
         }
+
         static::$publishGroups[$group] = array_merge(
             static::$publishGroups[$group], $paths
         );
@@ -100,15 +103,16 @@ abstract class ServiceProvider
     /**
      * Get the paths to publish.
      *
-     * @param  string  $provider
-     * @param  string  $group
+     * @param  string|null  $provider
+     * @param  string|null  $group
      * @return array
      */
-    public static function pathsToPublish($provider = null, $group = null): array
+    public static function pathsToPublish($provider = null, $group = null)
     {
         if (! is_null($paths = static::pathsForProviderOrGroup($provider, $group))) {
             return $paths;
         }
+
         return collect(static::$publishes)->reduce(function ($paths, $p) {
             return array_merge($paths, $p);
         }, []);
@@ -141,12 +145,12 @@ abstract class ServiceProvider
      * @param  string  $group
      * @return array
      */
-
-    protected static function pathsForProviderAndGroup($provider, $group): array
+    protected static function pathsForProviderAndGroup($provider, $group)
     {
         if (! empty(static::$publishes[$provider]) && ! empty(static::$publishGroups[$group])) {
             return array_intersect_key(static::$publishes[$provider], static::$publishGroups[$group]);
         }
+
         return [];
     }
 
