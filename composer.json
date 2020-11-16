@@ -20,7 +20,7 @@
     }
   ],
   "require": {
-    "php": "^7.2",
+    "php": "^7.3|^8.0",
     "ext-mbstring": "*",
     "ext-pdo": "*",
     "ext-json": "*",
@@ -28,24 +28,24 @@
     "izniburak/nur-migration": "^1",
     "izniburak/pdox": "^1",
     "izniburak/router": "^1",
-    "illuminate/database": "^6.10",
-    "illuminate/pagination": "^6.10",
-    "illuminate/view": "^6.10",
-    "illuminate/events": "^6.10",
-    "illuminate/translation": "^6.10",
-    "illuminate/cache": "^6.10",
-    "symfony/console": "^4.3",
-    "symfony/http-foundation": "^4.3",
-    "symfony/var-dumper": "^4.3",
-    "symfony/cache": "^4.3",
-    "ramsey/uuid": "^3.9",
-    "vlucas/phpdotenv": "^3.3",
+    "illuminate/database": "^8.0",
+    "illuminate/pagination": "^8.0",
+    "illuminate/view": "^8.0",
+    "illuminate/events": "^8.0",
+    "illuminate/translation": "^8.0",
+    "illuminate/cache": "^8.0",
+    "symfony/console": "^5.1",
+    "symfony/http-foundation": "^5.1",
+    "symfony/var-dumper": "^5.1",
+    "symfony/cache": "^5.1",
+    "ramsey/uuid": "^4.0",
+    "vlucas/phpdotenv": "^5.2",
     "firebase/php-jwt": "^5.0",
     "phpmailer/phpmailer": "~6.1"
   },
   "require-dev": {
     "doctrine/dbal": "^2.10",
-    "filp/whoops": "^2.7"
+    "filp/whoops": "^2.8|^3.0"
   },
   "autoload": {
     "files": [
