@@ -6,6 +6,8 @@ use Nur\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\PhpExecutableFinder;
+use Symfony\Component\Process\Process;
 
 class ServeCommand extends Command
 {
@@ -20,13 +22,47 @@ class ServeCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        chdir(public_path());
+
         $host = $input->hasParameterOption('--host') !== false ? $input->getOption('host') : '127.0.0.1';
         $port = $input->hasParameterOption('--port') !== false ? $input->getOption('port') : '8000';
 
         $output->writeln(
-            "<info>Nur Application's started on built-in PHP web server ({$host}:{$port})" . PHP_EOL .
-            "Press Ctrl-C to Quit.</info>" . PHP_EOL
+            "<info>Nur Application started on built-in PHP web server</info> http://{$host}:{$port}" . PHP_EOL .
+            "Press Ctrl-C to Quit." . PHP_EOL
         );
-        passthru("php -S {$host}:{$port} server.php");
+
+        // passthru("php -S {$host}:{$port} " . base_path('server.php'));
+        $process = new Process($this->serverCommand($host, $port), null, collect($_ENV)->mapWithKeys(function ($value, $key) {
+            return in_array($key, ['APP_ENV']) ? [$key => $value] : [$key => false];
+        })->all());
+
+        $process->start(function ($type, $buffer) {
+            $this->output->write($buffer);
+        });
+
+        while ($process->isRunning()) {
+            usleep(500 * 1000);
+        }
+
+        return $process->getExitCode();
+    }
+
+    /**
+     * Get the full server command.
+     *
+     * @param string $host
+     * @param string $port
+     *
+     * @return array
+     */
+    protected function serverCommand($host, $port)
+    {
+        return [
+            (new PhpExecutableFinder)->find(false),
+            '-S',
+            $host.':'.$port,
+            base_path('server.php'),
+        ];
     }
 }
