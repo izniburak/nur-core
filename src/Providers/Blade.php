@@ -5,6 +5,7 @@ namespace Nur\Providers;
 use Nur\Kernel\ServiceProvider;
 use Illuminate\View\FileViewFinder;
 use Illuminate\View\Factory;
+use Illuminate\View\DynamicComponent;
 use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Engines\FileEngine;
 use Illuminate\View\Engines\CompilerEngine;
@@ -92,7 +93,7 @@ class Blade extends ServiceProvider
     public function registerFileEngine($resolver)
     {
         $resolver->register('file', function () {
-            return new FileEngine;
+            return new FileEngine($this->app['files']);
         });
     }
 
@@ -106,7 +107,7 @@ class Blade extends ServiceProvider
     public function registerPhpEngine($resolver)
     {
         $resolver->register('php', function () {
-            return new PhpEngine;
+            return new PhpEngine($this->app['files']);
         });
     }
 
@@ -123,11 +124,13 @@ class Blade extends ServiceProvider
         // this case will be the Blade compiler, so we'll first create the compiler
         // instance to pass into the engine so it can compile the views properly.
         $this->app->singleton('blade.compiler', function ($app) {
-            return new BladeCompiler($app['files'], realpath(cache_path('blade')));
+            return tap(new BladeCompiler($app['files'], realpath(cache_path('blade'))), function ($blade) {
+                $blade->component('dynamic-component', DynamicComponent::class);
+            });
         });
 
         $resolver->register('blade', function () {
-            return new CompilerEngine($this->app['blade.compiler']);
+            return new CompilerEngine($this->app['blade.compiler'], $this->app['files']);
         });
     }
 

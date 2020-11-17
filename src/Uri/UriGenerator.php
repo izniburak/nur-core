@@ -31,8 +31,6 @@ class UriGenerator
             $this->request->server('SERVER_PORT') == 443 || config('app.https') === true) {
             $this->cachedHttps = true;
         }
-
-        return;
     }
 
     /**

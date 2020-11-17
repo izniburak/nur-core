@@ -26,7 +26,7 @@ class Application extends Container
      *
      * @var string
      */
-    const VERSION = '2.1.0';
+    const VERSION = '3.0.0';
 
     /**
      * The base path for the Nur Framework installation.
@@ -1174,7 +1174,7 @@ class Application extends Container
      *
      * @return void
      */
-    protected function init()
+    protected function init(): void
     {
         $this->registerCoreProviders = [
             \Nur\Providers\Event::class,
@@ -1183,6 +1183,7 @@ class Application extends Container
             \Nur\Providers\Uri::class,
             \Nur\Providers\Request::class,
             \Nur\Providers\Response::class,
+            \Nur\Providers\Date::class,
             \Nur\Providers\Encryption::class,
         ];
 
@@ -1191,6 +1192,7 @@ class Application extends Container
             'Request'   => \Nur\Facades\Request::class,
             'Response'  => \Nur\Facades\Response::class,
             'Uri'       => \Nur\Facades\Uri::class,
+            'Date'      => \Nur\Facades\Date::class,
         ];
     }
 
@@ -1200,19 +1202,19 @@ class Application extends Container
      * @return void
      * @throws
      */
-    protected function loadConfigFiles()
+    protected function loadConfigFiles(): void
     {
         try {
             if (file_exists($this->cachePath('config.php'))) {
-                $this->config = require $this->cachePath('config.php');
+                $this->config = require_once $this->cachePath('config.php');
             } else {
-                $env = Dotenv::create($this->root);
+                $env = Dotenv::createImmutable($this->root);
                 $env->load();
                 foreach (glob($this->root . '/config/*.php') as $file) {
                     $keyName = strtolower(str_replace(
                         [$this->root . '/config/', '.php'], '', $file
                     ));
-                    $this->config[$keyName] = require $file;
+                    $this->config[$keyName] = require_once $file;
                 }
             }
         } catch (Exception $e) {
