@@ -9,7 +9,7 @@ use Illuminate\Events\Dispatcher;
 /**
  * Class Eloquent
  * Adapted from illuminate/database package of Laravel
- * @see https://github.com/laravel/framework/tree/6.x/src/Illuminate/Database
+ * @see https://github.com/laravel/framework/tree/8.x/src/Illuminate/Database
  *
  * @package Nur\Database
  */

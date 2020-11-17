@@ -15,7 +15,7 @@ use Dotenv\Dotenv;
 /**
  * Class Application
  * Implemented from Laravel Framework in order to use some methods
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/Application.php
+ * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Application.php
  *
  * @package Nur\Kernel
  */

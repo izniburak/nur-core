@@ -4,8 +4,8 @@
  * Some of these helpers adapted from helpers of Laravel Framework
  * You can check out those helpers.
  *
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Support/helpers.php
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/helpers.php
+ * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Support/helpers.php
+ * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/helpers.php
  */
 
 use Nur\Container\Container as Container;
@@ -63,14 +63,13 @@ if (! function_exists('abort')) {
     /**
      * Throw an HttpException with the given data.
      *
-     * @param int    $code
-     * @param string $message
-     * @param array  $headers
+     * @param int         $code
+     * @param string|null $message
+     * @param array       $headers
      *
      * @return void
-     * @throws
      */
-    function abort($code, $message = null, array $headers = [])
+    function abort(int $code, string $message = null, array $headers = [])
     {
         if ($code === 404) {
             throw new \Nur\Exception\NotFoundHttpException($message);
@@ -84,15 +83,14 @@ if (! function_exists('abort_if')) {
     /**
      * Throw an HttpException with the given data if the given condition is true.
      *
-     * @param bool   $boolean
-     * @param int    $code
-     * @param string $message
-     * @param array  $headers
+     * @param bool        $boolean
+     * @param int         $code
+     * @param string|null $message
+     * @param array       $headers
      *
      * @return void
-     * @throws
      */
-    function abort_if($boolean, $code, $message = null, array $headers = [])
+    function abort_if(bool $boolean, int $code, string $message = null, array $headers = [])
     {
         if ($boolean) {
             abort($code, $message, $headers);
@@ -144,7 +142,7 @@ if (! function_exists('view')) {
      *
      * @return \Nur\Http\Response|string
      */
-    function view($name, array $data = [])
+    function view(string $name, array $data = [])
     {
         return response()->view($name, $data);
     }
@@ -154,12 +152,12 @@ if (! function_exists('helper')) {
     /**
      * Load a helper
      *
-     * @param string|null $file
+     * @param string $file
      * @param string|null $directory
      *
      * @return mixed
      */
-    function helper($file, $directory = null)
+    function helper(string $file, $directory = null)
     {
         return app('load')->helper($file, $directory ?? 'Helpers');
     }
@@ -175,12 +173,13 @@ if (! function_exists('auth')) {
      */
     function auth($user = null)
     {
+        /** @var \Nur\Auth\Auth $auth */
         $auth = app(\Nur\Auth\Auth::class);
         if (is_null($user)) {
             return $auth;
         }
 
-        return app($auth)->login($user);
+        return $auth->login($user);
     }
 }
 
@@ -192,7 +191,7 @@ if (! function_exists('session')) {
      *
      * @return mixed|Nur\Http\Session
      */
-    function session($name = null)
+    function session(string $name = null)
     {
         if (is_null($name)) {
             return app('session');
@@ -210,7 +209,7 @@ if (! function_exists('cookie')) {
      *
      * @return mixed|Nur\Http\Cookie
      */
-    function cookie($name = null)
+    function cookie(string $name = null)
     {
         if (is_null($name)) {
             return app('cookie');
@@ -228,7 +227,7 @@ if (! function_exists('uri')) {
      *
      * @return string|Nur\Uri\Uri
      */
-    function uri($name = null)
+    function uri(string $name = null)
     {
         if (is_null($name)) {
             return app('uri');
@@ -248,7 +247,7 @@ if (! function_exists('redirect')) {
      *
      * @return void|null
      */
-    function redirect($url = null, $statusCode = 301, $secure = false)
+    function redirect(string $url = null, int $statusCode = 301, bool $secure = false)
     {
         uri()->redirect($url, $statusCode, $secure);
     }
@@ -262,7 +261,7 @@ if (! function_exists('http')) {
      *
      * @return mixed|Nur\Http\Http
      */
-    function http($name = null)
+    function http(string $name = null)
     {
         if (is_null($name)) {
             return app('http');
@@ -282,7 +281,7 @@ if (! function_exists('event')) {
      *
      * @return mixed
      */
-    function event($event, array $params = [], $method = 'handle')
+    function event(string $event, array $params = [], string $method = 'handle')
     {
         return app(\Nur\Event\Event::class)->trigger($event, $params, $method);
     }
@@ -297,7 +296,7 @@ if (! function_exists('encrypt')) {
      *
      * @return string
      */
-    function encrypt($value, $serialize = true)
+    function encrypt($value, bool $serialize = true)
     {
         return app('encrypter')->encrypt($value, $serialize);
     }
@@ -312,7 +311,7 @@ if (! function_exists('decrypt')) {
      *
      * @return mixed
      */
-    function decrypt($value, $unserialize = true)
+    function decrypt($value, bool $unserialize = true)
     {
         return app('encrypter')->decrypt($value, $unserialize);
     }
@@ -322,13 +321,13 @@ if (! function_exists('hasher')) {
     /**
      * Hash the given value against the selected algorithm in Hash config.
      *
-     * @param string $value
-     * @param array  $options
+     * @param string|null $value
+     * @param array       $options
      *
      * @return string|\Nur\Hash\Hash
      * @throws
      */
-    function hasher($value = null, $options = [])
+    function hasher(string $value = null, array $options = [])
     {
         if (is_null($value)) {
             return app('hash');
@@ -342,12 +341,12 @@ if (! function_exists('bcrypt')) {
     /**
      * Hash the given value against the bcrypt algorithm.
      *
-     * @param string $value
-     * @param array  $options
+     * @param string|null $value
+     * @param array       $options
      *
      * @return string|\Nur\Hash\BcryptHash
      */
-    function bcrypt($value = null, $options = [])
+    function bcrypt(string $value = null, array $options = [])
     {
         if (is_null($value)) {
             return hasher()->createBcryptDriver();
@@ -365,7 +364,7 @@ if (! function_exists('app_path')) {
      *
      * @return string
      */
-    function app_path($path = '')
+    function app_path(string $path = '')
     {
         return app('path') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -379,7 +378,7 @@ if (! function_exists('base_path')) {
      *
      * @return string
      */
-    function base_path($path = '')
+    function base_path(string $path = '')
     {
         return app('path.base') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -393,7 +392,7 @@ if (! function_exists('config_path')) {
      *
      * @return string
      */
-    function config_path($path = '')
+    function config_path(string $path = '')
     {
         return app('path.config') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -407,7 +406,7 @@ if (! function_exists('storage_path')) {
      *
      * @return string
      */
-    function storage_path($path = '')
+    function storage_path(string $path = '')
     {
         return app('path.storage') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -421,7 +420,7 @@ if (! function_exists('database_path')) {
      *
      * @return string
      */
-    function database_path($path = '')
+    function database_path(string $path = '')
     {
         return app('path.database') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -435,7 +434,7 @@ if (! function_exists('cache_path')) {
      *
      * @return string
      */
-    function cache_path($path = '')
+    function cache_path(string $path = '')
     {
         return app('path.cache') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -449,7 +448,7 @@ if (! function_exists('public_path')) {
      *
      * @return string
      */
-    function public_path($path = '')
+    function public_path(string $path = '')
     {
         return app('path.public') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -464,9 +463,9 @@ if (! function_exists('csrf_token')) {
      * @return string
      * @throws
      */
-    function csrf_token($name = null)
+    function csrf_token(string $name = null): string
     {
-        $csrf = hash_hmac('sha256', get_token(), uniqid('', true));
+        $csrf = hash_hmac('sha256', config('app.key'), uniqid('', true));
         session()->set('_nur_csrf' . (! is_null($name) ? '_' . $name : ''), $csrf);
 
         return $csrf;
@@ -482,7 +481,7 @@ if (! function_exists('csrf_check')) {
      *
      * @return bool
      */
-    function csrf_check($token, $name = null)
+    function csrf_check(string $token, $name = null): bool
     {
         $name = (! is_null($name) ? '_' . $name : '');
         if (session()->has('_nur_csrf' . $name) &&
@@ -504,7 +503,7 @@ if (! function_exists('csrf_field')) {
      *
      * @return string
      */
-    function csrf_field(string $name = null)
+    function csrf_field(string $name = null): string
     {
         return '<input type="hidden" name="_token" value="' . csrf_token($name) . '" />';
     }
@@ -518,7 +517,7 @@ if (! function_exists('method_field')) {
      *
      * @return string
      */
-    function method_field(string $method)
+    function method_field(string $method): string
     {
         return '<input type="hidden" name="_method" value="' . $method . '" />';
     }
@@ -639,7 +638,7 @@ if (! function_exists('__')) {
      * @param  string|null  $locale
      * @return string|array|null
      */
-    function __($key = null, $replace = [], $locale = null)
+    function __(string $key = null, array $replace = [], string $locale = null)
     {
         if (is_null($key)) {
             return $key;

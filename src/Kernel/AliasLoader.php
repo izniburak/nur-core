@@ -5,7 +5,7 @@ namespace Nur\Kernel;
 /**
  * Class AliasLoader
  * Adapted from Laravel Framework
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/AliasLoader.php
+ * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/AliasLoader.php
  *
  * @package Nur\Kernel
  */

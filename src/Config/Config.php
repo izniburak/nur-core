@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 /**
  * Class Config
  * Adapted from illuminate/config packages of Laravel
- * @see https://github.com/laravel/framework/tree/6.x/src/Illuminate/Config
+ * @see https://github.com/laravel/framework/tree/8.x/src/Illuminate/Config
  *
  * @package Nur\Config
  */

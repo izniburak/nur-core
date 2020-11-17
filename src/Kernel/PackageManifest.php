@@ -9,7 +9,7 @@ use Illuminate\Filesystem\Filesystem;
  * Class PackageManifest
  * Adapted from Laravel Framework
  *
- * @see     https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/PackageManifest.php
+ * @see     https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/PackageManifest.php
  *
  * @package Nur\Kernel
  */

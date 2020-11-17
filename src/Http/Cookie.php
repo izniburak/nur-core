@@ -33,7 +33,7 @@ class Cookie
      *
      * @return null|mixed
      */
-    public function get($key = null)
+    public function get(string $key = null)
     {
         return is_null($key) ? $_COOKIE : ($this->has($key) ? $_COOKIE[$key] : null);
     }
@@ -45,7 +45,7 @@ class Cookie
      *
      * @return bool
      */
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return isset($_COOKIE[$key]);
     }
@@ -57,7 +57,7 @@ class Cookie
      *
      * @return void
      */
-    public function delete($key): void
+    public function delete(string $key): void
     {
         if ($this->has($key)) {
             setcookie($key, null, -1, '/');

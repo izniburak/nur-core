@@ -5,7 +5,7 @@ namespace Nur\Kernel;
 /**
  * Class ServiceProvider
  * Adapted from Laravel Framework in order to use some methods.
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Support/ServiceProvider.php
+ * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Support/ServiceProvider.php
  *
  * @package Nur\Kernel
  */
@@ -75,7 +75,7 @@ abstract class ServiceProvider
      * @param  string  $class
      * @return void
      */
-    protected function ensurePublishArrayInitialized($class): void
+    protected function ensurePublishArrayInitialized(string $class): void
     {
         if (! array_key_exists($class, static::$publishes)) {
             static::$publishes[$class] = [];

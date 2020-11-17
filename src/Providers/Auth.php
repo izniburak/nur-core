@@ -19,7 +19,7 @@ class Auth extends ServiceProvider
      * @return void
      * @throws
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(\Nur\Auth\Auth::class, \Nur\Auth\Auth::class);
 

@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\{ParameterBag, Request as SymfonyRequest};
 /**
  * Class Request
  * Adapted from \Illuminate\Http\Request class on Laravel.
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Http/Request.php
+ * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Http/Request.php
  *
  * @package Nur\Http
  */
@@ -44,12 +44,12 @@ class Request extends SymfonyRequest
     /**
      * Retrieve a server variable from the request.
      *
-     * @param string            $key
+     * @param string|null       $key
      * @param string|array|null $default
      *
      * @return string|array
      */
-    public function server($key = null, $default = null)
+    public function server(string $key = null, $default = null)
     {
         return $this->retrieveItem('server', $key, $default);
     }
@@ -61,7 +61,7 @@ class Request extends SymfonyRequest
      *
      * @return bool
      */
-    public function hasHeader($key): bool
+    public function hasHeader(string $key): bool
     {
         return !is_null($this->header($key));
     }
@@ -69,12 +69,12 @@ class Request extends SymfonyRequest
     /**
      * Retrieve a header from the request.
      *
-     * @param string            $key
+     * @param string|null       $key
      * @param string|array|null $default
      *
      * @return string|array
      */
-    public function header($key = null, $default = null)
+    public function header(string $key = null, $default = null)
     {
         return $this->retrieveItem('headers', $key, $default);
     }
@@ -176,12 +176,12 @@ class Request extends SymfonyRequest
     /**
      * Get the JSON payload for the request.
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param string|null $key
+     * @param mixed       $default
      *
      * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed
      */
-    public function json($key = null, $default = null)
+    public function json(string $key = null, $default = null)
     {
         if (!isset($this->json)) {
             $this->json = new ParameterBag((array)json_decode($this->getContent(), true));

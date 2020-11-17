@@ -118,13 +118,13 @@ class Log
      * @return void
      * @throws
      */
-    protected function log($level, $message): void
+    protected function log(string $level, $message): void
     {
         if (is_array($message) || is_object($message)) {
             $message = print_r($message, true);
         }
 
-        $text = '[' . date($this->timeFormat, time()) . '] - ['
+        $text = '[' . date($this->timeFormat, time()) . ']['
                 . strtoupper($level) . '] - [' . request()->ip() . '] --> ' . $message;
 
         $this->save($text);
@@ -138,7 +138,7 @@ class Log
      * @return void
      * @throws
      */
-    protected function save($text): void
+    protected function save(string $text): void
     {
         $fileName = 'log_' . date('Y-m-d') . '.log';
         $file = fopen(storage_path('log' . DIRECTORY_SEPARATOR . $fileName), 'a');

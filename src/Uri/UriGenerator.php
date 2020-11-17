@@ -36,31 +36,31 @@ class UriGenerator
     /**
      * Get base url for app.
      *
-     * @param string $data
-     * @param bool   $secure
+     * @param string|null $path
+     * @param bool        $secure
      *
      * @return string
      */
-    public function base($data = null, $secure = false): string
+    public function base(string $path = null, $secure = false): string
     {
-        $data = (! is_null($data)) ? $this->url . $data : $this->url . '/';
-        return $this->getUrl($data, $secure);
+        $path = (! is_null($path)) ? $this->url . $path : $this->url . '/';
+        return $this->getUrl($path, $secure);
     }
 
     /**
      * Get admin url for app.
      *
-     * @param string $data
-     * @param bool   $secure
+     * @param string|null $path
+     * @param bool        $secure
      *
      * @return string
      */
-    public function admin($data = null, $secure = false): string
+    public function admin(string $path = null, $secure = false): string
     {
-        $data = (! is_null($data))
-            ? $this->url . '/' . ADMIN_FOLDER . '/' . $data
+        $path = (! is_null($path))
+            ? $this->url . '/' . ADMIN_FOLDER . '/' . $path
             : $this->url . '/' . ADMIN_FOLDER . '/';
-        return $this->getUrl($data, $secure);
+        return $this->getUrl($path, $secure);
     }
 
     /**
@@ -72,10 +72,10 @@ class UriGenerator
      *
      * @return string
      */
-    public function route($name, array $params = null, $secure = false): string
+    public function route(string $name, array $params = [], $secure = false): string
     {
         $routes = file_exists(cache_path('routes.php'))
-            ? require cache_path('routes.php')
+            ? require_once cache_path('routes.php')
             : app('route')->getRoutes();
 
         $found = false;
@@ -111,29 +111,29 @@ class UriGenerator
     /**
      * Get assets directory for app.
      *
-     * @param string $data
-     * @param bool   $secure
+     * @param string|null $path
+     * @param bool        $secure
      *
      * @return string
      */
-    public function assets($data = null, $secure = false): string
+    public function assets(string $path = null, $secure = false): string
     {
-        $data = (! is_null($data))
-            ? $this->url . '/' . ASSETS_FOLDER . '/' . $data
+        $path = (! is_null($path))
+            ? $this->url . '/' . ASSETS_FOLDER . '/' . $path
             : $this->url . '/' . ASSETS_FOLDER . '/';
-        return $this->getUrl($data, $secure);
+        return $this->getUrl($path, $secure);
     }
 
     /**
      * Redirect to another URL.
      *
-     * @param string $data
-     * @param int    $statusCode
-     * @param bool   $secure
+     * @param string|null $data
+     * @param int         $statusCode
+     * @param bool        $secure
      *
      * @return void
      */
-    public function redirect($data = null, int $statusCode = 301, $secure = false): void
+    public function redirect(string $data = null, int $statusCode = 301, $secure = false): void
     {
         if (substr($data, 0, 4) === 'http' || substr($data, 0, 5) === 'https') {
             header('Location: ' . $data, true, $statusCode);
@@ -158,11 +158,11 @@ class UriGenerator
     /**
      * Get segments of URI.
      *
-     * @param int $num
+     * @param int|null $num
      *
      * @return array|string|null
      */
-    public function segment($num = null)
+    public function segment(int $num = null)
     {
         if (is_null($this->request->server('REQUEST_URI')) || is_null($this->request->server('SCRIPT_NAME'))) {
             return null;
@@ -188,7 +188,7 @@ class UriGenerator
      *
      * @return string
      */
-    protected function getUrl($data, $secure): string
+    protected function getUrl(string $data, bool $secure): string
     {
         $this->https = $secure;
         return $this->scheme() . $this->replace($data);
@@ -215,7 +215,7 @@ class UriGenerator
      *
      * @return string|null
      */
-    private function replace($data): ?string
+    private function replace(string $data): ?string
     {
         return str_replace(['///', '//'], '/', $data);
     }

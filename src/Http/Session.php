@@ -42,7 +42,7 @@ class Session
      *
      * @return bool
      */
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return isset($_SESSION[$key]);
     }
@@ -50,13 +50,13 @@ class Session
     /**
      * Setting Flash Message
      *
-     * @param string $key
-     * @param mixed  $value
-     * @param string $redirect
+     * @param string      $key
+     * @param mixed       $value
+     * @param string|null $redirect
      *
      * @return bool
      */
-    public function setFlash($key, $value, $redirect = null)
+    public function setFlash(string $key, $value, string $redirect = null)
     {
         $this->set('_nur_flash', [$key => $value]);
 
@@ -74,7 +74,7 @@ class Session
      *
      * @return null|mixed
      */
-    public function getFlash($key = null)
+    public function getFlash(string $key = null)
     {
         if (! is_null($key)) {
             $value = null;
@@ -97,7 +97,7 @@ class Session
      *
      * @return bool
      */
-    public function hasFlash($key): bool
+    public function hasFlash(string $key): bool
     {
         return isset($_SESSION['_nur_flash'][$key]);
     }
@@ -109,7 +109,7 @@ class Session
      *
      * @return void
      */
-    public function delete($key): void
+    public function delete(string $key): void
     {
         if ($this->has($key)) {
             unset($_SESSION[$key]);

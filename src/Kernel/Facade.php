@@ -8,7 +8,7 @@ use RuntimeException;
 /**
  * Class Facade
  * Adapted from Laravel Framework
- * @see https://github.com/laravel/framework/blob/6.x/src/Illuminate/Support/Facades/Facade.php
+ * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Support/Facades/Facade.php
  *
  * @package Nur\Kernel
  */

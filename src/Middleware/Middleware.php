@@ -9,10 +9,7 @@ class Middleware implements MiddlewareInterface
      *
      * @return void
      */
-    function __construct()
-    {
-
-    }
+    function __construct() { }
 
     /**
      * This method will be triggered

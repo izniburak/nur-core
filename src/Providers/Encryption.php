@@ -24,7 +24,7 @@ class Encryption extends ServiceProvider
     public function register()
     {
         $this->app->singleton('encrypter', function ($app) {
-            $config = $app->make('config')->get('app');
+            $config = $app['config']->get('app');
 
             // If the key starts with "base64:", we will need to decode the key before handing
             // it off to the encrypter. Keys may be base-64 encoded for presentation and we

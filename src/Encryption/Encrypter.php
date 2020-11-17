@@ -32,7 +32,7 @@ class Encrypter implements EncrypterContract
      *
      * @throws \RuntimeException
      */
-    public function __construct($key, $cipher = 'AES-128-CBC')
+    public function __construct(string $key, string $cipher = 'AES-128-CBC')
     {
         $key = (string) $key;
 
@@ -51,7 +51,7 @@ class Encrypter implements EncrypterContract
      * @param  string  $cipher
      * @return bool
      */
-    public static function supported($key, $cipher)
+    public static function supported(string $key, string $cipher): bool
     {
         $length = mb_strlen($key, '8bit');
 
@@ -67,7 +67,7 @@ class Encrypter implements EncrypterContract
      * @return string
      * @throws \Exception
      */
-    public static function generateKey($cipher)
+    public static function generateKey(string $cipher): string
     {
         return random_bytes($cipher === 'AES-128-CBC' ? 16 : 32);
     }
@@ -121,7 +121,7 @@ class Encrypter implements EncrypterContract
      * @return string
      * @throws \Exception
      */
-    public function encryptString($value)
+    public function encryptString(string $value): string
     {
         return $this->encrypt($value, false);
     }
@@ -165,7 +165,7 @@ class Encrypter implements EncrypterContract
      * @return string
      * @throws \Exception
      */
-    public function decryptString($payload)
+    public function decryptString(string $payload)
     {
         return $this->decrypt($payload, false);
     }
@@ -192,7 +192,7 @@ class Encrypter implements EncrypterContract
      * @throws DecryptException
      * @throws \Exception
      */
-    protected function getJsonPayload($payload)
+    protected function getJsonPayload(string $payload)
     {
         $payload = json_decode(base64_decode($payload), true);
 

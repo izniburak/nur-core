@@ -9,8 +9,5 @@ class Controller
      *
      * @return void
      */
-    function __construct()
-    {
-
-    }
+    function __construct() { }
 }

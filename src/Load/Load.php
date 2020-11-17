@@ -16,12 +16,12 @@ class Load
      *
      * @throws ExceptionHandler
      */
-    public function view($name, array $data = [])
+    public function view(string $name, array $data = [])
     {
         $file = app_path('Views' . DIRECTORY_SEPARATOR . $name . '.php');
         if (file_exists($file)) {
             extract($data);
-            require $file;
+            require_once $file;
             return ob_get_clean();
         }
 
@@ -33,15 +33,16 @@ class Load
      *
      * @param string $name
      * @param string $directory
+     *
      * @return mixed
      *
      * @throws ExceptionHandler
      */
-    public function helper($name, $directory = 'Helpers')
+    public function helper(string $name, string $directory = 'Helpers')
     {
         $file = app_path($directory . DIRECTORY_SEPARATOR . $name . '.php');
         if (file_exists($file)) {
-            return require $file;
+            return require_once $file;
         }
 
         throw new ExceptionHandler('Oppss! File not found.', 'Helper::' . $name . ' not found.');

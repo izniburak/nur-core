@@ -30,7 +30,7 @@ class Router extends RouterProvider
     }
 
     /**
-     * @param $controller
+     * @param string $controller
      *
      * @return \Buki\Router\RouterException|mixed
      */

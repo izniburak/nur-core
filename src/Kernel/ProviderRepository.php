@@ -9,7 +9,7 @@ use Illuminate\Filesystem\Filesystem;
  * Class ProviderRepository
  * Adapted from Laravel Framework
  *
- * @see     https://github.com/laravel/framework/blob/6.x/src/Illuminate/Foundation/ProviderRepository.php
+ * @see     https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/ProviderRepository.php
  *
  * @package Nur\Kernel
  */

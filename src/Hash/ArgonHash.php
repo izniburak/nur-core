@@ -7,7 +7,7 @@ use RuntimeException;
 /**
  * Class ArgonHash
  * Adapted from Laravel Framework
- * @see https://github.com/laravel/framework/tree/6.x/src/Illuminate/Hashing
+ * @see https://github.com/laravel/framework/tree/8.x/src/Illuminate/Hashing
  *
  * @package Nur\Hash
  */
