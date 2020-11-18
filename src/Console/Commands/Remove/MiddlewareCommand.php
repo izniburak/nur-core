@@ -25,9 +25,11 @@ class MiddlewareCommand extends Command
 
         if (file_exists($file)) {
             unlink($file);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" middleware removed.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" middleware removed.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Middleware not found! (' . $name . ')');
+        $output->writeln('<error>-Error!</error> Middleware not found! (' . $name . ')');
+        return 0;
     }
 }

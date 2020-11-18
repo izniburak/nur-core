@@ -20,9 +20,11 @@ class UpCommand extends Command
         $file = storage_path('app.down');
         if (file_exists($file)) {
             unlink($file);
-            return $output->writeln('<info>+Success!</info> Nur Application was started.');
+            $output->writeln('<info>+Success!</info> Nur Application was started.');
+            return 1;
         }
 
-        return $output->writeln("<error>+Error!</error> Nur Application's already started.");
+        $output->writeln("<error>+Error!</error> Nur Application's already started.");
+        return 0;
     }
 }

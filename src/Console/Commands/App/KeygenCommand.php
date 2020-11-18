@@ -38,6 +38,8 @@ class KeygenCommand extends Command
         }
 
         $this->appKeyGenerator($input, $output);
+
+        return 1;
     }
 
     /**
@@ -69,12 +71,13 @@ class KeygenCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return void
+     * @return int
      */
     protected function jwtKeyGenerator(InputInterface $input, OutputInterface $output)
     {
         if ($input->hasParameterOption('--show') !== false) {
-            return $output->writeln('<comment>' . config('auth.jwt.secret') . '</comment>');
+            $output->writeln('<comment>' . config('auth.jwt.secret') . '</comment>');
+            return 0;
         }
 
         $key = $this->generateRandomKey();
@@ -84,11 +87,13 @@ class KeygenCommand extends Command
         // automatically setup for this developer. This key gets generated using a
         // secure random byte generator and is later base64 encoded for storage.
         if (!$this->setKeyInEnvironmentFile('JWT_SECRET', $key, config('auth.jwt.secret'), $input, $output)) {
-            return;
+            return 0;
         }
 
         config()->set('auth.jwt.key', $key);
         $output->writeln("<info>+Success!</info> JWT secret key set successfully. [{$key}]");
+
+        return 1;
     }
 
     /**
@@ -98,9 +103,7 @@ class KeygenCommand extends Command
      */
     protected function generateRandomKey()
     {
-        return 'base64:' . base64_encode(
-                Encrypter::generateKey(config('app.cipher'))
-            );
+        return 'base64:' . base64_encode(Encrypter::generateKey(config('app.cipher')));
     }
 
     /**

@@ -27,16 +27,19 @@ class ControllerCommand extends Command
 
         if (!file_exists($file)) {
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" controller created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" controller created.');
+            return 1;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" controller re-created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" controller re-created.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Controller already exists! (' . $name . ')');
+        $output->writeln('<error>-Error!</error> Controller already exists! (' . $name . ')');
+        return 0;
     }
 
     private function createNewFile($file, $name)

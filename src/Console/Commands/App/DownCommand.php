@@ -20,9 +20,11 @@ class DownCommand extends Command
         $file = storage_path('app.down');
         if (!file_exists($file)) {
             touch($file);
-            return $output->writeln('<info>+Success!</info> Nur Application was stopped.');
+            $output->writeln('<info>+Success!</info> Nur Application was stopped.');
+            return 1;
         }
 
-        return $output->writeln("<error>+Error!</error> Nur Application's already stopped.");
+        $output->writeln("<error>+Error!</error> Nur Application's already stopped.");
+        return 0;
     }
 }

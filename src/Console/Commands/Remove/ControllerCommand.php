@@ -25,9 +25,11 @@ class ControllerCommand extends Command
 
         if (file_exists($file)) {
             unlink($file);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" controller removed.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" controller removed.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Controller not found! (' . $name . ')');
+        $output->writeln('<error>-Error!</error> Controller not found! (' . $name . ')');
+        return 0;
     }
 }

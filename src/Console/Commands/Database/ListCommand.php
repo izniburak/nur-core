@@ -46,9 +46,11 @@ class ListCommand extends Command
             $table->setHeaders(['Database', 'Type', 'Size', 'Created at'])
                 ->setRows($rows);
 
-            return $table->render();
+            $table->render();
+            return 1;
         }
 
-        return $output->writeln('No SQLite database yet.');
+        $output->writeln('No SQLite database yet.');
+        return 0;
     }
 }

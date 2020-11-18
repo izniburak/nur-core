@@ -27,16 +27,19 @@ class MiddlewareCommand extends Command
 
         if (!file_exists($file)) {
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" middleware created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" middleware created.');
+            return 1;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" middleware re-created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" middleware re-created.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Middleware already exists! (' . $name . ')');
+        $output->writeln('<error>-Error!</error> Middleware already exists! (' . $name . ')');
+        return 0;
     }
 
     private function createNewFile($file, $name)

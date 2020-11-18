@@ -31,6 +31,7 @@ class SeedCommand extends Command
         $this->executeSeeder($className);
 
         $output->writeln('<info>+Success!</info> Database seeding completed successfully.');
+        return 1;
     }
 
     /**
@@ -39,7 +40,7 @@ class SeedCommand extends Command
      * @return void
      * @throws
      */
-    private function executeSeeder($class)
+    private function executeSeeder(string $class)
     {
         $seeder = app()->make($class);
 

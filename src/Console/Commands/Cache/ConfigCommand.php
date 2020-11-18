@@ -24,7 +24,7 @@ class ConfigCommand extends Command
             $question = new ConfirmationQuestion('Old cache will be deleted and re-created. Are you sure?: ', false);
 
             if (!$helper->ask($input, $output, $question)) {
-                return;
+                return 0;
             }
             unlink($cacheFile);
             $output->writeln('<info>+Success!</info> Config cache has been deleted.');
@@ -35,12 +35,12 @@ class ConfigCommand extends Command
             throw new \RuntimeException(sprintf('Config cache file could not be written.'));
         }
 
-        return $output->writeln('<info>+Success!</info> Configs have been cached.');
+        $output->writeln('<info>+Success!</info> Configs have been cached.');
+        return 1;
     }
 
     private function config()
     {
-        $config = app()->getConfig();
-        return '<?php return ' . var_export($config, true) . ';' . PHP_EOL;
+        return '<?php return ' . var_export(app()->getConfig(), true) . ';' . PHP_EOL;
     }
 }

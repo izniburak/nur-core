@@ -27,16 +27,19 @@ class EventCommand extends Command
 
         if (!file_exists($file)) {
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" event created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" event created.');
+            return 1;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" event re-created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" event re-created.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Event already exists! (' . $name . ')');
+        $output->writeln('<error>-Error!</error> Event already exists! (' . $name . ')');
+        return 0;
     }
 
     private function createNewFile($file, $name)
@@ -47,9 +50,9 @@ class EventCommand extends Command
 
 namespace App\Events;
 
-use Nur\Event\Base;
+use Nur\Event\EventInterface;
 
-class $className extends Base
+class $className implements EventInterface
 {
     /**
      * This method will be triggered

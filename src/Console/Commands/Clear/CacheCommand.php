@@ -21,20 +21,19 @@ class CacheCommand extends Command
         $count = 0;
         $folders = ['blade' => 'Blade', 'html' => 'Html', 'sql' => 'SQL'];
         foreach ($folders as $key => $value) {
-            $files = $path . '/' . $key;
-            foreach (glob($files . '/*.*') as $file) {
-                if (!stristr($file, 'index.html')) {
-                    if (unlink($file)) {
-                        $count++;
-                    }
+            foreach (glob("{$path}/{$key}/*.*") as $file) {
+                if (!stristr($file, 'index.html') && unlink($file)) {
+                    $count++;
                 }
             }
         }
 
         if ($count > 0) {
-            return $output->writeln('<info>+Success!</info> ' . $count . ' cache file(s) deleted.');
+            $output->writeln("<info>+Success!</info> {$count} cache file(s) deleted.");
+            return 1;
         }
 
-        return $output->writeln('<question>+Info!</question> There are no cache files.');
+        $output->writeln('<question>+Info!</question> There are no cache files.');
+        return 0;
     }
 }

@@ -28,9 +28,11 @@ class RemoveCommand extends Command
         $file = database_path($name . '.' . $databaseType);
         if (file_exists($file)) {
             unlink($file);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database removed.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database removed.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Database not found! (' . $name . '.' . $databaseType . ')');
+        $output->writeln('<error>-Error!</error> Database not found! (' . $name . '.' . $databaseType . ')');
+        return 0;
     }
 }

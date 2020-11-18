@@ -53,12 +53,12 @@ EOT
 
         if (null !== $version) {
             if (0 != $version && !isset($migrations[$version])) {
-                return;
+                return 0;
             }
         } else {
             $versionNumbers = array_merge($versions, array_keys($migrations));
             if (empty($versionNumbers)) {
-                return;
+                return 0;
             }
 
             $version = max($versionNumbers);
@@ -91,5 +91,7 @@ EOT
                 $container['phpmig.migrator']->up($migration);
             }
         }
+
+        return 1;
     }
 }

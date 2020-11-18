@@ -25,9 +25,11 @@ class ModelCommand extends Command
 
         if (file_exists($file)) {
             unlink($file);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" model removed.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" model removed.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Model not found! (' . $name . ')');
+        $output->writeln('<error>-Error!</error> Model not found! (' . $name . ')');
+        return 0;
     }
 }

@@ -18,9 +18,11 @@ class StatusCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!file_exists(storage_path('app.down'))) {
-            return $output->writeln("Nur Application's running.");
+            $output->writeln("Nur Application's running.");
+        } else {
+            $output->writeln("Nur Application has been stopped.");
         }
 
-        return $output->writeln("Nur Application has been stopped.");
+        return 1;
     }
 }

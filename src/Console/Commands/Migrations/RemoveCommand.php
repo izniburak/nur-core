@@ -39,16 +39,17 @@ EOT
 
         if (in_array($version, $versions)) {
             $output->writeLn('<error>-Error!</error> "' . $version . '" migration is active. Please down it first.');
-            return;
+            return 0;
         }
 
         if (!isset($migrations[$version])) {
             $output->writeLn('<error>-Error!</error> "' . $version . '" migration not found. Please check migration ID.');
-            return;
+            return 0;
         }
 
         $mask = glob(database_path('migrations/' . $version . '_*.php'));
         array_map('unlink', $mask);
         $output->writeLn('<info>+Success!</info> "' . $version . '" migration removed.');
+        return 1;
     }
 }

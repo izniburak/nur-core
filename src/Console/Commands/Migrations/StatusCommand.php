@@ -56,5 +56,7 @@ EOT
         $table->setHeaders(['Status', 'Migration ID', 'Migration Name', 'Created at'])
             ->setRows($rows);
         $table->render();
+
+        return 1;
     }
 }

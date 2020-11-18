@@ -41,15 +41,17 @@ EOT
 
         if (!in_array($version, $versions)) {
             $output->writeLn('<error>-Error!</error> "' . $version . '" migration status already inactive.');
-            return;
+            return 0;
         }
 
         if (!isset($migrations[$version])) {
             $output->writeLn('<error>-Error!</error> "' . $version . '" migration not found. Please check migration ID.');
-            return;
+            return 0;
         }
 
         $container = $this->getContainer();
         $container['phpmig.migrator']->down($migrations[$version]);
+
+        return 1;
     }
 }

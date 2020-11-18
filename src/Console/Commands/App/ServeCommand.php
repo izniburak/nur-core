@@ -37,8 +37,8 @@ class ServeCommand extends Command
             return in_array($key, ['APP_ENV']) ? [$key => $value] : [$key => false];
         })->all());
 
-        $process->start(function ($type, $buffer) {
-            $this->output->write($buffer);
+        $process->start(function ($type, $buffer) use ($output) {
+            $output->write($buffer);
         });
 
         while ($process->isRunning()) {

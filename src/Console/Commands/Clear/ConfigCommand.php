@@ -19,9 +19,11 @@ class ConfigCommand extends Command
     {
         $file = cache_path('config.php');
         if (file_exists($file) && unlink($file)) {
-            return $output->writeln('<info>+Success!</info> Config cache file has been deleted.');
+            $output->writeln('<info>+Success!</info> Config cache file has been deleted.');
+            return 1;
         }
 
-        return $output->writeln('<question>+Info!</question> There is no config cache file.');
+        $output->writeln('<question>+Info!</question> There is no config cache file.');
+        return 0;
     }
 }

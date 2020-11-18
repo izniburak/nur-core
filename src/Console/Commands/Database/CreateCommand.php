@@ -29,15 +29,18 @@ class CreateCommand extends Command
         $file = database_path($name . '.' . $databaseType);
         if (!file_exists($file)) {
             touch($file);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database created.');
+            return 1;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             touch($file);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database re-created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database re-created.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Database already exists! (' . $name . '.' . $databaseType . ')');
+        $output->writeln('<error>-Error!</error> Database already exists! (' . $name . '.' . $databaseType . ')');
+        return 0;
     }
 }

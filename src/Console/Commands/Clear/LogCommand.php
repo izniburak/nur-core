@@ -19,18 +19,18 @@ class LogCommand extends Command
     {
         $path = storage_path('log');
         $count = 0;
-        foreach (glob($path . '/' . '*.*') as $file) {
-            if (!stristr($file, 'index.html')) {
-                if (unlink($file)) {
-                    $count++;
-                }
+        foreach (glob("{$path}/*.*") as $file) {
+            if (!stristr($file, 'index.html') && unlink($file)) {
+                $count++;
             }
         }
 
         if ($count > 0) {
-            return $output->writeln('<info>+Success!</info> ' . $count . ' log file(s) deleted.');
+            $output->writeln("<info>+Success!</info> {$count} log file(s) deleted.");
+            return 1;
         }
 
-        return $output->writeln('<question>+Info!</question> There are no log files.');
+        $output->writeln('<question>+Info!</question> There are no log files.');
+        return 0;
     }
 }

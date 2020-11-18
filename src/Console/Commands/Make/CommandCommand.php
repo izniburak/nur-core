@@ -29,16 +29,19 @@ class CommandCommand extends Command
 
         if (!file_exists($file)) {
             $this->createNewFile($file, $name, $commandName);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" command created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" command created.');
+            return 1;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name, $commandName);
-            return $output->writeln('<info>+Success!</info> "' . $name . '" command re-created.');
+            $output->writeln('<info>+Success!</info> "' . $name . '" command re-created.');
+            return 1;
         }
 
-        return $output->writeln('<error>-Error!</error> Command already exists! (' . $name . ')');
+        $output->writeln('<error>-Error!</error> Command already exists! (' . $name . ')');
+        return 0;
     }
 
     private function createNewFile($file, $name, $commandName)
