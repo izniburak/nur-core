@@ -1,6 +1,6 @@
 <?php
 
-namespace Nur\Components\Validation;
+namespace Nur\Http;
 
 class Validation
 {
@@ -79,7 +79,7 @@ class Validation
      *
      * @return void
      */
-    public function rule($field, $label, $rules, array $text = []): void
+    public function rule(string $field, string $label, string $rules, array $text = []): void
     {
         $this->labels[$field] = $label;
         $this->rules[$field] = $rules;

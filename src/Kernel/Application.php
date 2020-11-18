@@ -3,6 +3,7 @@
 namespace Nur\Kernel;
 
 use Closure;
+use Dotenv\Dotenv;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\{Arr, Collection, Env, Str};
@@ -10,7 +11,6 @@ use Nur\Container\Container;
 use Nur\Exception\ExceptionHandler;
 use RuntimeException;
 use Whoops\Run as WhoopsRun;
-use Dotenv\Dotenv;
 
 /**
  * Class Application
@@ -182,12 +182,11 @@ class Application extends Container
      */
     public function __construct()
     {
-        $this->root = str_replace("/{$this->publicFolder}", '', realpath(getcwd()));
-        $this->docRoot = realpath($_SERVER['DOCUMENT_ROOT']);
+        $pattern = "#\/{$this->publicFolder}$#si";
+        $this->root = preg_replace($pattern, '', realpath(getcwd()));
+        $this->docRoot = preg_replace($pattern, '', realpath($_SERVER['DOCUMENT_ROOT']));
         $this->baseFolder = trim(
-            str_replace(
-                ['\\', "/{$this->publicFolder}"], ['/', ''], str_replace($this->docRoot, '', $this->root) . '/'
-            ),
+            str_replace(['\\'], ['/'], str_replace($this->docRoot, '', $this->root) . '/'),
             '/'
         );
 
@@ -208,7 +207,7 @@ class Application extends Container
      * @return void
      * @throws ExceptionHandler
      */
-    public function start(string $env)
+    public function start(string $env): void
     {
         switch ($env) {
             case 'local':
@@ -227,10 +226,10 @@ class Application extends Container
         }
 
         if ($this->isDownForMaintenance()) {
-            throw new ExceptionHandler('The system is under maintenance.', 'We will be back very soon.');
+            throw new ExceptionHandler('System is under maintenance.', 'We will be back very soon.');
         }
 
-        if (! $this->hasBeenBootstrapped()) {
+        if (!$this->hasBeenBootstrapped()) {
             $this->bootstrap();
         }
 
@@ -245,7 +244,7 @@ class Application extends Container
      */
     public function run(): void
     {
-        require $this->path('routes.php');
+        require_once $this->path('routes.php');
         $this->app['route']->run();
     }
 
@@ -353,11 +352,11 @@ class Application extends Container
      * Register a callback to run before a bootstrapper.
      *
      * @param string   $bootstrapper
-     * @param \Closure $callback
+     * @param Closure $callback
      *
      * @return void
      */
-    public function beforeBootstrapping($bootstrapper, Closure $callback): void
+    public function beforeBootstrapping(string $bootstrapper, Closure $callback): void
     {
         $this['events']->listen('bootstrapping: ' . $bootstrapper, $callback);
     }
@@ -366,11 +365,11 @@ class Application extends Container
      * Register a callback to run after a bootstrapper.
      *
      * @param string   $bootstrapper
-     * @param \Closure $callback
+     * @param Closure $callback
      *
      * @return void
      */
-    public function afterBootstrapping($bootstrapper, Closure $callback): void
+    public function afterBootstrapping(string $bootstrapper, Closure $callback): void
     {
         $this['events']->listen('bootstrapped: ' . $bootstrapper, $callback);
     }
@@ -392,7 +391,7 @@ class Application extends Container
      *
      * @return $this
      */
-    public function setBasePath($basePath): Container
+    public function setBasePath(string $basePath): Container
     {
         $this->basePath = rtrim($basePath, '\/');
 
@@ -408,7 +407,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function path($path = ''): string
+    public function path(string $path = ''): string
     {
         return $this->root() . DIRECTORY_SEPARATOR . 'app' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -420,7 +419,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function basePath($path = ''): string
+    public function basePath(string $path = ''): string
     {
         return $this->root() . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -432,7 +431,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function configPath($path = ''): string
+    public function configPath(string $path = ''): string
     {
         return $this->root() . DIRECTORY_SEPARATOR . 'config' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -444,7 +443,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function databasePath($path = ''): string
+    public function databasePath(string $path = ''): string
     {
         return $this->root() . DIRECTORY_SEPARATOR . 'database' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -466,7 +465,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function storagePath($path = ''): string
+    public function storagePath(string $path = ''): string
     {
         return $this->root() . DIRECTORY_SEPARATOR . 'storage' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -478,7 +477,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function cachePath($path = ''): string
+    public function cachePath(string $path = ''): string
     {
         return $this->storagePath('cache') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -490,7 +489,7 @@ class Application extends Container
      *
      * @return string
      */
-    public function publicPath($path = ''): string
+    public function publicPath(string $path = ''): string
     {
         return $this->root() . DIRECTORY_SEPARATOR . 'public' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
@@ -536,7 +535,7 @@ class Application extends Container
      */
     public function register($provider, $force = false)
     {
-        if (($registered = $this->getProvider($provider)) && ! $force) {
+        if (($registered = $this->getProvider($provider)) && !$force) {
             return $registered;
         }
 
@@ -613,7 +612,7 @@ class Application extends Container
      *
      * @return ServiceProvider
      */
-    public function resolveProvider($provider): ServiceProvider
+    public function resolveProvider(string $provider): ServiceProvider
     {
         return new $provider($this);
     }
@@ -642,7 +641,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function loadDeferredProvider($service): void
+    public function loadDeferredProvider(string $service): void
     {
         if (! $this->isDeferredService($service)) {
             return;
@@ -666,7 +665,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function registerDeferredProvider($provider, $service = null): void
+    public function registerDeferredProvider(string $provider, string $service = null): void
     {
         // Once the provider that provides the deferred service has been registered we
         // will remove it from our local list of the deferred services with related
@@ -725,7 +724,7 @@ class Application extends Container
      * @param  string  $abstract
      * @return void
      */
-    protected function loadDeferredProviderIfNeeded($abstract)
+    protected function loadDeferredProviderIfNeeded(string $abstract)
     {
         if ($this->isDeferredService($abstract) && ! isset($this->instances[$abstract])) {
             $this->loadDeferredProvider($abstract);
@@ -844,9 +843,9 @@ class Application extends Container
      *
      * @return string
      */
-    public function getCachedConfigPath()
+    public function getCachedConfigPath(): string
     {
-        return $this->cachePath() . '/config.php';
+        return $this->cachePath('config.php');
     }
 
     /**
@@ -866,7 +865,7 @@ class Application extends Container
      */
     public function getCachedRoutesPath(): string
     {
-        return $this->cachePath() . '/routes.php';
+        return $this->cachePath('routes.php');
     }
 
     /**
@@ -876,7 +875,7 @@ class Application extends Container
      */
     public function isDownForMaintenance(): bool
     {
-        return $this['files']->exists($this->storagePath() . '/app.down');
+        return $this['files']->exists($this->storagePath('app.down'));
     }
 
     /**
@@ -956,7 +955,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function isDeferredService($service): bool
+    public function isDeferredService(string $service): bool
     {
         return isset($this->deferredServices[$service]);
     }
@@ -968,7 +967,7 @@ class Application extends Container
      *
      * @return void
      */
-    public function provideFacades($namespace): void
+    public function provideFacades(string $namespace): void
     {
         AliasLoader::setFacadeNamespace($namespace);
     }
@@ -986,7 +985,7 @@ class Application extends Container
 
         foreach ($this->registerCoreAliases as $key => $alias) {
             $this->alias($key, $alias);
-            if (! class_exists($key)) {
+            if (!class_exists($key)) {
                 class_alias($alias, $key);
             }
         }
@@ -1023,15 +1022,15 @@ class Application extends Container
      */
     public function getNamespace()
     {
-        if (! is_null($this->namespace)) {
+        if (!is_null($this->namespace)) {
             return $this->namespace;
         }
 
-        $composer = json_decode(file_get_contents(base_path('composer.json')), true);
+        $composer = json_decode(file_get_contents($this->basePath('composer.json')), true);
 
         foreach ((array)data_get($composer, 'autoload.psr-4') as $namespace => $path) {
             foreach ((array)$path as $pathChoice) {
-                if (realpath(app_path()) == realpath(base_path() . '/' . $pathChoice)) {
+                if (realpath($this->path()) == realpath($this->basePath() . '/' . $pathChoice)) {
                     return $this->namespace = $namespace;
                 }
             }
@@ -1045,7 +1044,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function isLocal()
+    public function isLocal(): bool
     {
         return APP_ENV === 'local';
     }
@@ -1055,7 +1054,7 @@ class Application extends Container
      *
      * @return bool
      */
-    public function isProduction()
+    public function isProduction(): bool
     {
         return APP_ENV === 'production';
     }
@@ -1112,7 +1111,7 @@ class Application extends Container
     /**
      * Detect the application's current environment.
      *
-     * @param \Closure $callback
+     * @param Closure $callback
      *
      * @return string
      */
@@ -1150,23 +1149,11 @@ class Application extends Container
      *
      * @return $this
      */
-    public function loadEnvironmentFrom($file): Application
+    public function loadEnvironmentFrom(string $file): Application
     {
         $this->environmentFile = $file;
 
         return $this;
-    }
-
-    /**
-     * Determine if middleware has been disabled for the application.
-     *
-     * @return bool
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
-     */
-    public function shouldSkipMiddleware(): bool
-    {
-        return $this->bound('middleware.disable')
-            && $this->make('middleware.disable') === true;
     }
 
     /**
@@ -1211,9 +1198,7 @@ class Application extends Container
                 $env = Dotenv::createImmutable($this->root);
                 $env->load();
                 foreach (glob($this->root . '/config/*.php') as $file) {
-                    $keyName = strtolower(str_replace(
-                        [$this->root . '/config/', '.php'], '', $file
-                    ));
+                    $keyName = strtolower(str_replace('.php', '', basename($file)));
                     $this->config[$keyName] = require_once $file;
                 }
             }
@@ -1285,7 +1270,7 @@ class Application extends Container
     {
         foreach ($this->config['services']['aliases'] as $key => $alias) {
             $this->alias($key, $alias);
-            if (! class_exists($key)) {
+            if (!class_exists($key)) {
                 class_alias($alias, $key);
             }
         }

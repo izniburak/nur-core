@@ -26,7 +26,7 @@ class Request extends SymfonyRequest
     protected $json;
 
     /**
-     * @var \Nur\Components\Validation\Validation
+     * @var Validation
      */
     protected $validation;
 
@@ -38,7 +38,7 @@ class Request extends SymfonyRequest
     public function __construct()
     {
         parent::__construct($_GET, $_POST, [], $_COOKIE, $_FILES, $_SERVER);
-        $this->validation = resolve('validation');
+        $this->validation = resolve(Validation::class);
     }
 
     /**
@@ -312,7 +312,7 @@ class Request extends SymfonyRequest
     /**
      * Retrieve a request payload item from the request.
      *
-     * @param string            $key
+     * @param string|null       $key
      * @param string|array|null $default
      *
      * @return string|array
@@ -329,7 +329,7 @@ class Request extends SymfonyRequest
      *
      * @return bool
      */
-    public function hasCookie($key): bool
+    public function hasCookie(string $key): bool
     {
         return !is_null($this->cookie($key));
     }
@@ -337,12 +337,12 @@ class Request extends SymfonyRequest
     /**
      * Retrieve a cookie from the request.
      *
-     * @param string            $key
+     * @param string|null       $key
      * @param string|array|null $default
      *
      * @return string|array
      */
-    public function cookie($key = null, $default = null)
+    public function cookie(string $key = null, $default = null)
     {
         return $this->retrieveItem('cookies', $key, $default);
     }
@@ -354,7 +354,7 @@ class Request extends SymfonyRequest
      *
      * @return bool
      */
-    public function hasFile($key): bool
+    public function hasFile(string $key): bool
     {
         if (!is_array($files = $this->file($key))) {
             $files = [$files];
@@ -372,12 +372,12 @@ class Request extends SymfonyRequest
     /**
      * Retrieve a file from the request.
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param string|null $key
+     * @param mixed       $default
      *
      * @return array|null
      */
-    public function file($key = null, $default = null)
+    public function file(string $key = null, $default = null)
     {
         return data_get($this->allFiles(), $key, $default);
     }
@@ -421,12 +421,12 @@ class Request extends SymfonyRequest
     /**
      * Retrieve a query string item from the request.
      *
-     * @param string            $key
+     * @param string|null       $key
      * @param string|array|null $default
      *
      * @return string|array
      */
-    public function query($key = null, $default = null)
+    public function query(string $key = null, $default = null)
     {
         return $this->retrieveItem('query', $key, $default);
     }
@@ -462,7 +462,7 @@ class Request extends SymfonyRequest
      *
      * @return string|null
      */
-    public function segment($index, $default = null): ?string
+    public function segment(int $index, $default = null): ?string
     {
         return Arr::get($this->segments(), $index - 1, $default);
     }
@@ -627,12 +627,12 @@ class Request extends SymfonyRequest
      *
      * Instead, you may use the "input" method.
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param string|null $key
+     * @param mixed       $default
      *
      * @return mixed
      */
-    public function get($key = null, $default = null)
+    public function get(string $key = null, $default = null)
     {
         return parent::get($key, $default);
     }
@@ -768,7 +768,7 @@ class Request extends SymfonyRequest
      *
      * @return bool
      */
-    public static function matchesType($actual, $type): bool
+    public static function matchesType(string $actual, string $type): bool
     {
         if ($actual === $type) {
             return true;
@@ -883,7 +883,7 @@ class Request extends SymfonyRequest
      *
      * @return string|array
      */
-    protected function retrieveItem($source, $key, $default)
+    protected function retrieveItem(string $source, string $key, $default)
     {
         if (is_null($key)) {
             return $this->$source->all();
@@ -913,7 +913,7 @@ class Request extends SymfonyRequest
      *
      * @return bool
      */
-    protected function isEmptyString($key): bool
+    protected function isEmptyString(string $key): bool
     {
         $value = $this->input($key);
 

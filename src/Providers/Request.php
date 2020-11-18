@@ -3,6 +3,8 @@
 namespace Nur\Providers;
 
 use Nur\Kernel\ServiceProvider;
+use Nur\Http\Request as BaseRequest;
+use Nur\Http\Validation;
 
 class Request extends ServiceProvider
 {
@@ -14,6 +16,10 @@ class Request extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(\Nur\Http\Request::class, \Nur\Http\Request::class);
+        // Request
+        $this->app->singleton(BaseRequest::class, BaseRequest::class);
+
+        // Validation
+        $this->app->singleton(Validation::class, Validation::class);
     }
 }

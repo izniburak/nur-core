@@ -7,6 +7,19 @@ use Nur\Exception\ExceptionHandler;
 class Event
 {
     /**
+     * @var array
+     */
+    private $events = [];
+
+    /**
+     * Event constructor.
+     */
+    public function __construct()
+    {
+        $this->events = config('events');
+    }
+
+    /**
      * Trigger an event
      *
      * @param string $event
@@ -18,8 +31,11 @@ class Event
      */
     public function trigger(string $event, array $params = [], $method = 'handle'): void
     {
-        $events = config('events');
-        $event = $events[$event];
+        $event = $this->events[$event] ?? null;
+        if (!$event) {
+            throw new ExceptionHandler('Event not found.', $event);
+        }
+
         if (is_array($event)) {
             foreach ($event as $e) {
                 $this->validateAndRun($e, $params, $method);

@@ -2,23 +2,39 @@
 
 namespace Nur\Middleware;
 
-class Middleware implements MiddlewareInterface
+use Nur\Http\Request;
+
+abstract class Middleware implements MiddlewareInterface
 {
+    /**
+     * @var Request $request
+     */
+    private static $request;
+
     /**
      * Create Base Middleware.
      *
      * @return void
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    function __construct() { }
+    public function __construct()
+    {
+        self::$request = app()->make(Request::class);
+    }
+
+    /**
+     * @return Request
+     */
+    protected function request()
+    {
+        return self::$request;
+    }
 
     /**
      * This method will be triggered
      * when the middleware is called
      *
-     * @return mixed
+     * @return bool
      */
-    public function handle()
-    {
-        return true;
-    }
+    abstract public function handle();
 }

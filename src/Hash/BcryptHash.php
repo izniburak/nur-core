@@ -42,7 +42,7 @@ class BcryptHash extends AbstractHash implements HashInterface
      *
      * @throws \RuntimeException
      */
-    public function make($value, array $options = [])
+    public function make(string $value, array $options = []): string
     {
         $hash = password_hash($value, PASSWORD_BCRYPT, [
             'cost' => $this->cost($options),
@@ -63,7 +63,7 @@ class BcryptHash extends AbstractHash implements HashInterface
      *
      * @return bool
      */
-    public function needsRehash($hashedValue, array $options = [])
+    public function needsRehash(string $hashedValue, array $options = []): bool
     {
         return password_needs_rehash($hashedValue, PASSWORD_BCRYPT, [
             'cost' => $this->cost($options),
@@ -77,9 +77,9 @@ class BcryptHash extends AbstractHash implements HashInterface
      *
      * @return $this
      */
-    public function setRounds($rounds)
+    public function setRounds(int $rounds): self
     {
-        $this->rounds = (int)$rounds;
+        $this->rounds = $rounds;
 
         return $this;
     }

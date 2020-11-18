@@ -13,6 +13,6 @@ class Validation extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'validation';
+        return \Nur\Http\Validation::class;
     }
 }

@@ -8,7 +8,7 @@ interface MiddlewareInterface
      * This method will be triggered
      * when the middleware is called
      *
-     * @return mixed
+     * @return bool
      */
     public function handle();
 }

@@ -18,7 +18,7 @@ abstract class AbstractHash
      *
      * @return array
      */
-    public function info($hashedValue)
+    public function info(string $hashedValue): array
     {
         return password_get_info($hashedValue);
     }
@@ -31,7 +31,7 @@ abstract class AbstractHash
      *
      * @return bool
      */
-    public function check($value, $hashedValue)
+    public function check(string $value, string $hashedValue): bool
     {
         if (strlen($hashedValue) === 0) {
             return false;

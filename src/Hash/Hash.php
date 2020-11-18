@@ -18,7 +18,7 @@ class Hash implements HashInterface
      *
      * @return array
      */
-    public function info($hashedValue)
+    public function info(string $hashedValue): array
     {
         return $this->driver()->info($hashedValue);
     }
@@ -31,7 +31,7 @@ class Hash implements HashInterface
      *
      * @return string
      */
-    public function make($value, array $options = [])
+    public function make(string $value, array $options = []): string
     {
         return $this->driver()->make($value, $options);
     }
@@ -41,13 +41,12 @@ class Hash implements HashInterface
      *
      * @param  string $value
      * @param  string $hashedValue
-     * @param  array  $options
      *
      * @return bool
      */
-    public function check($value, $hashedValue, array $options = [])
+    public function check(string $value, string $hashedValue): bool
     {
-        return $this->driver()->check($value, $hashedValue, $options);
+        return $this->driver()->check($value, $hashedValue);
     }
 
     /**
@@ -58,7 +57,7 @@ class Hash implements HashInterface
      *
      * @return bool
      */
-    public function needsRehash($hashedValue, array $options = [])
+    public function needsRehash(string $hashedValue, array $options = []): bool
     {
         return $this->driver()->needsRehash($hashedValue, $options);
     }
@@ -76,9 +75,9 @@ class Hash implements HashInterface
     /**
      * Get the default driver.
      *
-     * @return mixed
+     * @return HashInterface
      */
-    protected function driver()
+    protected function driver(): HashInterface
     {
         if ($this->getDefaultDriver() === 'argon') {
             return $this->createArgonDriver();

@@ -63,7 +63,7 @@ class ArgonHash extends AbstractHash implements HashInterface
      *
      * @return string
      */
-    public function make($value, array $options = [])
+    public function make(string $value, array $options = []): string
     {
         $hash = password_hash($value, PASSWORD_ARGON2I, [
             'memory_cost' => $this->memory($options),
@@ -86,7 +86,7 @@ class ArgonHash extends AbstractHash implements HashInterface
      *
      * @return bool
      */
-    public function needsRehash($hashedValue, array $options = [])
+    public function needsRehash(string $hashedValue, array $options = []): bool
     {
         return password_needs_rehash($hashedValue, PASSWORD_ARGON2I, [
             'memory_cost' => $this->memory($options),
@@ -102,7 +102,7 @@ class ArgonHash extends AbstractHash implements HashInterface
      *
      * @return $this
      */
-    public function setMemory(int $memory)
+    public function setMemory(int $memory): self
     {
         $this->memory = $memory;
 
@@ -116,7 +116,7 @@ class ArgonHash extends AbstractHash implements HashInterface
      *
      * @return $this
      */
-    public function setTime(int $time)
+    public function setTime(int $time): self
     {
         $this->time = $time;
 
@@ -130,7 +130,7 @@ class ArgonHash extends AbstractHash implements HashInterface
      *
      * @return $this
      */
-    public function setThreads(int $threads)
+    public function setThreads(int $threads): self
     {
         $this->threads = $threads;
 

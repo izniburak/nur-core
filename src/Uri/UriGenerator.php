@@ -24,7 +24,7 @@ class UriGenerator
     function __construct()
     {
         $this->request = resolve(Request::class);
-        $this->base = BASE_FOLDER;
+        $this->base = app()->baseFolder();
 
         $this->url = $this->request->server('HTTP_HOST') . '/' . $this->base . '/';
         if (! in_array($this->request->server('HTTPS'), [null, 'off', 'false']) ||
@@ -57,10 +57,7 @@ class UriGenerator
      */
     public function admin(string $path = null, $secure = false): string
     {
-        $path = (! is_null($path))
-            ? $this->url . '/' . ADMIN_FOLDER . '/' . $path
-            : $this->url . '/' . ADMIN_FOLDER . '/';
-        return $this->getUrl($path, $secure);
+        return $this->base(ADMIN_FOLDER . "/{$path}", $secure);
     }
 
     /**
@@ -118,28 +115,24 @@ class UriGenerator
      */
     public function assets(string $path = null, $secure = false): string
     {
-        $path = (! is_null($path))
-            ? $this->url . '/' . ASSETS_FOLDER . '/' . $path
-            : $this->url . '/' . ASSETS_FOLDER . '/';
-        return $this->getUrl($path, $secure);
+        return $this->base(ASSETS_FOLDER . "/{$path}", $secure);
     }
 
     /**
      * Redirect to another URL.
      *
-     * @param string|null $data
+     * @param string|null $path
      * @param int         $statusCode
      * @param bool        $secure
      *
      * @return void
      */
-    public function redirect(string $data = null, int $statusCode = 301, $secure = false): void
+    public function redirect(string $path = null, int $statusCode = 301, $secure = false): void
     {
-        if (substr($data, 0, 4) === 'http' || substr($data, 0, 5) === 'https') {
-            header('Location: ' . $data, true, $statusCode);
+        if (strpos($path, 'http') === 0) {
+            header('Location: ' . $path, true, $statusCode);
         } else {
-            $data = (! is_null($data)) ? $this->url . '/' . $data : $this->url;
-            header('Location: ' . $this->getUrl($data, $secure), true, $statusCode);
+            header('Location: ' . $this->base($path, $secure), true, $statusCode);
         }
 
         die;
@@ -173,7 +166,7 @@ class UriGenerator
             return !empty($segment);
         });
 
-        if (! is_null($num)) {
+        if (!is_null($num)) {
             return (isset($segments[$num]) ? reset(explode('?', $segments[$num])) : null);
         }
 

@@ -10,7 +10,7 @@
 
 use Nur\Container\Container as Container;
 
-if (! function_exists('app')) {
+if (!function_exists('app')) {
     /**
      * Get the available container instance.
      *
@@ -30,7 +30,7 @@ if (! function_exists('app')) {
     }
 }
 
-if (! function_exists('config')) {
+if (!function_exists('config')) {
     /**
      * Get/set config values
      *
@@ -59,7 +59,7 @@ if (! function_exists('config')) {
     }
 }
 
-if (! function_exists('abort')) {
+if (!function_exists('abort')) {
     /**
      * Throw an HttpException with the given data.
      *
@@ -79,7 +79,7 @@ if (! function_exists('abort')) {
     }
 }
 
-if (! function_exists('abort_if')) {
+if (!function_exists('abort_if')) {
     /**
      * Throw an HttpException with the given data if the given condition is true.
      *
@@ -98,7 +98,7 @@ if (! function_exists('abort_if')) {
     }
 }
 
-if (! function_exists('logger')) {
+if (!function_exists('logger')) {
     /**
      * Logger
      *
@@ -116,7 +116,7 @@ if (! function_exists('logger')) {
     }
 }
 
-if (! function_exists('blade')) {
+if (!function_exists('blade')) {
     /**
      * Blade template engine
      *
@@ -127,13 +127,13 @@ if (! function_exists('blade')) {
      * @return \Nur\Http\Response|string
      * @throws
      */
-    function blade($view, array $data = [], array $mergeData = [])
+    function blade(string $view, array $data = [], array $mergeData = [])
     {
         return response()->blade($view, $data, $mergeData);
     }
 }
 
-if (! function_exists('view')) {
+if (!function_exists('view')) {
     /**
      * View template
      *
@@ -148,11 +148,11 @@ if (! function_exists('view')) {
     }
 }
 
-if (! function_exists('helper')) {
+if (!function_exists('helper')) {
     /**
      * Load a helper
      *
-     * @param string $file
+     * @param string      $file
      * @param string|null $directory
      *
      * @return mixed
@@ -163,7 +163,7 @@ if (! function_exists('helper')) {
     }
 }
 
-if (! function_exists('auth')) {
+if (!function_exists('auth')) {
     /**
      * Authentication
      *
@@ -183,7 +183,7 @@ if (! function_exists('auth')) {
     }
 }
 
-if (! function_exists('session')) {
+if (!function_exists('session')) {
     /**
      * Sessions
      *
@@ -201,7 +201,7 @@ if (! function_exists('session')) {
     }
 }
 
-if (! function_exists('cookie')) {
+if (!function_exists('cookie')) {
     /**
      * Cookies
      *
@@ -219,7 +219,7 @@ if (! function_exists('cookie')) {
     }
 }
 
-if (! function_exists('uri')) {
+if (!function_exists('uri')) {
     /**
      * Uri class
      *
@@ -237,7 +237,7 @@ if (! function_exists('uri')) {
     }
 }
 
-if (! function_exists('redirect')) {
+if (!function_exists('redirect')) {
     /**
      * Redirect URL
      *
@@ -253,25 +253,7 @@ if (! function_exists('redirect')) {
     }
 }
 
-if (! function_exists('http')) {
-    /**
-     * Http methods
-     *
-     * @param string|null $name
-     *
-     * @return mixed|Nur\Http\Http
-     */
-    function http(string $name = null)
-    {
-        if (is_null($name)) {
-            return app('http');
-        }
-
-        return app('http')->request($name);
-    }
-}
-
-if (! function_exists('event')) {
+if (!function_exists('event')) {
     /**
      * Event trigger for Events.
      *
@@ -287,7 +269,7 @@ if (! function_exists('event')) {
     }
 }
 
-if (! function_exists('encrypt')) {
+if (!function_exists('encrypt')) {
     /**
      * Encrypt the given value.
      *
@@ -302,7 +284,7 @@ if (! function_exists('encrypt')) {
     }
 }
 
-if (! function_exists('decrypt')) {
+if (!function_exists('decrypt')) {
     /**
      * Decrypt the given value.
      *
@@ -317,7 +299,7 @@ if (! function_exists('decrypt')) {
     }
 }
 
-if (! function_exists('hasher')) {
+if (!function_exists('hasher')) {
     /**
      * Hash the given value against the selected algorithm in Hash config.
      *
@@ -337,7 +319,7 @@ if (! function_exists('hasher')) {
     }
 }
 
-if (! function_exists('bcrypt')) {
+if (!function_exists('bcrypt')) {
     /**
      * Hash the given value against the bcrypt algorithm.
      *
@@ -356,7 +338,7 @@ if (! function_exists('bcrypt')) {
     }
 }
 
-if (! function_exists('app_path')) {
+if (!function_exists('app_path')) {
     /**
      * Get the app path.
      *
@@ -370,7 +352,7 @@ if (! function_exists('app_path')) {
     }
 }
 
-if (! function_exists('base_path')) {
+if (!function_exists('base_path')) {
     /**
      * Get the base path.
      *
@@ -384,7 +366,7 @@ if (! function_exists('base_path')) {
     }
 }
 
-if (! function_exists('config_path')) {
+if (!function_exists('config_path')) {
     /**
      * Get the configuration path.
      *
@@ -398,7 +380,7 @@ if (! function_exists('config_path')) {
     }
 }
 
-if (! function_exists('storage_path')) {
+if (!function_exists('storage_path')) {
     /**
      * Get the storage path.
      *
@@ -412,7 +394,7 @@ if (! function_exists('storage_path')) {
     }
 }
 
-if (! function_exists('database_path')) {
+if (!function_exists('database_path')) {
     /**
      * Get the database path.
      *
@@ -426,7 +408,7 @@ if (! function_exists('database_path')) {
     }
 }
 
-if (! function_exists('cache_path')) {
+if (!function_exists('cache_path')) {
     /**
      * Get the cache path.
      *
@@ -440,7 +422,7 @@ if (! function_exists('cache_path')) {
     }
 }
 
-if (! function_exists('public_path')) {
+if (!function_exists('public_path')) {
     /**
      * Get the public path.
      *
@@ -454,7 +436,7 @@ if (! function_exists('public_path')) {
     }
 }
 
-if (! function_exists('csrf_token')) {
+if (!function_exists('csrf_token')) {
     /**
      * CSRF Token Generate
      *
@@ -466,13 +448,13 @@ if (! function_exists('csrf_token')) {
     function csrf_token(string $name = null): string
     {
         $csrf = hash_hmac('sha256', config('app.key'), uniqid('', true));
-        session()->set('_nur_csrf' . (! is_null($name) ? '_' . $name : ''), $csrf);
+        session()->set('_nur_csrf' . (!is_null($name) ? '_' . $name : ''), $csrf);
 
         return $csrf;
     }
 }
 
-if (! function_exists('csrf_check')) {
+if (!function_exists('csrf_check')) {
     /**
      * CSRF Token Check
      *
@@ -483,7 +465,7 @@ if (! function_exists('csrf_check')) {
      */
     function csrf_check(string $token, $name = null): bool
     {
-        $name = (! is_null($name) ? '_' . $name : '');
+        $name = (!is_null($name) ? '_' . $name : '');
         if (session()->has('_nur_csrf' . $name) &&
             is_string($token) &&
             $token === session()->get('_nur_csrf' . $name)) {
@@ -495,7 +477,7 @@ if (! function_exists('csrf_check')) {
     }
 }
 
-if (! function_exists('csrf_field')) {
+if (!function_exists('csrf_field')) {
     /**
      * CSRF Token Html Field
      *
@@ -509,7 +491,7 @@ if (! function_exists('csrf_field')) {
     }
 }
 
-if (! function_exists('method_field')) {
+if (!function_exists('method_field')) {
     /**
      * Generate a form field to spoof the HTTP verb used by forms.
      *
@@ -523,7 +505,7 @@ if (! function_exists('method_field')) {
     }
 }
 
-if (! function_exists('request')) {
+if (!function_exists('request')) {
     /**
      * Get an instance of the current request or an input item from the request.
      *
@@ -546,7 +528,7 @@ if (! function_exists('request')) {
     }
 }
 
-if (! function_exists('response')) {
+if (!function_exists('response')) {
     /**
      * Return a new response from the application.
      *
@@ -567,7 +549,7 @@ if (! function_exists('response')) {
     }
 }
 
-if (! function_exists('resolve')) {
+if (!function_exists('resolve')) {
     /**
      * Resolve a service from the container.
      *
@@ -582,11 +564,12 @@ if (! function_exists('resolve')) {
     }
 }
 
-if (! function_exists('now')) {
+if (!function_exists('now')) {
     /**
      * Create a new Carbon instance for the current time.
      *
-     * @param  \DateTimeZone|string|null $tz
+     * @param \DateTimeZone|string|null $tz
+     *
      * @return \Illuminate\Support\Carbon
      */
     function now($tz = null)
@@ -595,13 +578,26 @@ if (! function_exists('now')) {
     }
 }
 
-if (! function_exists('trans')) {
+if (!function_exists('files')) {
+    /**
+     * Get Filesystem instance from Container
+     *
+     * @return \Illuminate\Filesystem\Filesystem
+     */
+    function files()
+    {
+        return app('files');
+    }
+}
+
+if (!function_exists('trans')) {
     /**
      * Translate the given message.
      *
-     * @param  string|null  $key
-     * @param  array  $replace
-     * @param  string|null  $locale
+     * @param string|null $key
+     * @param array       $replace
+     * @param string|null $locale
+     *
      * @return \Nur\Translation\Translator|string|array|null
      */
     function trans($key = null, $replace = [], $locale = null)
@@ -613,14 +609,15 @@ if (! function_exists('trans')) {
     }
 }
 
-if (! function_exists('trans_choice')) {
+if (!function_exists('trans_choice')) {
     /**
      * Translates the given message based on a count.
      *
-     * @param  string  $key
-     * @param  \Countable|int|array  $number
-     * @param  array  $replace
-     * @param  string|null  $locale
+     * @param string               $key
+     * @param \Countable|int|array $number
+     * @param array                $replace
+     * @param string|null          $locale
+     *
      * @return string
      */
     function trans_choice($key, $number, array $replace = [], $locale = null)
@@ -629,13 +626,14 @@ if (! function_exists('trans_choice')) {
     }
 }
 
-if (! function_exists('__')) {
+if (!function_exists('__')) {
     /**
      * Translate the given message.
      *
-     * @param  string|null  $key
-     * @param  array  $replace
-     * @param  string|null  $locale
+     * @param string|null $key
+     * @param array       $replace
+     * @param string|null $locale
+     *
      * @return string|array|null
      */
     function __(string $key = null, array $replace = [], string $locale = null)
@@ -647,7 +645,7 @@ if (! function_exists('__')) {
     }
 }
 
-if (! function_exists('dd')) {
+if (!function_exists('dd')) {
     /**
      * Dump and Die function
      *
@@ -665,7 +663,7 @@ if (! function_exists('dd')) {
     }
 }
 
-if (! function_exists('e')) {
+if (!function_exists('e')) {
     /**
      * Escape HTML special characters in a string.
      *
@@ -680,14 +678,14 @@ if (! function_exists('e')) {
     }
 }
 
-if (! function_exists('paginationLinks')) {
+if (!function_exists('paginationLinks')) {
     /**
      * Pagination links for records.
      *
-     * @param $records
-     * @param $link
+     * @param       $records
+     * @param       $link
      * @param array $settings
-     * @param bool $simple
+     * @param bool  $simple
      *
      * @return string|void
      */
@@ -727,7 +725,7 @@ if (! function_exists('paginationLinks')) {
                 $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page - 1) . '">' . $config['prev'] . '</a>';
             }
 
-            if (! $simple) {
+            if (!$simple) {
                 if ($total <= $scroll) {
                     if ($total <= $show) {
                         $start = 1;
@@ -773,7 +771,7 @@ if (! function_exists('paginationLinks')) {
     }
 }
 
-if (! function_exists('simplePaginationLinks')) {
+if (!function_exists('simplePaginationLinks')) {
     function simplePaginationLinks($records, $link = '', array $settings = [])
     {
         return paginationLinks($records, $link, $settings, true);
