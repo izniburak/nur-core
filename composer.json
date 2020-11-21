@@ -27,7 +27,7 @@
     "ext-openssl": "*",
     "izniburak/nur-migration": "^1",
     "izniburak/pdox": "^1",
-    "izniburak/router": "^1",
+    "izniburak/router": "^2",
     "illuminate/database": "^8.0",
     "illuminate/pagination": "^8.0",
     "illuminate/view": "^8.0",
