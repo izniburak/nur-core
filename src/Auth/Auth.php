@@ -164,7 +164,7 @@ class Auth
      */
     public function jwt(): Jwt
     {
-        return resolve('jwt');
+        return resolve(Jwt::class);
     }
 
     /**

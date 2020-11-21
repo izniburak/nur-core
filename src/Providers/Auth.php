@@ -2,6 +2,8 @@
 
 namespace Nur\Providers;
 
+use Nur\Auth\Auth as BaseAuth;
+use Nur\Auth\Jwt\Jwt;
 use Nur\Kernel\ServiceProvider;
 
 class Auth extends ServiceProvider
@@ -21,10 +23,10 @@ class Auth extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(\Nur\Auth\Auth::class, \Nur\Auth\Auth::class);
+        $this->app->singleton(BaseAuth::class, BaseAuth::class);
 
         if ($this->app->get('config')['auth']['jwt']['enabled'] === true) {
-            $this->app->singleton('jwt', \Nur\Auth\Jwt\Jwt::class);
+            $this->app->singleton(Jwt::class, Jwt::class);
         }
     }
 }

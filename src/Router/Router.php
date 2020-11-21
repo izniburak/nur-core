@@ -13,7 +13,7 @@ class Router extends RouterProvider
      *
      * @return RouterException
      */
-    public function exception($message = '')
+    protected function exception($message = ''): \Buki\Router\RouterException
     {
         return new RouterException($message);
     }
@@ -24,9 +24,13 @@ class Router extends RouterProvider
      *
      * @return RouterCommand
      */
-    public function routerCommand()
+    protected function routerCommand(): \Buki\Router\RouterCommand
     {
-        return RouterCommand::getInstance($this->baseFolder, $this->paths, $this->namespaces);
+        return RouterCommand::getInstance(
+            $this->baseFolder, $this->paths, $this->namespaces,
+            $this->request(), $this->response(),
+            $this->getMiddlewares()
+        );
     }
 
     /**
@@ -34,22 +38,12 @@ class Router extends RouterProvider
      *
      * @return \Buki\Router\RouterException|mixed
      */
-    protected function resolveClass($controller)
+    protected function resolveClassName(string $controller)
     {
         if (strstr($controller, '\\')) {
             return ($controller);
         }
 
         return (str_replace(['.', '/'], ['\\'], $this->namespaces['controllers'] . $controller));
-    }
-
-    /**
-     * Display all Routes.
-     *
-     * @return void
-     */
-    public function getList()
-    {
-        dd($this->getRoutes());
     }
 }

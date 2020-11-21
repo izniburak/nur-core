@@ -22,6 +22,6 @@ class Jwt extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'jwt';
+        return \Nur\Auth\Jwt\Jwt::class;
     }
 }

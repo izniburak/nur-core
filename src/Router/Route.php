@@ -20,19 +20,29 @@ class Route
     public function __construct()
     {
         if (null === self::$instance) {
-            self::$instance = new Router([
-                'base_folder' => base_path(),
-                'main_method' => 'main',
-                'paths' => [
-                    'controllers' => 'app/Controllers/',
-                    'middlewares' => 'app/Middlewares/',
+            $config = config('route');
+            self::$instance = new Router(
+                [
+                    'base_folder' => base_path(),
+                    'main_method' => 'main',
+                    'paths' => [
+                        'controllers' => 'app/Controllers/',
+                        'middlewares' => 'app/Middlewares/',
+                    ],
+                    'namespaces' => [
+                        'controllers' => 'App\Controllers',
+                        'middlewares' => 'App\Middlewares',
+                    ],
+                    'cache' => cache_path('routes.php'),
                 ],
-                'namespaces' => [
-                    'controllers' => 'App\Controllers',
-                    'middlewares' => 'App\Middlewares',
-                ],
-                'cache' => cache_path('routes.php'),
-            ]);
+                request(),
+                response(),
+            );
+
+            // Set Middlewares
+            self::$instance->setMiddleware($config['middleware']);
+            self::$instance->setMiddlewareGroup($config['middlewareGroup']);
+            self::$instance->setRouteMiddleware($config['routeMiddleware']);
         }
 
         return self::$instance;

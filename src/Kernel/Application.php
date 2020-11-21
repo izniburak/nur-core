@@ -1165,19 +1165,19 @@ class Application extends Container
     {
         $this->registerCoreProviders = [
             \Nur\Providers\Event::class,
+            \Nur\Providers\Request::class,
+            \Nur\Providers\Response::class,
             \Nur\Providers\Route::class,
             \Nur\Providers\Load::class,
             \Nur\Providers\Uri::class,
-            \Nur\Providers\Request::class,
-            \Nur\Providers\Response::class,
             \Nur\Providers\Date::class,
             \Nur\Providers\Encryption::class,
         ];
 
         $this->registerCoreAliases = [
-            'Route'     => \Nur\Facades\Route::class,
             'Request'   => \Nur\Facades\Request::class,
             'Response'  => \Nur\Facades\Response::class,
+            'Route'     => \Nur\Facades\Route::class,
             'Uri'       => \Nur\Facades\Uri::class,
             'Date'      => \Nur\Facades\Date::class,
         ];

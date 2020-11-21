@@ -4,7 +4,7 @@ namespace Nur\Router;
 
 use Nur\Exception\NotFoundHttpException;
 
-class RouterException
+class RouterException extends \Buki\Router\RouterException
 {
     /**
      * Create Exception Class.
