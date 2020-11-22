@@ -22,7 +22,7 @@ class Log
      */
     public function emergency($message): void
     {
-        $this->log('emergency', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -34,7 +34,7 @@ class Log
      */
     public function alert($message): void
     {
-        $this->log('alert', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -46,7 +46,7 @@ class Log
      */
     public function critical($message): void
     {
-        $this->log('critical', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -58,7 +58,7 @@ class Log
      */
     public function error($message): void
     {
-        $this->log('error', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -70,7 +70,7 @@ class Log
      */
     public function warning($message): void
     {
-        $this->log('warning', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -82,7 +82,7 @@ class Log
      */
     public function notice($message): void
     {
-        $this->log('notice', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -94,7 +94,7 @@ class Log
      */
     public function info($message): void
     {
-        $this->log('info', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -106,7 +106,7 @@ class Log
      */
     public function debug($message): void
     {
-        $this->log('debug', $message);
+        $this->log(__FUNCTION__, $message);
     }
 
     /**
@@ -120,7 +120,7 @@ class Log
      */
     protected function log(string $level, $message): void
     {
-        if (is_array($message) || is_object($message)) {
+        if (!is_string($message)) {
             $message = print_r($message, true);
         }
 

@@ -574,7 +574,7 @@ if (!function_exists('now')) {
      */
     function now($tz = null)
     {
-        return \Nur\Facades\Date::now($tz);
+        return app('date')->now($tz);
     }
 }
 
