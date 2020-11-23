@@ -209,18 +209,17 @@ class Application extends Container
      */
     public function start(string $env): void
     {
+        ini_set('log_errors', true);
+        ini_set('error_log', $this->storagePath('log/nur.log'));
+        error_reporting(E_ALL);
         switch ($env) {
             case 'local':
                 ini_set('display_errors', 1);
-                error_reporting(1);
                 $this->initWhoops();
                 break;
             case 'test':
             case 'production':
                 ini_set('display_errors', 0);
-                ini_set('log_errors', true);
-                ini_set('error_log', $this->storagePath('log/nur.log'));
-                error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
                 break;
             default:
                 header('HTTP/1.1 503 Service Unavailable.', true, 503);
