@@ -222,7 +222,7 @@ class Application extends Container
                 ini_set('display_errors', 0);
                 break;
             default:
-                header('HTTP/1.1 503 Service Unavailable.', true, 503);
+                http_response_code(503);
                 die('The application environment is not set correctly.');
         }
 
