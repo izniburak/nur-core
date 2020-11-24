@@ -212,6 +212,7 @@ class Application extends Container
         ini_set('log_errors', true);
         ini_set('error_log', $this->storagePath('log/nur.log'));
         error_reporting(E_ALL);
+        date_default_timezone_set($this->config['app']['timezone']);
         switch ($env) {
             case 'local':
                 ini_set('display_errors', 1);
@@ -1173,6 +1174,7 @@ class Application extends Container
             \Nur\Providers\Uri::class,
             \Nur\Providers\Date::class,
             \Nur\Providers\Encryption::class,
+            \Nur\Providers\Log::class,
         ];
 
         $this->registerCoreAliases = [
@@ -1181,6 +1183,9 @@ class Application extends Container
             'Route'     => \Nur\Facades\Route::class,
             'Uri'       => \Nur\Facades\Uri::class,
             'Date'      => \Nur\Facades\Date::class,
+            'Log'       => \Nur\Facades\Log::class,
+            'Validation'=> \Nur\Facades\Validation::class,
+            'File'      => \Nur\Facades\File::class,
         ];
     }
 

@@ -47,4 +47,15 @@ class Router extends RouterProvider
 
         return (str_replace(['.', '/'], ['\\'], $this->namespaces['controllers'] . $controller));
     }
+
+    /**
+     * @return string
+     */
+    protected function getRequestUri(): string
+    {
+        $dirname = dirname($_SERVER['SCRIPT_NAME']);
+        $dirname = $dirname === '/' ? '' : $dirname;
+        $basename = 'index.php'; // basename($_SERVER['SCRIPT_NAME']);
+        return $this->clearRouteName(str_replace([$dirname, $basename], null, $_SERVER['REQUEST_URI']));
+    }
 }

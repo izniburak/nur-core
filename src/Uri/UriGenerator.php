@@ -6,10 +6,30 @@ use Nur\Http\Request;
 
 class UriGenerator
 {
-    protected $base = null;
-    protected $url = null;
+    /**
+     * @var string
+     */
+    protected $base;
+
+    /**
+     * @var string
+     */
+    protected $url;
+
+    /**
+     * @var bool
+     */
     protected $https = false;
+
+    /**
+     * @var bool
+     */
     protected $cachedHttps = false;
+
+    /**
+     * @var array|mixed
+     */
+    protected $config;
 
     /**
      * @var Request
@@ -24,11 +44,12 @@ class UriGenerator
     function __construct()
     {
         $this->request = resolve(Request::class);
+        $this->config = config('app');
         $this->base = app()->baseFolder();
 
         $this->url = $this->request->server('HTTP_HOST') . '/' . $this->base . '/';
         if (! in_array($this->request->server('HTTPS'), [null, 'off', 'false']) ||
-            $this->request->server('SERVER_PORT') == 443 || config('app.https') === true) {
+            $this->request->server('SERVER_PORT') == 443 || $this->config['https'] === true) {
             $this->cachedHttps = true;
         }
     }
@@ -57,7 +78,7 @@ class UriGenerator
      */
     public function admin(string $path = null, $secure = false): string
     {
-        return $this->base(ADMIN_FOLDER . "/{$path}", $secure);
+        return $this->base($this->config['admin'] . "/{$path}", $secure);
     }
 
     /**
@@ -84,11 +105,11 @@ class UriGenerator
         }
 
         if ($found) {
-            if (strstr($routes[$key]['route'], '{') || strstr($routes[$key]['route'], ':')) {
+            if (strstr($routes[$key]['route'], ':')) {
                 $segment = explode('/', $routes[$key]['route']);
                 $i = 0;
                 foreach ($segment as $key => $value) {
-                    if (strstr($value, '{') || strstr($value, ':')) {
+                    if (strstr($value, ':')) {
                         $segment[$key] = $params[$i];
                         $i++;
                     }
@@ -115,7 +136,7 @@ class UriGenerator
      */
     public function assets(string $path = null, $secure = false): string
     {
-        return $this->base(ASSETS_FOLDER . "/{$path}", $secure);
+        return $this->base($this->config['assets'] . "/{$path}", $secure);
     }
 
     /**
