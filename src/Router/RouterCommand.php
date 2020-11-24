@@ -12,12 +12,13 @@ class RouterCommand extends RouterCommandProvider
      * Throw new Exception for Router Error
      *
      * @param string $message
+     * @param int    $statusCode
      *
      * @return RouterException
      */
-    public function exception($message = '')
+    public function exception($message = '', $statusCode = 500)
     {
-        return new RouterException($message);
+        return new RouterException($message, $statusCode);
     }
 
     /**
@@ -52,7 +53,7 @@ class RouterCommand extends RouterCommandProvider
             return $response instanceof Response ? $response->send() : print($response);
         }
 
-        return $this->response->create($response)->send();
+        return $this->response->setContent($response)->send();
     }
 
     /**

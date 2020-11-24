@@ -2,7 +2,7 @@
 
 namespace Nur\Router;
 
-use Buki\Router as RouterProvider;
+use Buki\Router\Router as RouterProvider;
 
 class Router extends RouterProvider
 {
@@ -10,12 +10,13 @@ class Router extends RouterProvider
      * Throw new Exception for Router Error
      *
      * @param string $message
+     * @param int    $statusCode
      *
      * @return RouterException
      */
-    protected function exception($message = ''): \Buki\Router\RouterException
+    protected function exception($message = '', $statusCode = 500): \Buki\Router\RouterException
     {
-        return new RouterException($message);
+        return new RouterException($message, $statusCode);
     }
 
     /**
