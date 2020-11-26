@@ -40,18 +40,18 @@ EOT
         $version = $input->getArgument('version');
 
         if (!in_array($version, $versions)) {
-            return 0;
+            return 1;
         }
 
         if (!isset($migrations[$version])) {
             $output->writeLn('<error>-Error!</error> "' . $version . '" migration not found. Please check migration ID.');
-            return 0;
+            return 1;
         }
 
         $container = $this->getContainer();
         $container['phpmig.migrator']->down($migrations[$version]);
         $container['phpmig.migrator']->up($migrations[$version]);
 
-        return 1;
+        return 0;
     }
 }

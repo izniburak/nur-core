@@ -21,10 +21,10 @@ class UpCommand extends Command
         if (file_exists($file)) {
             unlink($file);
             $output->writeln('<info>+Success!</info> Nur Application was started.');
-            return 1;
+            return 0;
         }
 
         $output->writeln("<error>+Error!</error> Nur Application's already started.");
-        return 0;
+        return 1;
     }
 }

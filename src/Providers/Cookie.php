@@ -21,6 +21,7 @@ class Cookie extends ServiceProvider
      */
     public function register()
     {
+        session_start();
         $this->app->singleton('cookie', \Nur\Http\Cookie::class);
     }
 }

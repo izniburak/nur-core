@@ -131,49 +131,49 @@ class Application extends Container
      *
      * @var array
      */
-    private $registerCoreProviders = [];
+    protected $registerCoreProviders = [];
 
     /**
      * Framework core aliases
      *
      * @var array
      */
-    private $registerCoreAliases = [];
+    protected $registerCoreAliases = [];
 
     /**
      * Framework config
      *
      * @var array|null
      */
-    private $config = null;
+    public $config = null;
 
     /**
      * Framework root folder
      *
      * @var string|null
      */
-    private $root = null;
+    protected $root = null;
 
     /**
      * Framework document root folder
      *
      * @var string|null
      */
-    private $docRoot = null;
+    protected $docRoot = null;
 
     /**
      * Framework base folder
      *
      * @var string|null
      */
-    private $baseFolder = null;
+    protected $baseFolder = null;
 
     /**
      * Public folder
      *
      * @var string
      */
-    private $publicFolder = 'public';
+    protected $publicFolder = 'public';
 
     /**
      * Create a new Nur application instance.

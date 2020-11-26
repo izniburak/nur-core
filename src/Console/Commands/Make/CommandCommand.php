@@ -29,19 +29,19 @@ class CommandCommand extends Command
 
         if (!file_exists($file)) {
             $this->createNewFile($file, $name, $commandName);
-            $output->writeln('<info>+Success!</info> "' . $name . '" command created.');
-            return 1;
+            $output->writeln("<info>+Success!</info> '{$name}' command created.");
+            return 0;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name, $commandName);
-            $output->writeln('<info>+Success!</info> "' . $name . '" command re-created.');
-            return 1;
+            $output->writeln("<info>+Success!</info> '{$name}' command re-created.");
+            return 0;
         }
 
-        $output->writeln('<error>-Error!</error> Command already exists! (' . $name . ')');
-        return 0;
+        $output->writeln("<error>-Error!</error> Command already exists! ({$name})");
+        return 1;
     }
 
     private function createNewFile($file, $name, $commandName)
@@ -80,11 +80,13 @@ class $className extends Command
      * @param InputInterface  \$input
      * @param OutputInterface \$output
      *
-     * @return mixed|void
+     * @return int
      */
     protected function execute(InputInterface \$input, OutputInterface \$output)
     {
         // your codes...
+        
+        return 0;
     }
 }
 

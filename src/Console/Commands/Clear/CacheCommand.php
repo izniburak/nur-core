@@ -30,10 +30,10 @@ class CacheCommand extends Command
 
         if ($count > 0) {
             $output->writeln("<info>+Success!</info> {$count} cache file(s) deleted.");
-            return 1;
+            return 0;
         }
 
         $output->writeln('<question>+Info!</question> There are no cache files.');
-        return 0;
+        return 1;
     }
 }

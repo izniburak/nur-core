@@ -25,14 +25,14 @@ class RemoveCommand extends Command
         $name = $input->getArgument('name');
 
         $databaseType = $input->hasParameterOption('--type') ? $input->getOption('type') : 'sqlite';
-        $file = database_path($name . '.' . $databaseType);
+        $file = database_path("{$name}.{$databaseType}");
         if (file_exists($file)) {
             unlink($file);
-            $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database removed.');
-            return 1;
+            $output->writeln("<info>+Success!</info> '{$name}' {$databaseType} database removed.");
+            return 0;
         }
 
-        $output->writeln('<error>-Error!</error> Database not found! (' . $name . '.' . $databaseType . ')');
-        return 0;
+        $output->writeln("<error>-Error!</error> Database not found! ({$name}.{$databaseType})");
+        return 1;
     }
 }

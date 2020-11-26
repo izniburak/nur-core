@@ -28,18 +28,18 @@ class ResourceCommand extends Command
         if (!file_exists($file)) {
             $this->createNewFile($file, $name);
             $output->writeln('<info>+Success!</info> "' . $name . '" resource controller created.');
-            return 1;
+            return 0;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name);
             $output->writeln('<info>+Success!</info> "' . $name . '" resource controller re-created.');
-            return 1;
+            return 0;
         }
 
         $output->writeln('<error>-Error!</error> Resource Controller already exists! (' . $name . ')');
-        return 0;
+        return 1;
     }
 
     private function createNewFile($file, $name)
@@ -57,7 +57,7 @@ class $controller extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response|string
+     * @return Response
      */
     public function main(): Response
     {

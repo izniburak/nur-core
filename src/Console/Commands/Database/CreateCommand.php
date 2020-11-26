@@ -30,17 +30,17 @@ class CreateCommand extends Command
         if (!file_exists($file)) {
             touch($file);
             $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database created.');
-            return 1;
+            return 0;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             touch($file);
             $output->writeln('<info>+Success!</info> "' . $name . '" ' . $databaseType . ' database re-created.');
-            return 1;
+            return 0;
         }
 
         $output->writeln('<error>-Error!</error> Database already exists! (' . $name . '.' . $databaseType . ')');
-        return 0;
+        return 1;
     }
 }

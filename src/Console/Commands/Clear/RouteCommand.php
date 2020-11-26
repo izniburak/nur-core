@@ -20,10 +20,10 @@ class RouteCommand extends Command
         $cacheFile = cache_path('routes.php');
         if (file_exists($cacheFile) && unlink($cacheFile)) {
             $output->writeln('<info>+Success!</info> Routes cache file has been deleted.');
-            return 1;
+            return 0;
         }
 
         $output->writeln('<question>+Info!</question> There is no route cache file.');
-        return 0;
+        return 1;
     }
 }

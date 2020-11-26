@@ -2,9 +2,14 @@
 
 namespace Nur\Kernel;
 
+use Closure;
+use Illuminate\Contracts\Support\DeferrableProvider;
+use Illuminate\View\Compilers\BladeCompiler;
+
 /**
  * Class ServiceProvider
  * Adapted from Laravel Framework in order to use some methods.
+ *
  * @see https://github.com/laravel/framework/blob/8.x/src/Illuminate/Support/ServiceProvider.php
  *
  * @package Nur\Kernel
@@ -26,6 +31,20 @@ abstract class ServiceProvider
     protected $defer = false;
 
     /**
+     * All of the registered booting callbacks.
+     *
+     * @var array
+     */
+    protected $bootingCallbacks = [];
+
+    /**
+     * All of the registered booted callbacks.
+     *
+     * @var array
+     */
+    protected $bootedCallbacks = [];
+
+    /**
      * The paths that should be published.
      *
      * @var array
@@ -42,13 +61,187 @@ abstract class ServiceProvider
     /**
      * Create a new service provider instance.
      *
-     * @param $app
+     * @param \Nur\Kernel\Application $app
      *
      * @return void
      */
     public function __construct($app)
     {
         $this->app = $app;
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        //
+    }
+
+    /**
+     * Register a booting callback to be run before the "boot" method is called.
+     *
+     * @param Closure $callback
+     *
+     * @return void
+     */
+    public function booting(Closure $callback)
+    {
+        $this->bootingCallbacks[] = $callback;
+    }
+
+    /**
+     * Register a booted callback to be run after the "boot" method is called.
+     *
+     * @param Closure $callback
+     *
+     * @return void
+     */
+    public function booted(Closure $callback)
+    {
+        $this->bootedCallbacks[] = $callback;
+    }
+
+    /**
+     * Call the registered booting callbacks.
+     *
+     * @return void
+     */
+    public function callBootingCallbacks()
+    {
+        foreach ($this->bootingCallbacks as $callback) {
+            $this->app->call($callback);
+        }
+    }
+
+    /**
+     * Call the registered booted callbacks.
+     *
+     * @return void
+     */
+    public function callBootedCallbacks()
+    {
+        foreach ($this->bootedCallbacks as $callback) {
+            $this->app->call($callback);
+        }
+    }
+
+    /**
+     * Merge the given configuration with the existing configuration.
+     *
+     * @param  string  $path
+     * @param  string  $key
+     * @return void
+     */
+    protected function mergeConfigFrom($path, $key)
+    {
+        if (!$this->app->configurationIsCached()) {
+            $config = $this->app->make('config');
+
+            $config->set($key, array_merge(
+                require $path, $config->get($key, [])
+            ));
+        }
+    }
+
+    /**
+     * Load the given routes file if routes are not already cached.
+     *
+     * @param  string  $path
+     * @return void
+     */
+    protected function loadRoutesFrom($path)
+    {
+        if (!$this->app->routesAreCached()) {
+            require $path;
+        }
+    }
+
+
+    /**
+     * Register a view file namespace.
+     *
+     * @param  string|array  $path
+     * @param  string  $namespace
+     * @return void
+     */
+    protected function loadViewsFrom($path, $namespace)
+    {
+        $this->callAfterResolving('view', function ($view) use ($path, $namespace) {
+            $view->addNamespace($namespace, $path);
+        });
+    }
+
+    /**
+     * Register the given view components with a custom prefix.
+     *
+     * @param  string  $prefix
+     * @param  array  $components
+     * @return void
+     */
+    protected function loadViewComponentsAs($prefix, array $components)
+    {
+        $this->callAfterResolving(BladeCompiler::class, function ($blade) use ($prefix, $components) {
+            foreach ($components as $alias => $component) {
+                $blade->component($component, is_string($alias) ? $alias : null, $prefix);
+            }
+        });
+    }
+
+    /**
+     * Register a translation file namespace.
+     *
+     * @param  string  $path
+     * @param  string  $namespace
+     * @return void
+     */
+    protected function loadTranslationsFrom($path, $namespace)
+    {
+        $this->callAfterResolving('translator', function ($translator) use ($path, $namespace) {
+            $translator->addNamespace($namespace, $path);
+        });
+    }
+
+    /**
+     * Register a JSON translation file path.
+     *
+     * @param  string  $path
+     * @return void
+     */
+    protected function loadJsonTranslationsFrom($path)
+    {
+        $this->callAfterResolving('translator', function ($translator) use ($path) {
+            $translator->addJsonPath($path);
+        });
+    }
+
+    /**
+     * Register database migration paths.
+     *
+     * @param  array|string  $paths
+     * @return void
+     */
+    protected function loadMigrationsFrom($paths)
+    {
+        // [TODO] ---
+    }
+
+    /**
+     * Setup an after resolving listener, or fire immediately if already resolved.
+     *
+     * @param  string  $name
+     * @param  callable  $callback
+     * @return void
+     */
+    protected function callAfterResolving($name, $callback)
+    {
+        $this->app->afterResolving($name, $callback);
+
+        if ($this->app->resolved($name)) {
+            $callback($this->app->make($name), $this->app);
+        }
     }
 
     /**
@@ -201,6 +394,6 @@ abstract class ServiceProvider
      */
     public function isDeferred(): bool
     {
-        return $this->defer;
+        return $this->defer || $this instanceof DeferrableProvider;
     }
 }

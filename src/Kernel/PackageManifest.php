@@ -71,7 +71,6 @@ class PackageManifest
      * Get all of the service provider class names for all packages.
      *
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function providers()
     {
@@ -82,7 +81,6 @@ class PackageManifest
      * Get all of the aliases for all packages.
      *
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function aliases()
     {
@@ -95,7 +93,6 @@ class PackageManifest
      * @param string $key
      *
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function config($key)
     {
@@ -108,7 +105,6 @@ class PackageManifest
      * Build the manifest and write it to disk.
      *
      * @return void
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function build()
     {
@@ -123,7 +119,7 @@ class PackageManifest
         $ignoreAll = in_array('*', $ignore = $this->packagesToIgnore());
 
         $this->write(collect($packages)->mapWithKeys(function ($package) {
-            return [$this->format($package['name']) => $package['extra']['nur'] ?? []];
+            return [$this->format($package['name']) => $package['extra']['laravel'] ?? []];
         })->each(function ($configuration) use (&$ignore) {
             $ignore = array_merge($ignore, $configuration['dont-discover'] ?? []);
         })->reject(function ($configuration, $package) use ($ignore, $ignoreAll) {
@@ -135,7 +131,6 @@ class PackageManifest
      * Get the current package manifest.
      *
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function getManifest()
     {
@@ -143,13 +138,11 @@ class PackageManifest
             return $this->manifest;
         }
 
-        if (!file_exists($this->manifestPath)) {
+        if (!is_file($this->manifestPath)) {
             $this->build();
         }
 
-        $this->files->get($this->manifestPath);
-
-        return $this->manifest = file_exists($this->manifestPath) ?
+        return $this->manifest = is_file($this->manifestPath) ?
             $this->files->getRequire($this->manifestPath) : [];
     }
 
@@ -172,13 +165,13 @@ class PackageManifest
      */
     protected function packagesToIgnore()
     {
-        if (!file_exists($this->basePath . '/composer.json')) {
+        if (!is_file($this->basePath . '/composer.json')) {
             return [];
         }
 
         return json_decode(file_get_contents(
                 $this->basePath . '/composer.json'
-            ), true)['extra']['nur']['dont-discover'] ?? [];
+            ), true)['extra']['laravel']['dont-discover'] ?? [];
     }
 
     /**
@@ -192,8 +185,8 @@ class PackageManifest
      */
     protected function write(array $manifest)
     {
-        if (!is_writable(dirname($this->manifestPath))) {
-            throw new Exception('The ' . dirname($this->manifestPath) . ' directory must be present and writable.');
+        if (!is_writable($dirname = dirname($this->manifestPath))) {
+            throw new Exception("The {$dirname} directory must be present and writable.");
         }
 
         $this->files->replace(

@@ -34,9 +34,10 @@ class ListCommand extends Command
                     $filesize = ($filesize / 1024);
                     $mb = true;
                 }
+                $parseFileName = explode('.', $file);
                 $rows[] = [
                     $filename,
-                    end(explode('.', $file)),
+                    end($parseFileName),
                     $filesize . ($mb ? 'MB' : 'KB'),
                     date("d M Y H:i", filemtime($file)),
                 ];
@@ -47,7 +48,7 @@ class ListCommand extends Command
                 ->setRows($rows);
 
             $table->render();
-            return 1;
+            return 0;
         }
 
         $output->writeln('No SQLite database yet.');

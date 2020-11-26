@@ -22,9 +22,9 @@ class Blade extends ServiceProvider
      */
     public function register()
     {
-        $this->registerFactory();
         $this->registerViewFinder();
         $this->registerEngineResolver();
+        $this->registerFactory();
         $this->registerBladeEngine($this->app['view.engine.resolver']);
         $this->registerDirectives($this->app['blade.compiler']);
     }

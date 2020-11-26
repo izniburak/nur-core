@@ -21,10 +21,10 @@ class DownCommand extends Command
         if (!file_exists($file)) {
             touch($file);
             $output->writeln('<info>+Success!</info> Nur Application was stopped.');
-            return 1;
+            return 0;
         }
 
         $output->writeln("<error>+Error!</error> Nur Application's already stopped.");
-        return 0;
+        return 1;
     }
 }

@@ -29,7 +29,7 @@ class KeygenCommand extends Command
      * @param InputInterface  $input
      * @param OutputInterface $output
      *
-     * @return int|void|null
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -39,7 +39,7 @@ class KeygenCommand extends Command
 
         $this->appKeyGenerator($input, $output);
 
-        return 1;
+        return 0;
     }
 
     /**
@@ -87,19 +87,20 @@ class KeygenCommand extends Command
         // automatically setup for this developer. This key gets generated using a
         // secure random byte generator and is later base64 encoded for storage.
         if (!$this->setKeyInEnvironmentFile('JWT_SECRET', $key, config('auth.jwt.secret'), $input, $output)) {
-            return 0;
+            return 1;
         }
 
         config()->set('auth.jwt.key', $key);
         $output->writeln("<info>+Success!</info> JWT secret key set successfully. [{$key}]");
 
-        return 1;
+        return 0;
     }
 
     /**
      * Generate a random key for the application.
      *
      * @return string
+     * @throws
      */
     protected function generateRandomKey()
     {
@@ -117,7 +118,7 @@ class KeygenCommand extends Command
      *
      * @return bool
      */
-    protected function setKeyInEnvironmentFile($key, $value, $currentValue, $input, $output)
+    protected function setKeyInEnvironmentFile(string $key, string $value, string $currentValue, $input, $output)
     {
         $helper = $this->getHelper('question');
         $question = new ConfirmationQuestion("{$key} key will re-generate. Are you sure?: ", false);
@@ -138,7 +139,7 @@ class KeygenCommand extends Command
      *
      * @return void
      */
-    protected function writeNewEnvironmentFileWith($key, $value, $currentValue)
+    protected function writeNewEnvironmentFileWith(string $key, string $value, string $currentValue)
     {
         $envContent = file_get_contents(base_path('.env'));
         if (strpos($envContent, $key . '=') !== false) {

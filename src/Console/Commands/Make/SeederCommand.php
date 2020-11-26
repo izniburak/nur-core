@@ -28,18 +28,18 @@ class SeederCommand extends Command
         if (!file_exists($file)) {
             $this->createNewFile($file, $name);
             $output->writeln('<info>+Success!</info> "' . $name . '" seeder created.');
-            return 1;
+            return 0;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name);
             $output->writeln('<info>+Success!</info> "' . $name . '" seeder re-created.');
-            return 1;
+            return 0;
         }
 
         $output->writeln('<error>-Error!</error> Seeder already exists! (' . $name . ')');
-        return 0;
+        return 1;
     }
 
     private function createNewFile($file, $name)

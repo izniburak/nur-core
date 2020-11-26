@@ -56,6 +56,6 @@ EOT
             $table->render();
         }
 
-        return 1;
+        return 0;
     }
 }

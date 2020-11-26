@@ -27,10 +27,10 @@ class LogCommand extends Command
 
         if ($count > 0) {
             $output->writeln("<info>+Success!</info> {$count} log file(s) deleted.");
-            return 1;
+            return 0;
         }
 
         $output->writeln('<question>+Info!</question> There are no log files.');
-        return 0;
+        return 1;
     }
 }

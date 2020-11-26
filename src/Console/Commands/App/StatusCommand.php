@@ -20,9 +20,9 @@ class StatusCommand extends Command
         if (!file_exists(storage_path('app.down'))) {
             $output->writeln("Nur Application's running.");
         } else {
-            $output->writeln("Nur Application has been stopped.");
+            $output->writeln("Nur Application's in maintenance mode.");
         }
 
-        return 1;
+        return 0;
     }
 }

@@ -48,7 +48,7 @@ class UriGenerator
         $this->base = app()->baseFolder();
 
         $this->url = $this->request->server('HTTP_HOST') . '/' . $this->base . '/';
-        if (! in_array($this->request->server('HTTPS'), [null, 'off', 'false']) ||
+        if (!in_array($this->request->server('HTTPS'), [null, 'off', 'false']) ||
             $this->request->server('SERVER_PORT') == 443 || $this->config['https'] === true) {
             $this->cachedHttps = true;
         }
@@ -64,7 +64,7 @@ class UriGenerator
      */
     public function base(string $path = null, $secure = false): string
     {
-        $path = (! is_null($path)) ? $this->url . $path : $this->url . '/';
+        $path = (!is_null($path)) ? $this->url . $path : $this->url . '/';
         return $this->getUrl($path, $secure);
     }
 
@@ -156,7 +156,7 @@ class UriGenerator
             header('Location: ' . $this->base($path, $secure), true, $statusCode);
         }
 
-        die;
+        exit;
     }
 
     /**
@@ -170,28 +170,36 @@ class UriGenerator
     }
 
     /**
+     * Get certain segment of URI.
+     *
+     * @param int $num
+     *
+     * @return string|null
+     */
+    public function segment(int $num): ?string
+    {
+        if (is_null($segments = $this->segments())) {
+            return null;
+        }
+
+        return $segments[$num - 1] ?? null;
+    }
+
+    /**
      * Get segments of URI.
      *
-     * @param int|null $num
-     *
-     * @return array|string|null
+     * @return array
      */
-    public function segment(int $num = null)
+    public function segments(): ?array
     {
         if (is_null($this->request->server('REQUEST_URI')) || is_null($this->request->server('SCRIPT_NAME'))) {
             return null;
         }
 
         $uri = $this->replace(str_replace($this->base, '', $this->request->server('REQUEST_URI')));
-        $segments = array_filter(explode('/', $uri), function ($segment) {
+        return array_values(array_filter(explode('/', $uri), function ($segment) {
             return !empty($segment);
-        });
-
-        if (!is_null($num)) {
-            return (isset($segments[$num]) ? reset(explode('?', $segments[$num])) : null);
-        }
-
-        return $segments;
+        }));
     }
 
     /**

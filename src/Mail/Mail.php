@@ -110,7 +110,7 @@ class Mail extends PHPMailer
      *
      * @return void
      */
-    public function setPassword($password): void
+    public function setPassword(string $password): void
     {
         $this->Password = $password;
     }

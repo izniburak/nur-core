@@ -28,18 +28,18 @@ class MiddlewareCommand extends Command
         if (!file_exists($file)) {
             $this->createNewFile($file, $name);
             $output->writeln('<info>+Success!</info> "' . $name . '" middleware created.');
-            return 1;
+            return 0;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name);
             $output->writeln('<info>+Success!</info> "' . $name . '" middleware re-created.');
-            return 1;
+            return 0;
         }
 
         $output->writeln('<error>-Error!</error> Middleware already exists! (' . $name . ')');
-        return 0;
+        return 1;
     }
 
     private function createNewFile($file, $name)
@@ -50,7 +50,7 @@ class MiddlewareCommand extends Command
 
 namespace App\Middlewares;
 
-use Nur\Middleware\Middleware;
+use Nur\Http\Middleware;
 
 class $middleware extends Middleware
 {
@@ -58,7 +58,7 @@ class $middleware extends Middleware
      * This method will be triggered
      * when the middleware is called 
      *
-     * @return mixed
+     * @return bool
      */
     public function handle()
     {

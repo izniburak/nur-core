@@ -31,7 +31,7 @@ class SeedCommand extends Command
         $this->executeSeeder($className);
 
         $output->writeln('<info>+Success!</info> Database seeding completed successfully.');
-        return 1;
+        return 0;
     }
 
     /**

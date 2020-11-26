@@ -34,18 +34,18 @@ class ModelCommand extends Command
         if (!file_exists($file)) {
             $this->createNewFile($file, $name, $table);
             $output->writeln('<info>+Success!</info> "' . ($name) . '" model created.');
-            return 1;
+            return 0;
         }
 
         if ($input->hasParameterOption('--force') !== false) {
             unlink($file);
             $this->createNewFile($file, $name, $table);
             $output->writeln('<info>+Success!</info> "' . ($name) . '" model re-created.');
-            return 1;
+            return 0;
         }
 
         $output->writeln('<error>-Error!</error> Model already exists! (' . $name . ')');
-        return 0;
+        return 1;
     }
 
     private function createNewFile($file, $name, $tableName = '')

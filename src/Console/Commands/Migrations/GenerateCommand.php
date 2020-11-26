@@ -100,7 +100,7 @@ PHP;
                 $path) . '" migration generated.'
         );
 
-        return 1;
+        return 0;
     }
 
     protected function transMigName($migrationName)

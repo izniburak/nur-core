@@ -26,7 +26,7 @@ class RouteCommand extends Command
                     false);
 
                 if (!$helper->ask($input, $output, $question)) {
-                    return 0;
+                    return 1;
                 }
                 unlink($cacheFile);
                 $output->writeln('<info>+Success!</info> Routes cache has been deleted.');
@@ -41,8 +41,7 @@ class RouteCommand extends Command
         }
 
         $output->writeln('<info>+Success!</info> Routes have been cached.');
-
-        return 1;
+        return 0;
     }
 
     protected function updateCacheFile()
