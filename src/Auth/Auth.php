@@ -67,7 +67,7 @@ class Auth
      *
      * @return bool
      */
-    public function login($user, $remember = false): bool
+    public function login($user, bool $remember = false): bool
     {
         if ($user) {
             session()->set($this->sessionId, $user->{$this->primaryKey});
@@ -85,7 +85,7 @@ class Auth
      *
      * @return bool
      */
-    public function loginUsingId($id, $remember = false): bool
+    public function loginUsingId($id, bool $remember = false): bool
     {
         return $this->attempt([$this->primaryKey => $id], $remember);
     }
@@ -134,7 +134,7 @@ class Auth
      */
     public function guest(): bool
     {
-        return ! $this->check();
+        return !$this->check();
     }
 
     /**
@@ -190,7 +190,7 @@ class Auth
         $authPass = request()->header('PHP_AUTH_PW');
         $isAuthentication = ($useDatabase && $this->validate(array_combine($credentials, [$authUser, $authPass]))) ||
             ($authUser == $credentials[0] && $authPass == $credentials[1]);
-        if (! $isAuthentication) {
+        if (!$isAuthentication) {
             response()->setStatusCode(Response::HTTP_UNAUTHORIZED)
                 ->header('WWW-Authenticate', 'Basic realm="Access denied"')
                 ->send();

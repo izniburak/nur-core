@@ -20,7 +20,7 @@ if (!function_exists('app')) {
      * @return mixed|\Nur\Kernel\Application
      * @throws
      */
-    function app($abstract = null, array $parameters = [])
+    function app(?string $abstract = null, array $parameters = [])
     {
         if (is_null($abstract)) {
             return Container::getInstance();
@@ -40,11 +40,9 @@ if (!function_exists('config')) {
      * @return mixed|void
      * @throws
      */
-    function config($key = null, $default = null)
+    function config(?string $key = null, $default = null)
     {
-        /**
-         * @var $config \Nur\Config\Config
-         */
+        /** @var $config \Nur\Config\Config */
         $config = app('config');
         if (func_num_args() === 0) {
             return $config;
@@ -157,7 +155,7 @@ if (!function_exists('helper')) {
      *
      * @return mixed
      */
-    function helper(string $file, $directory = null)
+    function helper(string $file, ?string $directory = null)
     {
         return app('load')->helper($file, $directory ?? 'Helpers');
     }
@@ -191,7 +189,7 @@ if (!function_exists('session')) {
      *
      * @return mixed|Nur\Http\Session
      */
-    function session(string $name = null)
+    function session(?string $name = null)
     {
         if (is_null($name)) {
             return app('session');
@@ -209,7 +207,7 @@ if (!function_exists('cookie')) {
      *
      * @return mixed|Nur\Http\Cookie
      */
-    function cookie(string $name = null)
+    function cookie(?string $name = null)
     {
         if (is_null($name)) {
             return app('cookie');
@@ -227,7 +225,7 @@ if (!function_exists('uri')) {
      *
      * @return string|Nur\Uri\Uri
      */
-    function uri(string $name = null)
+    function uri(?string $name = null)
     {
         if (is_null($name)) {
             return app('uri');
@@ -247,7 +245,7 @@ if (!function_exists('redirect')) {
      *
      * @return void|null
      */
-    function redirect(string $url = null, int $statusCode = 301, bool $secure = false)
+    function redirect(?string $url = null, int $statusCode = 301, bool $secure = false)
     {
         uri()->redirect($url, $statusCode, $secure);
     }
@@ -346,9 +344,9 @@ if (!function_exists('app_path')) {
      *
      * @return string
      */
-    function app_path(string $path = '')
+    function app_path(string $path = ''): string
     {
-        return app('path') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app()->path($path);
     }
 }
 
@@ -360,9 +358,9 @@ if (!function_exists('base_path')) {
      *
      * @return string
      */
-    function base_path(string $path = '')
+    function base_path(string $path = ''): string
     {
-        return app('path.base') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app()->basePath($path);
     }
 }
 
@@ -374,9 +372,9 @@ if (!function_exists('config_path')) {
      *
      * @return string
      */
-    function config_path(string $path = '')
+    function config_path(string $path = ''): string
     {
-        return app('path.config') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app()->configPath($path);
     }
 }
 
@@ -388,9 +386,9 @@ if (!function_exists('storage_path')) {
      *
      * @return string
      */
-    function storage_path(string $path = '')
+    function storage_path(string $path = ''): string
     {
-        return app('path.storage') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app()->storagePath($path);
     }
 }
 
@@ -402,9 +400,9 @@ if (!function_exists('database_path')) {
      *
      * @return string
      */
-    function database_path(string $path = '')
+    function database_path(string $path = ''): string
     {
-        return app('path.database') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app()->databasePath($path);
     }
 }
 
@@ -416,9 +414,9 @@ if (!function_exists('cache_path')) {
      *
      * @return string
      */
-    function cache_path(string $path = '')
+    function cache_path(string $path = ''): string
     {
-        return app('path.cache') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app()->cachePath($path);
     }
 }
 
@@ -430,9 +428,9 @@ if (!function_exists('public_path')) {
      *
      * @return string
      */
-    function public_path(string $path = '')
+    function public_path(string $path = ''): string
     {
-        return app('path.public') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return app()->publicPath($path);
     }
 }
 
@@ -445,7 +443,7 @@ if (!function_exists('csrf_token')) {
      * @return string
      * @throws
      */
-    function csrf_token(string $name = null): string
+    function csrf_token(?string $name = null): string
     {
         $csrf = hash_hmac('sha256', config('app.key'), uniqid('', true));
         session()->set('_nur_csrf' . (!is_null($name) ? '_' . $name : ''), $csrf);
@@ -485,7 +483,7 @@ if (!function_exists('csrf_field')) {
      *
      * @return string
      */
-    function csrf_field(string $name = null): string
+    function csrf_field(?string $name = null): string
     {
         return '<input type="hidden" name="_token" value="' . csrf_token($name) . '" />';
     }
@@ -540,12 +538,15 @@ if (!function_exists('response')) {
      */
     function response($content = '', $status = 200, array $headers = [])
     {
-        $response = app(\Nur\Http\Response::class);
         if (func_num_args() === 0) {
-            return $response;
+            return app(\Nur\Http\Response::class);
         }
 
-        return $response->create($content, $status, $headers);
+        return app()->make(\Nur\Http\Response::class, [
+            'content' => $content,
+            'status' => $status,
+            'headers' => $headers,
+        ]);
     }
 }
 
@@ -600,12 +601,15 @@ if (!function_exists('trans')) {
      *
      * @return \Nur\Translation\Translator|string|array|null
      */
-    function trans($key = null, $replace = [], $locale = null)
+    function trans(?string $key = null, $replace = [], $locale = null)
     {
+        /** @var \Nur\Translation\Translator $translator */
+        $translator = app('translator');
         if (is_null($key)) {
-            return app('translator');
+            return $translator;
         }
-        return app('translator')->get($key, $replace, $locale);
+
+        return $translator->get($key, $replace, $locale);
     }
 }
 
@@ -620,9 +624,9 @@ if (!function_exists('trans_choice')) {
      *
      * @return string
      */
-    function trans_choice($key, $number, array $replace = [], $locale = null)
+    function trans_choice(string $key, $number, array $replace = [], $locale = null)
     {
-        return app('translator')->choice($key, $number, $replace, $locale);
+        return trans()->choice($key, $number, $replace, $locale);
     }
 }
 
@@ -636,11 +640,12 @@ if (!function_exists('__')) {
      *
      * @return string|array|null
      */
-    function __(string $key = null, array $replace = [], string $locale = null)
+    function __(?string $key = null, array $replace = [], string $locale = null)
     {
         if (is_null($key)) {
             return $key;
         }
+
         return trans($key, $replace, $locale);
     }
 }
@@ -672,7 +677,7 @@ if (!function_exists('e')) {
      *
      * @return string
      */
-    function e(string $value, $doubleEncode = true): string
+    function e(string $value, bool $doubleEncode = true): string
     {
         return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
     }
