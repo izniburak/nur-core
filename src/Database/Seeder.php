@@ -4,10 +4,22 @@ namespace Nur\Database;
 
 use Illuminate\Database\Seeder as DatabaseSeeder;
 use Illuminate\Support\Arr;
+use Nur\Console\Command;
+use Nur\Kernel\Application;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 abstract class Seeder extends DatabaseSeeder
 {
+    /**
+     * @var \Nur\Kernel\Application
+     */
+    protected $container;
+
+    /**
+     * @var Command
+     */
+    protected $command;
+
     /**
      * @var ConsoleOutput
      */
@@ -15,10 +27,16 @@ abstract class Seeder extends DatabaseSeeder
 
     /**
      * Seeder constructor.
+     *
+     * @param Application $container
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function __construct()
+    public function __construct(Application $container)
     {
+        $this->container = $container;
         $this->console = new ConsoleOutput;
+        $this->command = $this->container->make(Command::class, ['app' => $container]);
     }
 
     /**

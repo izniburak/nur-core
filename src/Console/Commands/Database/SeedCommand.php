@@ -35,17 +35,16 @@ class SeedCommand extends Command
     }
 
     /**
-     * @param string $class
+     * @param string $seeder
      *
      * @return void
      * @throws
      */
-    private function executeSeeder(string $class)
+    private function executeSeeder(string $seeder)
     {
-        $seeder = app()->make($class);
-
+        $seeder = $this->nur->make($seeder, ['container' => $this->nur]);
         Model::unguarded(function () use ($seeder) {
-            $seeder->setContainer(app())->__invoke();
+            $seeder->__invoke();
         });
     }
 }
