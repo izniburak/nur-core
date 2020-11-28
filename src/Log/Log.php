@@ -125,7 +125,7 @@ class Log
         }
 
         $text = '[' . date($this->timeFormat, time()) . '][' . strtoupper($level) .
-                 '] - [' . request()->ip() . '] --> ' . $message;
+                 '] - [' . request()->ip() . '] --> ' . $message . PHP_EOL;
 
         $this->save($text);
     }

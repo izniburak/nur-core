@@ -393,6 +393,38 @@ class Request extends SymfonyRequest
     }
 
     /**
+     * @return bool
+     */
+    public function isGet(): bool
+    {
+        return $this->method() === 'GET';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPost(): bool
+    {
+        return $this->method() === 'POST';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPut(): bool
+    {
+        return $this->method() === 'PUT';
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDelete(): bool
+    {
+        return $this->method() === 'DELETE';
+    }
+
+    /**
      * Get the root URL for the application.
      *
      * @return string

@@ -29,6 +29,11 @@ class Auth
     private $primaryKey;
 
     /**
+     * @var string
+     */
+    private $passwordField;
+
+    /**
      * Auth constructor.
      *
      * @return void
@@ -67,7 +72,7 @@ class Auth
      *
      * @return bool
      */
-    public function login($user, bool $remember = false): bool
+    public function login(Model $user, bool $remember = false): bool
     {
         if ($user) {
             session()->set($this->sessionId, $user->{$this->primaryKey});
@@ -87,7 +92,12 @@ class Auth
      */
     public function loginUsingId($id, bool $remember = false): bool
     {
-        return $this->attempt([$this->primaryKey => $id], $remember);
+        if ($user = $this->model->where([$this->primaryKey => $id])->first()) {
+            $this->user = $user;
+            return $this->login($this->user, $remember);
+        }
+
+        return false;
     }
 
     /**
@@ -99,7 +109,13 @@ class Auth
      */
     public function validate(array $credentials): bool
     {
+        $password = $credentials[$this->passwordField] ?? null;
+        unset($credentials[$this->passwordField]);
         if ($user = $this->model->where($credentials)->first()) {
+            if (!hasher()->check($password, $user->{$this->passwordField})) {
+                return false;
+            }
+
             $this->user = $user;
             return true;
         }
@@ -114,6 +130,7 @@ class Auth
      */
     public function logout(): void
     {
+        $this->user = null;
         session()->delete($this->sessionId);
     }
 
@@ -208,6 +225,7 @@ class Auth
     private function checkAuthProvider(): void
     {
         $auth = config('auth');
+        $this->passwordField = $auth['password_field'] ?? 'password';
         if ($auth['driver'] === 'eloquent') {
             $this->model = app($auth['model']);
             $this->primaryKey = $this->model->getKeyName();

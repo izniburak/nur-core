@@ -13,6 +13,6 @@ class Session extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'session';
+        return \Nur\Http\Session::class;
     }
 }

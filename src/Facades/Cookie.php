@@ -13,6 +13,6 @@ class Cookie extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'cookie';
+        return \Nur\Http\Cookie::class;
     }
 }

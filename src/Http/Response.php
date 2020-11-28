@@ -2,6 +2,8 @@
 
 namespace Nur\Http;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+
 /**
  * Class Response
  * Adapted from symfony/http-foundation package
@@ -25,11 +27,12 @@ class Response extends \Symfony\Component\HttpFoundation\Response
     public function __construct($content = '', int $status = 200, array $headers = [])
     {
         // Remove all headers
-        header_remove();
+        // header_remove();
 
         parent::__construct($content, $status, $headers);
         $this->setCharset('utf-8');
         $this->headers->set('Content-Type', 'text/html; charset=' . $this->getCharset());
+        $this->headers->set('Cache-Control', 'no-cache, no-store');
     }
 
     /**
@@ -108,6 +111,19 @@ class Response extends \Symfony\Component\HttpFoundation\Response
         );
 
         return $this;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @param int    $status
+     * @param array  $headers
+     *
+     * @return RedirectResponse
+     */
+    public function redirect(string $url, int $status = 302, array $headers = []): RedirectResponse
+    {
+        return new RedirectResponse($url, $status, $headers);
     }
 
     /**

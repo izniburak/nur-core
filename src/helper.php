@@ -187,15 +187,17 @@ if (!function_exists('session')) {
      *
      * @param string|null $name
      *
-     * @return mixed|Nur\Http\Session
+     * @return Nur\Http\Session|string|array|int
      */
     function session(?string $name = null)
     {
+        /** @var \Nur\Http\Session::class $session */
+        $session = app(\Nur\Http\Session::class);
         if (is_null($name)) {
-            return app('session');
+            return $session;
         }
 
-        return app('session')->get($name);
+        return $session->get($name);
     }
 }
 
@@ -205,15 +207,17 @@ if (!function_exists('cookie')) {
      *
      * @param string|null $name
      *
-     * @return mixed|Nur\Http\Cookie
+     * @return Nur\Http\Cookie|string|int
      */
     function cookie(?string $name = null)
     {
+        /** @var \Nur\Http\Cookie $cookie */
+        $cookie = app(\Nur\Http\Cookie::class);
         if (is_null($name)) {
-            return app('cookie');
+            return $cookie;
         }
 
-        return app('cookie')->get($name);
+        return $cookie->get($name);
     }
 }
 
@@ -547,6 +551,18 @@ if (!function_exists('response')) {
             'status' => $status,
             'headers' => $headers,
         ]);
+    }
+}
+
+if (!function_exists('validation')) {
+    /**
+     * Validation service from the container.
+     *
+     * @return \Nur\Http\Validation
+     */
+    function validation()
+    {
+        return app(\Nur\Http\Validation::class);
     }
 }
 

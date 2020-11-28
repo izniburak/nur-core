@@ -7,13 +7,6 @@ use Nur\Kernel\ServiceProvider;
 class Session extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-    /**
      * Register the service provider.
      *
      * @return void
@@ -21,7 +14,6 @@ class Session extends ServiceProvider
      */
     public function register()
     {
-        session_start();
-        $this->app->singleton('session', \Nur\Http\Session::class);
+        $this->app->singleton(\Nur\Http\Session::class, \Nur\Http\Session::class);
     }
 }

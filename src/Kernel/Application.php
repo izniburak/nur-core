@@ -1048,7 +1048,7 @@ class Application extends Container
      */
     public function isLocal(): bool
     {
-        return APP_ENV === 'local';
+        return $this->config['app']['env'] === 'local';
     }
 
     /**
@@ -1058,7 +1058,7 @@ class Application extends Container
      */
     public function isProduction(): bool
     {
-        return APP_ENV === 'production';
+        return $this->config['app']['env'] === 'production';
     }
 
     /**
@@ -1169,9 +1169,11 @@ class Application extends Container
             \Nur\Providers\Event::class,
             \Nur\Providers\Request::class,
             \Nur\Providers\Response::class,
+            \Nur\Providers\Session::class,
+            \Nur\Providers\Cookie::class,
             \Nur\Providers\Route::class,
-            \Nur\Providers\Load::class,
             \Nur\Providers\Uri::class,
+            \Nur\Providers\Load::class,
             \Nur\Providers\Date::class,
             \Nur\Providers\Encryption::class,
             \Nur\Providers\Log::class,
@@ -1180,6 +1182,8 @@ class Application extends Container
         $this->registerCoreAliases = [
             'Request'   => \Nur\Facades\Request::class,
             'Response'  => \Nur\Facades\Response::class,
+            'Cookie'    => \Nur\Facades\Cookie::class,
+            'Session'   => \Nur\Facades\Session::class,
             'Route'     => \Nur\Facades\Route::class,
             'Uri'       => \Nur\Facades\Uri::class,
             'Date'      => \Nur\Facades\Date::class,

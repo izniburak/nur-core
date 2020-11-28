@@ -7,13 +7,6 @@ use Nur\Kernel\ServiceProvider;
 class Cookie extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-    /**
      * Register the service provider.
      *
      * @return void
@@ -21,7 +14,6 @@ class Cookie extends ServiceProvider
      */
     public function register()
     {
-        session_start();
-        $this->app->singleton('cookie', \Nur\Http\Cookie::class);
+        $this->app->singleton(\Nur\Http\Cookie::class, \Nur\Http\Cookie::class);
     }
 }
