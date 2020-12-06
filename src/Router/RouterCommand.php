@@ -79,6 +79,7 @@ class RouterCommand extends RouterCommandProvider
                 }
                 $uriParams = array_reverse($uriParams);
                 $parameters[] = array_pop($uriParams);
+                $uriParams = array_reverse($uriParams);
             }
         }
 

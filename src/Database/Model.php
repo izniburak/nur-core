@@ -4,13 +4,11 @@ namespace Nur\Database;
 
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 
+/**
+ * @mixin \Illuminate\Database\Query\Builder
+ */
 class Model extends EloquentModel
 {
-    /**
-     * @var bool
-     */
-    public $timestamps = false;
-
     /**
      * Create Eloquent Model.
      *
