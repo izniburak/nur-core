@@ -718,6 +718,7 @@ if (!function_exists('paginationLinks')) {
 
         $config = [
             'class' => 'pagination pagination-sm',
+            'active' => 'active',
             'scroll' => 5,
             'show' => 10,
             'next' => '&raquo;',
@@ -770,7 +771,7 @@ if (!function_exists('paginationLinks')) {
 
                 for ($i = $start; $i <= $finish; $i++) {
                     if ($page == $i) {
-                        $ul .= '<li class="active"><a href="javascript:;">' . $i . '</a></li>';
+                        $ul .= '<li class="'.$config['active'].'"><a href="javascript:;">' . $i . '</a></li>';
                     } else {
                         $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($i) . '">' . $i . '</a></li>';
                     }
