@@ -26,7 +26,7 @@ class Application extends Container
      *
      * @var string
      */
-    const VERSION = '3.0.4';
+    const VERSION = '3.0.5';
 
     /**
      * The base path for the Nur Framework installation.

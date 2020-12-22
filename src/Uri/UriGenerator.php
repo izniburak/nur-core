@@ -197,6 +197,7 @@ class UriGenerator
         }
 
         $uri = $this->replace(str_replace($this->base, '', $this->request->server('REQUEST_URI')));
+        $uri = explode('?', $uri)[0];
         return array_values(array_filter(explode('/', $uri), function ($segment) {
             return !empty($segment);
         }));

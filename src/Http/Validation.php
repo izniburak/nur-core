@@ -96,7 +96,7 @@ class Validation
     public function isValid(array $data = []): bool
     {
         if (empty($data)) {
-            $data = request()->method() == 'GET'
+            $data = request()->isGet()
                 ? request()->get()
                 : request()->all();
         }
@@ -361,7 +361,7 @@ class Validation
      *
      * @return bool
      */
-    protected function valid_url($url): bool
+    protected function valid_url(string $url): bool
     {
         return filter_var($url, FILTER_VALIDATE_URL);
     }
@@ -373,7 +373,7 @@ class Validation
      *
      * @return bool
      */
-    protected function valid_ip($ip): bool
+    protected function valid_ip(string $ip): bool
     {
         return filter_var($ip, FILTER_VALIDATE_IP);
     }
@@ -385,7 +385,7 @@ class Validation
      *
      * @return bool
      */
-    protected function valid_ipv4($ip): bool
+    protected function valid_ipv4(string $ip): bool
     {
         return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
     }
@@ -397,7 +397,7 @@ class Validation
      *
      * @return bool
      */
-    protected function valid_ipv6($ip): bool
+    protected function valid_ipv6(string $ip): bool
     {
         return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6);
     }
@@ -434,7 +434,7 @@ class Validation
             $total += $digit;
         }
 
-        return ($total % 10 == 0) ? true : false;
+        return $total % 10 === 0;
     }
 
     /**
