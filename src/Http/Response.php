@@ -51,7 +51,7 @@ class Response extends \Symfony\Component\HttpFoundation\Response
 
         $this->setContent(json_encode($data));
         $this->setStatusCode($statusCode);
-        $this->json = true;
+        $this->headers->set('Content-Type', 'application/json; charset=' . $this->getCharset());
 
         return $this;
     }
@@ -131,10 +131,6 @@ class Response extends \Symfony\Component\HttpFoundation\Response
      */
     public function __toString()
     {
-        if ($this->json) {
-            $this->headers->set('Content-Type', 'application/json; charset=' . $this->getCharset());
-        }
-
         // return $this->send();
         return $this->sendHeaders()->getContent();
     }

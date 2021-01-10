@@ -26,7 +26,7 @@ class Application extends Container
      *
      * @var string
      */
-    const VERSION = '3.0.5';
+    const VERSION = '3.1.0';
 
     /**
      * The base path for the Nur Framework installation.
@@ -298,6 +298,31 @@ class Application extends Container
     public function baseFolder(): string
     {
         return $this->baseFolder;
+    }
+
+    /**
+     * Get the application name.
+     *
+     * @return string
+     */
+    public function name(): string
+    {
+        return $this['config']->get('app.name');
+    }
+
+    /**
+     * Get the application key.
+     *
+     * @return string
+     */
+    public function key(): string
+    {
+        $key = $this['config']->get('app.key');
+        if (Str::startsWith($key, 'base64:')) {
+            $key = substr($key, 7);
+        }
+
+        return $key;
     }
 
     /**

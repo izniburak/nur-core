@@ -6,6 +6,7 @@ use DateTime;
 use DomainException;
 use Firebase\JWT\JWT as FirebaseJwt;
 use Illuminate\Support\Str;
+use Nur\Auth\Auth;
 use UnexpectedValueException;
 
 class Jwt implements JwtInterface
@@ -44,10 +45,19 @@ class Jwt implements JwtInterface
     protected $user = null;
 
     /**
-     * Jwt constructor.
+     * @var Auth
      */
-    public function __construct()
+    protected $auth;
+
+    /**
+     * Jwt constructor.
+     *
+     * @param Auth $auth
+     */
+    public function __construct(Auth $auth)
     {
+        $this->auth = $auth;
+
         $jwt = config('auth.jwt');
         $this->secret = $jwt['secret'];
         $this->leeway = $jwt['leeway'];
@@ -81,12 +91,12 @@ class Jwt implements JwtInterface
     }
 
     /**
-     * @param $jwt
+     * @param string $jwt
      *
      * @return \stdClass
      * @throws JwtException
      */
-    public function decode($jwt): \stdClass
+    public function decode(string $jwt): \stdClass
     {
         try {
             return FirebaseJwt::decode($jwt, $this->secret, [$this->algorithm]);
@@ -96,28 +106,52 @@ class Jwt implements JwtInterface
     }
 
     /**
-     * @param string $msg
+     * @param string $value
      *
      * @return string
      * @throws DomainException
      */
-    public function sign($msg): string
+    public function sign(string $value): string
     {
         try {
-            return FirebaseJwt::sign($msg, $this->secret, $this->algorithm);
+            return FirebaseJwt::sign($value, $this->secret, $this->algorithm);
         } catch (DomainException $e) {
             throw new JwtException($e->getMessage(), $e->getCode());
         }
     }
 
     /**
-     * @param $user
+     * @param array $credentials
      *
      * @return string
      */
-    public function login($user): string
+    public function attempt(array $credentials): string
     {
-        return $this->encode(['data' => $user]);
+        if ($this->auth->validate($credentials)) {
+            return $this->login($this->auth->user()->getJWTClaims());
+        }
+
+        throw new JwtException('Invalid Credentials');
+    }
+
+    /**
+     * @param array|object $credentials
+     *
+     * @return string
+     */
+    public function login($credentials): string
+    {
+        return $this->encode(['data' => $credentials]);
+    }
+
+    /**
+     * @param object $user
+     *
+     * @return string
+     */
+    public function loginWithUser($user): string
+    {
+        return $this->login($user->getJWTClaims());
     }
 
     /**
@@ -139,9 +173,9 @@ class Jwt implements JwtInterface
                 throw new JwtException($e->getMessage(), $e->getCode());
             }
 
-            $credential = json_decode(json_encode($user->data), true);
-            if (auth()->validate($credential)) {
-                $this->user = auth()->user();
+            $credentials = json_decode(json_encode($user->data), true);
+            if ($this->auth->validate($credentials)) {
+                $this->user = $this->auth->user();
                 return true;
             }
         }

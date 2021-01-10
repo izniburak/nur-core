@@ -165,19 +165,12 @@ if (!function_exists('auth')) {
     /**
      * Authentication
      *
-     * @param null|\Nur\Database\Model $user
-     *
-     * @return bool|Nur\Auth\Auth
+     * @return Nur\Auth\Auth
      */
-    function auth($user = null)
+    function auth(): Nur\Auth\Auth
     {
         /** @var \Nur\Auth\Auth $auth */
-        $auth = app(\Nur\Auth\Auth::class);
-        if (is_null($user)) {
-            return $auth;
-        }
-
-        return $auth->login($user);
+        return app(\Nur\Auth\Auth::class);
     }
 }
 
@@ -191,7 +184,7 @@ if (!function_exists('session')) {
      */
     function session(?string $name = null)
     {
-        /** @var \Nur\Http\Session::class $session */
+        /** @var \Nur\Http\Session $session */
         $session = app(\Nur\Http\Session::class);
         if (is_null($name)) {
             return $session;
@@ -489,7 +482,8 @@ if (!function_exists('csrf_field')) {
      */
     function csrf_field(?string $name = null): string
     {
-        return '<input type="hidden" name="_token" value="' . csrf_token($name) . '" />';
+        return '<input type="hidden" name="_token" value="' . csrf_token($name) . '" />'
+            . ($name ? '<input type="hidden" name="_token_form" value="' . $name . '" />' : '');
     }
 }
 
@@ -717,7 +711,7 @@ if (!function_exists('paginationLinks')) {
         }
 
         $config = [
-            'class' => 'pagination pagination-sm',
+            'class' => 'pagination justify-content-end',
             'active' => 'active',
             'scroll' => 5,
             'show' => 10,
@@ -744,7 +738,8 @@ if (!function_exists('paginationLinks')) {
         if ($total > 1) {
             $page = (intval($page) ? $page : 1);
             if ($page != 1) {
-                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page - 1) . '">' . $config['prev'] . '</a>';
+                $ul .= '<li class="page-item">
+                    <a class="page-link" href="' . ($link) . $pageName . '=' . ($page - 1) . '">' . $config['prev'] . '</a>';
             }
 
             if (!$simple) {
@@ -771,15 +766,15 @@ if (!function_exists('paginationLinks')) {
 
                 for ($i = $start; $i <= $finish; $i++) {
                     if ($page == $i) {
-                        $ul .= '<li class="'.$config['active'].'"><a href="javascript:;">' . $i . '</a></li>';
+                        $ul .= '<li class="page-item ' . $config['active'] . '"><a class="page-link" href="javascript:;">' . $i . '</a></li>';
                     } else {
-                        $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($i) . '">' . $i . '</a></li>';
+                        $ul .= '<li class="page-item"><a class="page-link" href="' . ($link) . $pageName . '=' . ($i) . '">' . $i . '</a></li>';
                     }
                 }
             }
 
             if ($page != $total) {
-                $ul .= '<li><a href="' . ($link) . $pageName . '=' . ($page + 1) . '">' . $config['next'] . '</a>';
+                $ul .= '<li class="page-item"><a class="page-link" href="' . ($link) . $pageName . '=' . ($page + 1) . '">' . $config['next'] . '</a>';
             }
         } else {
             return '';

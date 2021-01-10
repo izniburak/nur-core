@@ -2,6 +2,7 @@
 
 namespace Nur\Http\Middleware;
 
+use Exception;
 use Nur\Auth\Jwt\JwtException;
 use Nur\Http\Middleware;
 
@@ -18,20 +19,22 @@ class JwtMiddleware extends Middleware
         try {
             auth()->jwt()->check();
         } catch (JwtException $e) {
-            return $this->failed();
+            return $this->failed($e);
         }
 
         return true;
     }
 
     /**
+     * @param Exception $exception
+     *
      * @return \Nur\Http\Response|string
      */
-    public function failed()
+    protected function failed(Exception $exception)
     {
         return response()->json([
             'success' => false,
-            'error' => $e->getMessage(),
+            'error' => $exception->getMessage(),
         ], 401);
     }
 }

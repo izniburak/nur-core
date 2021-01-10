@@ -2,6 +2,7 @@
 
 namespace Nur\Auth;
 
+use Illuminate\Support\Str;
 use Nur\Auth\Jwt\Jwt;
 use Nur\Database\Model;
 use Nur\Http\Response;
@@ -16,7 +17,7 @@ class Auth
     /**
      * @var string
      */
-    private $sessionId = '_auth_user_id';
+    private $sessionId = '_auth_id';
 
     /**
      * @var mixed|null
@@ -36,14 +37,15 @@ class Auth
     /**
      * Auth constructor.
      *
-     * @return void
+     * @param string|null $prefix
      */
-    public function __construct()
+    public function __construct(string $prefix = null)
     {
         $this->checkAuthProvider();
+        $this->setSessionPrefix($prefix);
 
         if ($id = $this->id()) {
-            $this->loginUsingId($id);
+            $this->loginById($id);
         }
     }
 
@@ -85,14 +87,15 @@ class Auth
     /**
      * Login the user with the given id
      *
-     * @param      $id
-     * @param bool $remember
+     * @param       $id
+     * @param array $where
+     * @param bool  $remember
      *
      * @return bool
      */
-    public function loginUsingId($id, bool $remember = false): bool
+    public function loginById($id, array $where = [], bool $remember = false): bool
     {
-        if ($user = $this->model->where([$this->primaryKey => $id])->first()) {
+        if ($user = $this->model->where(array_merge([$this->primaryKey => $id], $where))->first()) {
             $this->user = $user;
             return $this->login($this->user, $remember);
         }
@@ -112,7 +115,7 @@ class Auth
         $password = $credentials[$this->passwordField] ?? null;
         unset($credentials[$this->passwordField]);
         if ($user = $this->model->where($credentials)->first()) {
-            if (!hasher()->check($password, $user->{$this->passwordField})) {
+            if ($password && !hasher()->check($password, $user->{$this->passwordField})) {
                 return false;
             }
 
@@ -178,10 +181,11 @@ class Auth
      * Get JWT Instance
      *
      * @return Jwt
+     * @throws
      */
     public function jwt(): Jwt
     {
-        return resolve(Jwt::class);
+        return app()->make(Jwt::class);
     }
 
     /**
@@ -215,6 +219,17 @@ class Auth
         }
 
         return true;
+    }
+
+    /**
+     * Add prefix to Auth Session Id
+     *
+     * @param string $prefix
+     */
+    protected function setSessionPrefix(?string $prefix): void
+    {
+        $key = substr(app()->key(), 0, 3);
+        $this->sessionId = "_{$prefix}{$this->sessionId}_{$key}";
     }
 
     /**

@@ -81,7 +81,7 @@ class Validation
      */
     public function rule(string $field, string $label, string $rules, array $text = []): void
     {
-        $this->labels[$field] = $label;
+        $this->labels[$field] = ucfirst($label);
         $this->rules[$field] = $rules;
         $this->texts[$field] = !empty($text) ? $text : null;
     }
@@ -172,7 +172,7 @@ class Validation
 
         $text = str_replace([':label:', ':value:'], '%s', $text);
 
-        if (!isset($this->data[$field])) {
+        if (!isset($this->data[$field]) && $filter !== 'nullable') {
             $this->errors[] = sprintf($text, $this->labels[$field], $params);
         } elseif (!is_null($params)) {
             if ($filter == 'matches') {
@@ -201,6 +201,18 @@ class Validation
     protected function required($data): bool
     {
         return (!empty($data) && !is_null($data) && $data !== '');
+    }
+
+    /**
+     * Nullable Field Control
+     *
+     * @param string $data
+     *
+     * @return bool
+     */
+    protected function nullable($data): bool
+    {
+        return is_null($data) || empty($data);
     }
 
     /**

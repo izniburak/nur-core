@@ -14,16 +14,16 @@ interface JwtInterface
     public function encode(array $payload, $keyId = null, $head = null): string;
 
     /**
-     * @param $jwt
+     * @param string $jwt
      *
      * @return \stdClass
      */
-    public function decode($jwt): \stdClass;
+    public function decode(string $jwt): \stdClass;
 
     /**
-     * @param $jwt
+     * @param $value
      *
      * @return string
      */
-    public function sign($jwt): string;
+    public function sign(string $value): string;
 }

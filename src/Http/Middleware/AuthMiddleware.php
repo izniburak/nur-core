@@ -24,7 +24,7 @@ class AuthMiddleware extends Middleware
     /**
      * @return void|null
      */
-    public function failed()
+    protected function failed()
     {
         return redirect('login');
     }

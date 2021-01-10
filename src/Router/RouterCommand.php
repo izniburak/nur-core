@@ -34,7 +34,22 @@ class RouterCommand extends RouterCommandProvider
     protected function resolveClass(string $class, string $path, string $namespace)
     {
         $class = str_replace([$namespace, '\\'], ['', '/'], $class);
-        $class = $namespace . str_replace('/', '\\', $class);
+
+        if ($this->namespaces['controllers'] === $namespace) {
+            if (strpos($class, 'App') !== 0) {
+                $class = $namespace . $class;
+            }
+        } elseif ($this->namespaces['middlewares'] === $namespace) {
+            if (strpos($class, '/') === false) {
+                $class = $namespace . $class;
+            }
+
+            if (strpos($class, 'Nur/Http') !== false) {
+                $class =  str_replace($namespace, '', $class);
+            }
+        }
+
+        $class = str_replace('/', '\\', $class);
         return resolve($class);
     }
 
