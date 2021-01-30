@@ -25,14 +25,14 @@ class CsrfMiddleware extends Middleware
      *
      * @return bool
      */
-    public function handle(Request $request): bool
+    public function handle(Request $request)
     {
         $uri = trim(str_replace(app()->baseFolder(), '', $request->getRequestUri()), '/');
         if (!in_array($request->method(), ['HEAD', 'GET', 'OPTIONS']) && !$this->skip($uri)) {
-            $token = $request->input('_token') ?: $request->header('X-CSRF-TOKEN');
+            $token = $request->input('_token') ?: $request->header('X-CSRF-Token');
             $tokenForm = $request->input('_token_form');
             if (empty($token) || !csrf_check($token, $tokenForm)) {
-                $this->failed();
+                return $this->failed($request);
             }
         }
 
@@ -40,9 +40,11 @@ class CsrfMiddleware extends Middleware
     }
 
     /**
-     * @throws
+     * @param Request $request
+     *
+     * @return bool
      */
-    protected function failed()
+    protected function failed(Request $request)
     {
         throw new BadRequestHttpException;
     }
