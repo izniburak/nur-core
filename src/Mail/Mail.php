@@ -236,7 +236,7 @@ class Mail extends PHPMailer
         if ($config->driver === 'smtp') {
             $this->isSMTP();
             $this->SMTPAuth = true;
-            $this->SMTPSecure = $config->encryption ?? 'tls';
+            $this->SMTPSecure = $config->encryption ?? '';
             $this->setHost($config->host);
             $this->setPort($config->port);
             $this->setUsername($config->username);

@@ -26,6 +26,13 @@ class Jwt implements JwtInterface
     protected $ttl = 60;
 
     /**
+     * JWT time to live for Refresh token
+     *
+     * @var int
+     */
+    protected $refreshTtl = 60 * 24 * 30;
+
+    /**
      * JWT Secret
      *
      * @var string
@@ -63,6 +70,7 @@ class Jwt implements JwtInterface
         $this->leeway = $jwt['leeway'];
         $this->algorithm = $jwt['alg'];
         $this->ttl = $jwt['ttl'];
+        $this->refreshTtl = $jwt['refresh_ttl'];
 
         FirebaseJwt::$leeway = $this->leeway;
     }
@@ -181,6 +189,20 @@ class Jwt implements JwtInterface
         }
 
         throw new JwtException("JWT Token required");
+    }
+
+    /**
+     * @param string $token JWT Token
+     *
+     * @return string
+     */
+    public function refresh(string $token): string
+    {
+        $decoded = $this->decode($token);
+        return $this->encode(array_merge([], [
+            'exp' => now()->addMinutes($this->refreshTtl)->getTimestamp(),
+            'data' => $decoded->data,
+        ]));
     }
 
     /**

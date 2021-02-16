@@ -174,6 +174,19 @@ if (!function_exists('auth')) {
     }
 }
 
+if (!function_exists('admin')) {
+    /**
+     * Authentication for Admin Panel Users
+     *
+     * @return \Nur\Auth\Auth
+     * @throws
+     */
+    function admin(): \Nur\Auth\Auth
+    {
+        return app()->makeWith(\Nur\Auth\Auth::class, ['prefix' => 'admin']);
+    }
+}
+
 if (!function_exists('session')) {
     /**
      * Sessions
@@ -637,6 +650,29 @@ if (!function_exists('trans_choice')) {
     function trans_choice(string $key, $number, array $replace = [], $locale = null)
     {
         return trans()->choice($key, $number, $replace, $locale);
+    }
+}
+
+if (!function_exists('captcha')) {
+    /**
+     * Generate captcha code
+     *
+     * @param int $max
+     *
+     * @return object
+     */
+    function captcha(int $max = 10): object
+    {
+        $op = rand(0, 1);
+        $n1 = rand(($max / 2), $max);
+        $n2 = rand(1, ($max / 2));
+        $result = $op === 1 ? $n1 - $n2 : $n1 + $n2;
+        session()->set('captcha', $result);
+        return (object)[
+            'question' => $n1 . ($op === 1 ? ' - ' : ' + ') . $n2,
+            'answer' => $result,
+            'answer_encoded' => base64_encode($result),
+        ];
     }
 }
 
