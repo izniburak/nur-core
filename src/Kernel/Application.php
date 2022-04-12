@@ -5,6 +5,8 @@ namespace Nur\Kernel;
 use Closure;
 use Dotenv\Dotenv;
 use Exception;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Illuminate\Contracts\Container\CircularDependencyException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\{Arr, Collection, Env, Str};
 use Nur\Container\Container;
@@ -71,7 +73,7 @@ class Application extends Container
     protected $terminatingCallbacks = [];
 
     /**
-     * All of the registered service providers.
+     * All the registered service providers.
      *
      * @var array
      */
@@ -182,7 +184,7 @@ class Application extends Container
      */
     public function __construct()
     {
-        $pattern = "#\/{$this->publicFolder}$#si";
+        $pattern = "#/{$this->publicFolder}$#si";
         $this->root = preg_replace($pattern, '', realpath(getcwd()));
         $this->docRoot = preg_replace($pattern, '', realpath($_SERVER['DOCUMENT_ROOT']));
         $this->baseFolder = trim(
@@ -536,10 +538,10 @@ class Application extends Container
     }
 
     /**
-     * Register all of the configured providers.
+     * Register all the configured providers.
      *
      * @return void
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     public function registerConfiguredProviders(): void
     {
@@ -560,7 +562,7 @@ class Application extends Container
      *
      * @return ServiceProvider
      */
-    public function register($provider, $force = false)
+    public function register($provider, bool $force = false)
     {
         if (($registered = $this->getProvider($provider)) && !$force) {
             return $registered;
@@ -595,7 +597,7 @@ class Application extends Container
         $this->markAsRegistered($provider);
 
         // If the application has already booted, we will call this boot method on
-        // the provider class so it has an opportunity to do its boot logic and
+        // the provider class, so it has an opportunity to do its boot logic and
         // will be ready for any usage by this developer's application logic.
         if ($this->isBooted()) {
             $this->bootProvider($provider);
@@ -611,7 +613,7 @@ class Application extends Container
      *
      * @return ServiceProvider|null
      */
-    public function getProvider($provider)
+    public function getProvider($provider): ?ServiceProvider
     {
         return array_values($this->getProviders($provider))[0] ?? null;
     }
@@ -645,7 +647,7 @@ class Application extends Container
     }
 
     /**
-     * Load and boot all of the remaining deferred providers.
+     * Load and boot all the remaining deferred providers.
      *
      * @return void
      */
@@ -719,7 +721,7 @@ class Application extends Container
      * @param array  $parameters
      *
      * @return mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     public function make($abstract, array $parameters = [])
     {
@@ -736,7 +738,7 @@ class Application extends Container
      * @param bool   $raiseEvents
      *
      * @return mixed
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException|CircularDependencyException
      */
     protected function resolve($abstract, $parameters = [], $raiseEvents = true)
     {
@@ -908,7 +910,7 @@ class Application extends Container
     /**
      * Register a terminating callback with the application.
      *
-     * @param \Closure $callback
+     * @param Closure $callback
      *
      * @return $this
      */
@@ -1045,9 +1047,9 @@ class Application extends Container
      *
      * @return string
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
-    public function getNamespace()
+    public function getNamespace(): string
     {
         if (!is_null($this->namespace)) {
             return $this->namespace;
@@ -1120,7 +1122,7 @@ class Application extends Container
      * @param string[] $bootstrappers
      *
      * @return void
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     public function bootstrapWith(array $bootstrappers): void
     {
@@ -1273,7 +1275,7 @@ class Application extends Container
     }
 
     /**
-     * Register all of the base service providers.
+     * Register all the base service providers.
      *
      * @return void
      */
@@ -1291,7 +1293,7 @@ class Application extends Container
      */
     protected function registerApplicationProviders(): void
     {
-        foreach ($this->config['services']['providers'] as $provider) {
+        foreach ($this->config['app']['providers'] as $provider) {
             $this->register(new $provider($this));
         }
     }
@@ -1303,7 +1305,7 @@ class Application extends Container
      */
     protected function registerApplicationAliases(): void
     {
-        foreach ($this->config['services']['aliases'] as $key => $alias) {
+        foreach ($this->config['app']['aliases'] as $key => $alias) {
             $this->alias($key, $alias);
             if (!class_exists($key)) {
                 class_alias($alias, $key);
@@ -1312,7 +1314,7 @@ class Application extends Container
     }
 
     /**
-     * Bind all of the application paths in the container.
+     * Bind all the application paths in the container.
      *
      * @return void
      */
@@ -1331,7 +1333,7 @@ class Application extends Container
     /**
      * Mark the given provider as registered.
      *
-     * @param \Nur\Kernel\ServiceProvider $provider
+     * @param ServiceProvider $provider
      *
      * @return void
      */
@@ -1345,7 +1347,7 @@ class Application extends Container
     /**
      * Boot the given service provider.
      *
-     * @param \Nur\Kernel\ServiceProvider $provider
+     * @param ServiceProvider $provider
      *
      * @return mixed|void
      */

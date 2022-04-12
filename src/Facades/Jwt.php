@@ -15,12 +15,7 @@ use Nur\Kernel\Facade;
  */
 class Jwt extends Facade
 {
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return \Nur\Auth\Jwt\Jwt::class;
     }

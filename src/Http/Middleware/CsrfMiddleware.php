@@ -13,7 +13,7 @@ class CsrfMiddleware extends Middleware
      *
      * @var array
      */
-    protected $except = [
+    protected array $except = [
         //
     ];
 

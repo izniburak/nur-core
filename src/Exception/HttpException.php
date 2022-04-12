@@ -38,11 +38,11 @@ class HttpException extends \RuntimeException
     /**
      * HttpException constructor.
      *
-     * @param int             $statusCode
-     * @param null            $messageText
+     * @param int $statusCode
+     * @param string|array|null $messageText
      * @param \Exception|null $previous
-     * @param array           $headers
-     * @param int|null        $code
+     * @param array $headers
+     * @param int|null $code
      */
     public function __construct(
         int $statusCode,
@@ -63,8 +63,8 @@ class HttpException extends \RuntimeException
 
         $title = null;
         if (is_array($messageText)) {
-            $title = isset($messageText['title']) ? $messageText['title'] : null;
-            $messageText = isset($messageText['message']) ? $messageText['message'] : null;
+            $title = $messageText['title'] ?? null;
+            $messageText = $messageText['message'] ?? null;
         }
 
         $message = $messageText ?? null;
@@ -91,28 +91,17 @@ class HttpException extends \RuntimeException
         return require __DIR__ . '/views/index.php';
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * @return array
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
-    /**
-     * Set response headers.
-     *
-     * @param array $headers Response headers
-     */
-    public function setHeaders(array $headers)
+    public function setHeaders(array $headers): void
     {
         $this->headers = $headers;
     }

@@ -15,12 +15,7 @@ use Nur\Kernel\Facade;
  */
 class Response extends Facade
 {
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return BaseResponse::class;
     }

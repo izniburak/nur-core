@@ -24,10 +24,10 @@ class TransformsRequest
     /**
      * Clean the request's data.
      *
-     * @param  Request  $request
+     * @param Request $request
      * @return void
      */
-    protected function clean($request)
+    protected function clean(Request $request)
     {
         $this->cleanParameterBag($request->query);
 
@@ -53,10 +53,10 @@ class TransformsRequest
      * Clean the data in the given array.
      *
      * @param  array  $data
-     * @param  string  $keyPrefix
+     * @param string $keyPrefix
      * @return array
      */
-    protected function cleanArray(array $data, $keyPrefix = '')
+    protected function cleanArray(array $data, string $keyPrefix = '')
     {
         return collect($data)->map(function ($value, $key) use ($keyPrefix) {
             return $this->cleanValue($keyPrefix.$key, $value);
@@ -66,11 +66,11 @@ class TransformsRequest
     /**
      * Clean the given value.
      *
-     * @param  string  $key
+     * @param string $key
      * @param  mixed  $value
      * @return mixed
      */
-    protected function cleanValue($key, $value)
+    protected function cleanValue(string $key, mixed $value): mixed
     {
         if (is_array($value)) {
             return $this->cleanArray($value, $key.'.');
@@ -82,11 +82,11 @@ class TransformsRequest
     /**
      * Transform the given value.
      *
-     * @param  string  $key
+     * @param string $key
      * @param  mixed  $value
      * @return mixed
      */
-    protected function transform($key, $value)
+    protected function transform(string $key, mixed $value): mixed
     {
         return $value;
     }

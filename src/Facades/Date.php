@@ -85,26 +85,15 @@ class Date extends Facade
 {
     const DEFAULT_FACADE = DateFactory::class;
 
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     *
-     * @throws \RuntimeException
-     */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'date';
     }
 
     /**
      * Resolve the facade root instance from the container.
-     *
-     * @param string $name
-     *
-     * @return mixed
      */
-    protected static function resolveInstance($name)
+    protected static function resolveInstance(string $name): mixed
     {
         if (! isset(static::$resolvedInstance[$name]) && ! isset(static::$app, static::$app[$name])) {
             $class = static::DEFAULT_FACADE;

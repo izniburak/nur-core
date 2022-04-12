@@ -10,13 +10,6 @@ namespace Nur\Exception;
  */
 class MethodNotAllowedHttpException extends HttpException
 {
-    /**
-     * @param array             $allow    An array of allowed methods
-     * @param string|array      $message  The internal exception message
-     * @param \Exception        $previous The previous exception
-     * @param int               $code     The internal exception code
-     * @param array             $headers
-     */
     public function __construct(
         array $allow,
         $message = null,

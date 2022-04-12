@@ -8,20 +8,16 @@ class Router extends RouterProvider
 {
     /**
      * Throw new Exception for Router Error
-     *
-     * @param string $message
-     * @param int    $statusCode
-     *
-     * @return RouterException
+
+     * @throws RouterException
      */
-    protected function exception($message = '', $statusCode = 500): \Buki\Router\RouterException
+    protected function exception(string $message = '', int $statusCode = 500)
     {
-        return new RouterException($message, $statusCode);
+        throw new RouterException($message, $statusCode);
     }
 
     /**
      * RouterCommand class
-     *
      *
      * @return RouterCommand
      */
@@ -34,11 +30,6 @@ class Router extends RouterProvider
         );
     }
 
-    /**
-     * @param string $controller
-     *
-     * @return \Buki\Router\RouterException|mixed
-     */
     protected function resolveClassName(string $controller)
     {
         if (strstr($controller, '\\')) {
@@ -46,17 +37,5 @@ class Router extends RouterProvider
         }
 
         return (str_replace(['.', '/'], ['\\'], $this->namespaces['controllers'] . $controller));
-    }
-
-    /**
-     * @return string
-     */
-    protected function getRequestUri(): string
-    {
-        $dirname = dirname($this->request()->server->get('SCRIPT_NAME'));
-        $dirname = $dirname === '/' ? '' : $dirname;
-        $basename = 'index.php'; // basename($_SERVER['SCRIPT_NAME']);
-        $uri = str_replace([$dirname, $basename],null, $this->request()->server->get('REQUEST_URI'));
-        return $this->clearRouteName(explode('?', $uri)[0]);
     }
 }

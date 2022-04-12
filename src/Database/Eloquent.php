@@ -4,6 +4,7 @@ namespace Nur\Database;
 
 use Illuminate\Container\Container;
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Illuminate\Database\Schema\Builder;
 use Illuminate\Events\Dispatcher;
 
 /**
@@ -38,8 +39,6 @@ class Eloquent
 
     /**
      * Create Eloquent Capsule.
-     *
-     * @return void
      */
     function __construct()
     {
@@ -52,6 +51,7 @@ class Eloquent
 
         $capsule->addConnection($activeDb);
         // Set the event dispatcher used by Eloquent models... (optional)
+        // [TODO] - use dependency container
         $capsule->setEventDispatcher(new Dispatcher(new Container));
         // Make this Capsule instance available globally via static methods... (optional)
         $capsule->setAsGlobal();
@@ -62,12 +62,7 @@ class Eloquent
         self::$schema = $capsule->schema();
     }
 
-    /**
-     * instance of Class.
-     *
-     * @return Eloquent
-     */
-    public static function getInstance()
+    public static function getInstance(): ?Eloquent
     {
         if (null === self::$instance) {
             self::$instance = new static();
@@ -76,22 +71,12 @@ class Eloquent
         return self::$instance;
     }
 
-    /**
-     * Get Eloquent Capsule.
-     *
-     * @return Capsule
-     */
-    public static function getCapsule()
+    public static function getCapsule(): ?Capsule
     {
         return self::$capsule;
     }
 
-    /**
-     * Get Eloquent Schema.
-     *
-     * @return \Illuminate\Database\Schema\Builder
-     */
-    public static function getSchema()
+    public static function getSchema(): ?Builder
     {
         return self::$schema;
     }

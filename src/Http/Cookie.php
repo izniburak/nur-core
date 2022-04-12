@@ -5,15 +5,15 @@ namespace Nur\Http;
 class Cookie
 {
     /**
-     * Set cookie method.
+     * Set cookie.
      *
      * @param array|string $key
-     * @param string       $value
-     * @param integer      $time
+     * @param string|null $value
+     * @param integer $time
      *
      * @return void
      */
-    public function set($key, $value = null, $time = 0): void
+    public function set($key, string $value = null, int $time = 0): void
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
@@ -27,7 +27,7 @@ class Cookie
     }
 
     /**
-     * Get cookie method.
+     * Get cookie.
      *
      * @param string|null $key
      *
@@ -40,10 +40,6 @@ class Cookie
 
     /**
      * Cookie has key ?
-     *
-     * @param string $key
-     *
-     * @return bool
      */
     public function has(string $key): bool
     {
@@ -52,10 +48,6 @@ class Cookie
 
     /**
      * Delete cookie method.
-     *
-     * @param string $key
-     *
-     * @return void
      */
     public function delete(string $key): void
     {
@@ -67,8 +59,6 @@ class Cookie
 
     /**
      * Delete all cookie method.
-     *
-     * @return void
      */
     public function destroy(): void
     {

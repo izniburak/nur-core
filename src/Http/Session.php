@@ -5,7 +5,7 @@ namespace Nur\Http;
 class Session
 {
     /**
-     * Set session method.
+     * Set session.
      *
      * @param array|string $key
      * @param mixed        $value
@@ -30,17 +30,13 @@ class Session
      *
      * @return null|mixed
      */
-    public function get($key = null)
+    public function get(?string $key = null)
     {
         return is_null($key) ? $_SESSION : ($this->has($key) ? $_SESSION[$key] : null);
     }
 
     /**
      * Session has key ?
-     *
-     * @param string $key
-     *
-     * @return bool
      */
     public function has(string $key): bool
     {
@@ -53,30 +49,22 @@ class Session
      * @param string      $key
      * @param mixed       $value
      * @param string|null $redirect
-     *
-     * @return bool
      */
-    public function setFlash(string $key, $value, string $redirect = null)
+    public function setFlash(string $key, $value, string $redirect = null): void
     {
         $this->set('_nur_flash', [$key => $value]);
 
-        if (! is_null($redirect)) {
+        if (!is_null($redirect)) {
             uri()->redirect($redirect);
         }
-
-        return false;
     }
 
     /**
-     * Getting Flash Message
-     *
-     * @param string|null $key
-     *
-     * @return null|mixed
+     * Get flash message
      */
-    public function getFlash(string $key = null)
+    public function getFlash(?string $key = null)
     {
-        if (! is_null($key)) {
+        if (!is_null($key)) {
             $value = null;
 
             if ($this->hasFlash($key)) {
@@ -92,10 +80,6 @@ class Session
 
     /**
      * Session has flash key ?
-     *
-     * @param string $key
-     *
-     * @return bool
      */
     public function hasFlash(string $key): bool
     {
@@ -104,10 +88,6 @@ class Session
 
     /**
      * Delete session method.
-     *
-     * @param string $key
-     *
-     * @return void
      */
     public function delete(string $key): void
     {
@@ -118,8 +98,6 @@ class Session
 
     /**
      * Delete all session method.
-     *
-     * @return void
      */
     public function destroy(): void
     {
@@ -129,8 +107,6 @@ class Session
 
     /**
      * Get Session ID
-     *
-     * @return string
      */
     public function id(): string
     {

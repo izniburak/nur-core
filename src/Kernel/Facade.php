@@ -31,11 +31,11 @@ abstract class Facade
     /**
      * Set Facade Application (Container)
      *
-     * @param string $app
+     * @param Application $app
      *
      * @return void
      */
-    public static function setFacadeApplication($app): void
+    public static function setFacadeApplication(Application $app): void
     {
         static::$app = $app;
     }
@@ -57,7 +57,7 @@ abstract class Facade
      *
      * @return void
      */
-    public static function clearResolvedInstance($name): void
+    public static function clearResolvedInstance(string $name): void
     {
         unset(static::$resolvedInstance[$name]);
     }
@@ -126,7 +126,7 @@ abstract class Facade
      *
      * @return mixed
      */
-    public static function __callStatic($method, $args)
+    public static function __callStatic(string $method, array $args)
     {
         $instance = static::getFacadeRoot();
 
@@ -145,7 +145,7 @@ abstract class Facade
      *
      * @return mixed
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args)
     {
         return self::__callStatic($method, $args);
     }
@@ -155,9 +155,9 @@ abstract class Facade
      *
      * @return string
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
     }

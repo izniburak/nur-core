@@ -70,7 +70,7 @@ class Request extends SymfonyRequest
      * Retrieve a header from the request.
      *
      * @param string|null       $key
-     * @param string|array|null $default
+     * @param array|string $default
      *
      * @return string|array
      */
@@ -170,14 +170,14 @@ class Request extends SymfonyRequest
      */
     public function isJson(): bool
     {
-        return Str::contains($this->header('CONTENT_TYPE'), ['/json', '+json']);
+        return Str::contains($this->header('Content-Type'), ['/json', '+json']);
     }
 
     /**
      * Get the JSON payload for the request.
      *
      * @param string|null $key
-     * @param mixed       $default
+     * @param mixed|null $default
      *
      * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed
      */
@@ -207,7 +207,7 @@ class Request extends SymfonyRequest
     /**
      * Determine if the request contains any of the given inputs.
      *
-     * @param string|array $keys
+     * @param array|string $keys
      *
      * @return bool
      */
@@ -226,7 +226,7 @@ class Request extends SymfonyRequest
     /**
      * Determine if the request contains a non-empty value for any of the given inputs.
      *
-     * @param string|array $keys
+     * @param array|string $keys
      *
      * @return bool
      */

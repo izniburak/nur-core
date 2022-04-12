@@ -22,14 +22,9 @@ class Event
     /**
      * Trigger an event
      *
-     * @param string $event
-     * @param array  $params
-     * @param string $method
-     *
-     * @return void
      * @throws ExceptionHandler
      */
-    public function trigger(string $event, array $params = [], $method = 'handle'): void
+    public function trigger(string $event, array $params = [], string $method = 'handle'): void
     {
         $event = $this->events[$event] ?? null;
         if (!$event) {
@@ -47,14 +42,9 @@ class Event
     }
 
     /**
-     * @param $event
-     * @param $params
-     * @param $method
-     *
-     * @return void
      * @throws ExceptionHandler
      */
-    private function validateAndRun($event, $params, $method): void
+    private function validateAndRun(string $event, array $params, string $method): void
     {
         if (! class_exists($event)) {
             throw new ExceptionHandler('Event class not found.', $event);

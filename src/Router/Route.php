@@ -2,6 +2,9 @@
 
 namespace Nur\Router;
 
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class Route
 {
     /**
@@ -34,6 +37,7 @@ class Route
                         'middlewares' => 'App\Middlewares',
                     ],
                     'cache' => cache_path('routes.php'),
+                    'debug' => !app()->isProduction(),
                 ],
                 request(),
                 response(),
@@ -43,6 +47,18 @@ class Route
             self::$instance->setMiddleware($config['middleware']);
             self::$instance->setMiddlewareGroup($config['middlewareGroup']);
             self::$instance->setRouteMiddleware($config['routeMiddleware']);
+
+            self::$instance->notFound(function (Request $request, Response $response) {
+                $response->setStatusCode(Response::HTTP_NOT_FOUND);
+                $response->setContent('Looks like page not found or something went wrong. Please try again.');
+                return $response;
+            });
+
+            self::$instance->error(function (Request $request, Response $response, \Exception $e) {
+                $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
+                $response->setContent($e->getMessage());
+                return $response;
+            });
         }
 
         return self::$instance;

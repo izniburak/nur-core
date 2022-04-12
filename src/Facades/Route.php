@@ -15,6 +15,7 @@ use Nur\Kernel\Facade;
  * @method static head(string $route, string|Closure $callback, array $options = [])
  * @method static options(string $route, string|Closure $callback, array $options = [])
  * @method static ajax(string $route, string|Closure $callback, array $options = [])
+ * @method static xget(string $route, string|Closure $callback, array $options = [])
  * @method static xpost(string $route, string|Closure $callback, array $options = [])
  * @method static xput(string $route, string|Closure $callback, array $options = [])
  * @method static xdelete(string $route, string|Closure $callback, array $options = [])
@@ -29,12 +30,7 @@ use Nur\Kernel\Facade;
  */
 class Route extends Facade
 {
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'route';
     }

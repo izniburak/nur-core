@@ -8,8 +8,6 @@ class Builder extends Capsule
 {
     /**
      * Set Eloquent Capsule for Builder.
-     *
-     * @return void
      */
     function __construct()
     {
@@ -18,7 +16,7 @@ class Builder extends Capsule
     }
 
     /**
-     * Call function for Class
+     * Call functions for Class
      *
      * @param $method
      * @param $parameters

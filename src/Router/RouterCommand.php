@@ -3,6 +3,7 @@
 namespace Nur\Router;
 
 use Buki\Router\RouterCommand as RouterCommandProvider;
+use ReflectionClass;
 use Reflector;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,13 +13,13 @@ class RouterCommand extends RouterCommandProvider
      * Throw new Exception for Router Error
      *
      * @param string $message
-     * @param int    $statusCode
+     * @param int $statusCode
      *
-     * @return RouterException
+     * @throws RouterException
      */
-    public function exception($message = '', $statusCode = 500)
+    public function exception(string $message = '', int $statusCode = 500)
     {
-        return new RouterException($message, $statusCode);
+        throw new RouterException($message, $statusCode);
     }
 
     /**
@@ -31,44 +32,26 @@ class RouterCommand extends RouterCommandProvider
      * @return object
      * @throws
      */
-    protected function resolveClass(string $class, string $path, string $namespace)
+    protected function resolveClass(string $class, string $path, string $namespace): object
     {
         $class = str_replace([$namespace, '\\'], ['', '/'], $class);
 
         if ($this->namespaces['controllers'] === $namespace) {
-            if (strpos($class, 'App') !== 0) {
+            if (!str_starts_with($class, 'App')) {
                 $class = $namespace . $class;
             }
         } elseif ($this->namespaces['middlewares'] === $namespace) {
-            if (strpos($class, '/') === false) {
+            if (!str_contains($class, '/')) {
                 $class = $namespace . $class;
             }
 
-            if (strpos($class, 'Nur/Http') !== false) {
+            if (str_contains($class, 'Nur/Http')) {
                 $class =  str_replace($namespace, '', $class);
             }
         }
 
         $class = str_replace('/', '\\', $class);
         return resolve($class);
-    }
-
-    /**
-     * @param $response
-     *
-     * @return Response|mixed
-     */
-    protected function sendResponse($response)
-    {
-        if (is_array($response)) {
-            return $this->response->json($response)->send();
-        }
-
-        if (!is_string($response)) {
-            return $response instanceof Response ? $response->send() : print($response);
-        }
-
-        return $this->response->setContent($response)->send();
     }
 
     /**
@@ -81,7 +64,9 @@ class RouterCommand extends RouterCommandProvider
     {
         $parameters = [];
         foreach ($reflection->getParameters() as $key => $param) {
-            $class = $param->getClass();
+            $class = $param->getType() && !$param->getType()->isBuiltin()
+                ? new ReflectionClass($param->getType()->getName())
+                : null;
             if (!is_null($class) && $class->isInstance($this->request)) {
                 $parameters[] = $this->request;
             } elseif (!is_null($class) && $class->isInstance($this->response)) {
