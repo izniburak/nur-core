@@ -93,7 +93,7 @@ class Date extends Facade
     /**
      * Resolve the facade root instance from the container.
      */
-    protected static function resolveInstance(string $name): mixed
+    protected static function resolveInstance(string $name)
     {
         if (! isset(static::$resolvedInstance[$name]) && ! isset(static::$app, static::$app[$name])) {
             $class = static::DEFAULT_FACADE;

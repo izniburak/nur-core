@@ -5,6 +5,7 @@ namespace Nur\Auth\Jwt;
 use DateTime;
 use DomainException;
 use Firebase\JWT\JWT as FirebaseJwt;
+use Firebase\JWT\Key;
 use Illuminate\Support\Str;
 use Nur\Auth\Auth;
 use UnexpectedValueException;
@@ -107,7 +108,7 @@ class Jwt implements JwtInterface
     public function decode(string $jwt): \stdClass
     {
         try {
-            return FirebaseJwt::decode($jwt, $this->secret, [$this->algorithm]);
+            return FirebaseJwt::decode($jwt, new Key($this->secret, $this->algorithm));
         } catch (UnexpectedValueException $e) {
             throw new JwtException($e->getMessage(), $e->getCode());
         }

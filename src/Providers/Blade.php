@@ -32,7 +32,7 @@ class Blade extends ServiceProvider
     /**
      * Register the view environment.
      *
-     * @return mixed
+     * @return void
      */
     public function registerFactory()
     {
@@ -71,7 +71,7 @@ class Blade extends ServiceProvider
      */
     public function registerEngineResolver()
     {
-        $this->app->singleton('view.engine.resolver', function ($app) {
+        $this->app->singleton('view.engine.resolver', function () {
             $resolver = new EngineResolver;
             // Next we will register the various engines with the resolver so that the
             // environment can resolve the engines it needs for various views based

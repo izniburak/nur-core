@@ -9,7 +9,7 @@ class Event
     /**
      * @var array
      */
-    private $events = [];
+    private $events;
 
     /**
      * Event constructor.

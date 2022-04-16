@@ -90,7 +90,7 @@ class ProviderRepository
     /**
      * Load the service provider manifest JSON file.
      *
-     * @return array|null
+     * @return array|void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function loadManifest()

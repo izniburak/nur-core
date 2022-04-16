@@ -5,7 +5,6 @@ namespace Nur\Router;
 use Buki\Router\RouterCommand as RouterCommandProvider;
 use ReflectionClass;
 use Reflector;
-use Symfony\Component\HttpFoundation\Response;
 
 class RouterCommand extends RouterCommandProvider
 {
@@ -63,7 +62,7 @@ class RouterCommand extends RouterCommandProvider
     protected function resolveCallbackParameters(Reflector $reflection, array $uriParams): array
     {
         $parameters = [];
-        foreach ($reflection->getParameters() as $key => $param) {
+        foreach ($reflection->getParameters() as $param) {
             $class = $param->getType() && !$param->getType()->isBuiltin()
                 ? new ReflectionClass($param->getType()->getName())
                 : null;

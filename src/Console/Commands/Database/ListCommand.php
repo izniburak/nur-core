@@ -18,7 +18,7 @@ class ListCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $dir = $mask = database_path() . '/';
+        $dir = database_path() . '/';
         $mask = $dir . '*.sqlite*';
         $dbList = glob($mask);
 

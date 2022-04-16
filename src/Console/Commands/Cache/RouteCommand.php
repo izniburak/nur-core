@@ -37,7 +37,7 @@ class RouteCommand extends Command
             app('route')->cache();
             $this->updateCacheFile();
         } catch (\Exception $e) {
-            throw new \RuntimeException(sprintf($e->getMessage()));
+            throw new \RuntimeException($e->getMessage());
         }
 
         $output->writeln('<info>+Success!</info> Routes have been cached.');
@@ -51,7 +51,7 @@ class RouteCommand extends Command
         if (false === file_put_contents($cacheFile, str_replace(
                 "'route' => '.", "'route' => '" . app()->baseFolder(), $cacheContent
             ))) {
-            throw new \RuntimeException(sprintf('Config cache file could not be written.'));
+            throw new \RuntimeException('Config cache file could not be written.');
         }
     }
 }

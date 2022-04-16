@@ -21,6 +21,6 @@ class Pdox extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('sql', \Nur\Database\Sql::class);
+        $this->app->singleton('sql', \Nur\Database\Pdox::class);
     }
 }

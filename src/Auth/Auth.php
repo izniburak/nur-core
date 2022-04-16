@@ -2,7 +2,6 @@
 
 namespace Nur\Auth;
 
-use Illuminate\Support\Str;
 use Nur\Auth\Jwt\Jwt;
 use Nur\Database\Model;
 use Nur\Http\Response;

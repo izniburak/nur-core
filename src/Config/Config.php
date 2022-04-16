@@ -149,50 +149,50 @@ class Config implements ArrayAccess, ConfigContract
     /**
      * Determine if the given configuration option exists.
      *
-     * @param  string $key
+     * @param  string $offset
      *
      * @return bool
      */
-    public function offsetExists($key): bool
+    public function offsetExists($offset): bool
     {
-        return $this->has($key);
+        return $this->has($offset);
     }
 
     /**
      * Get a configuration option.
      *
-     * @param  string $key
+     * @param  string $offset
      *
      * @return mixed
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($key)
+    public function offsetGet($offset)
     {
-        return $this->get($key);
+        return $this->get($offset);
     }
 
     /**
      * Set a configuration option.
      *
-     * @param  string $key
+     * @param  string $offset
      * @param  mixed  $value
      *
      * @return void
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet($offset, $value): void
     {
-        $this->set($key, $value);
+        $this->set($offset, $value);
     }
 
     /**
      * Unset a configuration option.
      *
-     * @param  string $key
+     * @param  string $offset
      *
      * @return void
      */
-    public function offsetUnset($key): void
+    public function offsetUnset($offset): void
     {
-        $this->set($key, null);
+        $this->set($offset);
     }
 }

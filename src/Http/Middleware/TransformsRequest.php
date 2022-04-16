@@ -70,7 +70,7 @@ class TransformsRequest
      * @param  mixed  $value
      * @return mixed
      */
-    protected function cleanValue(string $key, mixed $value): mixed
+    protected function cleanValue(string $key, $value)
     {
         if (is_array($value)) {
             return $this->cleanArray($value, $key.'.');
@@ -86,7 +86,7 @@ class TransformsRequest
      * @param  mixed  $value
      * @return mixed
      */
-    protected function transform(string $key, mixed $value): mixed
+    protected function transform(string $key, $value)
     {
         return $value;
     }

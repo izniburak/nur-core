@@ -316,7 +316,7 @@ abstract class ServiceProvider
      *
      * @param  string|null  $provider
      * @param  string|null  $group
-     * @return array
+     * @return array|void
      */
     protected static function pathsForProviderOrGroup($provider, $group)
     {

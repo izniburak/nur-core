@@ -32,7 +32,7 @@ class ConfigCommand extends Command
         }
 
         if (false === file_put_contents($cacheFile, $this->config())) {
-            throw new \RuntimeException(sprintf('Config cache file could not be written.'));
+            throw new \RuntimeException('Config cache file could not be written.');
         }
 
         $output->writeln('<info>+Success!</info> Configs have been cached.');

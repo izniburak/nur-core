@@ -128,9 +128,9 @@ class Validation
     /**
      * Sanitizing Data
      *
-     * @param string $data
+     * @param string|array $data
      *
-     * @return string
+     * @return string|array
      */
     public function sanitize($data)
     {
@@ -200,7 +200,7 @@ class Validation
      */
     protected function required($data): bool
     {
-        return (!empty($data) && !is_null($data) && $data !== '');
+        return (!empty($data) && $data !== '');
     }
 
     /**
@@ -212,7 +212,7 @@ class Validation
      */
     protected function nullable($data): bool
     {
-        return is_null($data) || empty($data);
+        return empty($data);
     }
 
     /**
@@ -287,9 +287,7 @@ class Validation
      */
     protected function alpha($data): bool
     {
-        return preg_match('/^[a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
-            ? true
-            : ctype_alpha($data);
+        return preg_match('/^[a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data) || ctype_alpha($data);
     }
 
     /**
@@ -301,9 +299,7 @@ class Validation
      */
     protected function alpha_num($data): bool
     {
-        return preg_match('/^[0-9a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data)
-            ? true
-            : ctype_alnum($data);
+        return preg_match('/^[0-9a-zA-ZÇçĞğİıÖöŞşÜü]+$/i', $data) || ctype_alnum($data);
     }
 
     /**
@@ -363,7 +359,7 @@ class Validation
      */
     protected function float($data): bool
     {
-        return !preg_match("/^([0-9\.])+$/i", $data) ? false : true;
+        return (bool)preg_match("/^([0-9\.])+$/i", $data);
     }
 
     /**

@@ -475,7 +475,6 @@ if (!function_exists('csrf_check')) {
     {
         $name = (!is_null($name) ? '_' . $name : '');
         if (session()->has('_nur_csrf' . $name) &&
-            is_string($token) &&
             $token === session()->get('_nur_csrf' . $name)) {
             session()->delete('_nur_csrf' . $name);
             return true;
@@ -734,15 +733,15 @@ if (!function_exists('paginationLinks')) {
      * Pagination links for records.
      *
      * @param       $records
-     * @param       $link
+     * @param string $link
      * @param array $settings
      * @param bool  $simple
      *
      * @return string|void
      */
-    function paginationLinks($records, $link = '', array $settings = [], $simple = false)
+    function paginationLinks($records, string $link = '', array $settings = [], bool $simple = false)
     {
-        if (is_null($records) || empty($records)) {
+        if (empty($records)) {
             return;
         }
 
@@ -818,9 +817,7 @@ if (!function_exists('paginationLinks')) {
 
         $ul .= '</ul>';
         $ul = str_replace('//', '/', $ul);
-        $ul = str_replace(['http:/', 'https:/'], ['http://', 'https://'], $ul);
-
-        return $ul;
+        return str_replace(['http:/', 'https:/'], ['http://', 'https://'], $ul);
     }
 }
 

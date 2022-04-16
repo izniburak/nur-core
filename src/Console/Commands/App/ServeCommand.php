@@ -34,7 +34,7 @@ class ServeCommand extends Command
 
         // passthru("php -S {$host}:{$port} " . base_path('server.php'));
         $process = new Process($this->serverCommand($host, $port), null, collect($_ENV)->mapWithKeys(function ($value, $key) {
-            return in_array($key, ['APP_ENV']) ? [$key => $value] : [$key => false];
+            return $key === 'APP_ENV' ? [$key => $value] : [$key => false];
         })->all());
 
         $process->start(function ($type, $buffer) use ($output) {

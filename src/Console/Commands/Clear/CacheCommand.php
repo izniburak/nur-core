@@ -19,7 +19,7 @@ class CacheCommand extends Command
     {
         $path = cache_path();
         $count = 0;
-        $folders = ['blade' => 'Blade', 'html' => 'Html', 'sql' => 'SQL'];
+        $folders = ['blade' => 'Blade', 'html' => 'Html', 'sql' => 'SQL', 'data' => 'Data'];
         foreach ($folders as $key => $value) {
             foreach (glob("{$path}/{$key}/*.*") as $file) {
                 if (!stristr($file, 'index.html') && unlink($file)) {

@@ -7,7 +7,7 @@ $container = app()->make(Container::class);
 $config = config('database');
 
 $container->instance('db.config', $config);
-$container->singleton('phpmig.eloquent', function($c) {
+$container->singleton('phpmig.eloquent', function() {
     return new \Nur\Database\Eloquent();
 });
 $container->singleton('db', function ($c) {

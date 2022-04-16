@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="<?=app()->getLocale()?>">
 <head>
-    <title><?=strip_tags($title)?></title>
-    <style type="text/css">
+    <?php $title = isset($title) && !empty($title) ? strip_tags($title) : 'Oops! An error occurred'; ?>
+    <title><?=$title?></title>
+    <style>
         body, div, p { margin:0; padding:0; }
         body {background-color:#eee; color:#4f5155; font-size: 1rem; font-weight: normal;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
@@ -13,7 +14,7 @@
             border:1px solid #ddd; -webkit-box-shadow:0 0 8px #D0D0D0; background:#fff;
             font-size: 1.1em;
         }
-        h1 {margin:0px 0 25px 0; font-size:27px;}
+        h1 {margin:0 0 25px 0; font-size:27px;}
     </style>
 </head>
 <body>

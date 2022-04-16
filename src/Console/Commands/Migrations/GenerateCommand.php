@@ -42,7 +42,7 @@ EOT
 
         $path = $this->container['phpmig.migrations_path'];
         $locator = new FileLocator([]);
-        $path = $locator->locate($path, base_path(), $first = true);
+        $path = $locator->locate($path, base_path(), true);
 
         if (!is_writeable($path)) {
             throw new \InvalidArgumentException(sprintf(

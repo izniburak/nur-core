@@ -38,8 +38,6 @@ class UriGenerator
 
     /**
      * Create URI class values.
-     *
-     * @return string|null
      */
     function __construct()
     {

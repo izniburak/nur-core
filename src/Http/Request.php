@@ -703,8 +703,6 @@ class Request extends SymfonyRequest
         if (array_key_exists($key, $this->all())) {
             return data_get($this->all(), $key);
         }
-
-        return;
     }
 
     /**
@@ -910,12 +908,12 @@ class Request extends SymfonyRequest
      * Retrieve a parameter item from a given source.
      *
      * @param string            $source
-     * @param string            $key
+     * @param string|null       $key
      * @param string|array|null $default
      *
      * @return string|array
      */
-    protected function retrieveItem(string $source, string $key, $default)
+    protected function retrieveItem(string $source, ?string $key, $default)
     {
         if (is_null($key)) {
             return $this->$source->all();
